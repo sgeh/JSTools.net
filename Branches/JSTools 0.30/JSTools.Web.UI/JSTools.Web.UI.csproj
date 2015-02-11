@@ -1,0 +1,89 @@
+<Project MSBuildVersion="1.2" DefaultTargets="Build">
+  <PropertyGroup>
+    <Property ProjectType="Local" />
+    <Property ProductVersion="8.0.30703" />
+    <Property SchemaVersion="2.0" />
+    <Property ProjectGuid="{EE3A9993-BA75-4A15-93E4-CB0CCFC1E695}" />
+    <Property Configuration="Debug" Condition=" '$(Configuration)' == '' " />
+    <Property ApplicationIcon="" />
+    <Property AssemblyKeyContainerName="" />
+    <Property AssemblyName="JSTools.Web.UI" />
+    <Property AssemblyOriginatorKeyFile="" />
+    <Property DefaultClientScript="JScript" />
+    <Property DefaultHTMLPageLayout="Grid" />
+    <Property DefaultTargetSchema="IE50" />
+    <Property DelaySign="false" />
+    <Property OutputType="Library" />
+    <Property RootNamespace="JSTools.Web.UI" />
+    <Property RunPostBuildEvent="OnBuildSuccess" />
+    <Property StartupObject="" />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <Property OutputPath="bin\Debug\" />
+    <Property AllowUnsafeBlocks="false" />
+    <Property BaseAddress="285212672" />
+    <Property CheckForOverflowUnderflow="false" />
+    <Property ConfigurationOverrideFile="" />
+    <Property DefineConstants="DEBUG;TRACE" />
+    <Property DocumentationFile="" />
+    <Property DebugSymbols="true" />
+    <Property FileAlignment="4096" />
+    <Property IncrementalBuild="true" />
+    <Property NoStdLib="false" />
+    <Property NoWarn="" />
+    <Property Optimize="false" />
+    <Property RegisterForComInterop="false" />
+    <Property RemoveIntegerChecks="false" />
+    <Property TreatWarningsAsErrors="false" />
+    <Property WarningLevel="4" />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <Property OutputPath="bin\Release\" />
+    <Property AllowUnsafeBlocks="false" />
+    <Property BaseAddress="285212672" />
+    <Property CheckForOverflowUnderflow="false" />
+    <Property ConfigurationOverrideFile="" />
+    <Property DefineConstants="TRACE" />
+    <Property DocumentationFile="" />
+    <Property DebugSymbols="false" />
+    <Property FileAlignment="4096" />
+    <Property IncrementalBuild="false" />
+    <Property NoStdLib="false" />
+    <Property NoWarn="" />
+    <Property Optimize="true" />
+    <Property RegisterForComInterop="false" />
+    <Property RemoveIntegerChecks="false" />
+    <Property TreatWarningsAsErrors="false" />
+    <Property WarningLevel="4" />
+  </PropertyGroup>
+  <ItemGroup>
+    <Item Type="Reference" Include="System" Name="System" HintPath="C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll" />
+    <Item Type="Reference" Include="System.Data" Name="System.Data" HintPath="C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll" />
+    <Item Type="Reference" Include="System.Xml" Name="System.XML" HintPath="C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll" />
+    <Item Type="Reference" Include="System.Web" Name="System.Web" HintPath="C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Web.dll" />
+    <Item Type="ProjectReference" Include="..\JSTools.Config\JSTools.Config.csproj" Name="JSTools.Config" Project="{11958A59-F7E5-4160-9E0D-863E3404265C}" Package="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
+    <Item Type="ProjectReference" Include="..\JSTools.Web\JSTools.Web.csproj" Name="JSTools.Web" Project="{8EBBD23D-8C26-4587-8766-8B0BE9528B69}" Package="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Item Type="Compile" Include="AssemblyInfo.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\JSControlCollection.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\JSExceptionRenderHandler.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\JSScriptLoaderRenderHandler.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\JSScriptRenderHandler.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\Controls\Comment.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\Controls\ControlNotFoundException.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\Controls\Head.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\Controls\JSToolsControl.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\Controls\JSToolsPage.cs" SubType="ASPXCodeBehind" />
+    <Item Type="Compile" Include="JSTools\Web\UI\Controls\Script.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\Controls\ScriptCodeCache.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\Controls\ScriptOptimizationException.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\WebControls\JSToolsWebControl.cs" SubType="Code" />
+    <Item Type="Compile" Include="JSTools\Web\UI\WebControls\Layer.cs" SubType="Code" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\CSHARP.Targets" />
+  <PropertyGroup>
+    <Property PreBuildEvent="" />
+    <Property PostBuildEvent="" />
+  </PropertyGroup>
+</Project>

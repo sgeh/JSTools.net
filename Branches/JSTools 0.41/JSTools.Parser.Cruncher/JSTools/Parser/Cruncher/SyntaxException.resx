@@ -1,0 +1,528 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- 
+            Microsoft ResX Schema 
+        
+            Version 1.3
+                
+            The primary goals of this format is to allow a simple XML format 
+            that is mostly human readable. The generation and parsing of the 
+            various data types are done through the TypeConverter classes 
+            associated with the data types.
+        
+            Example:
+        
+                ... ado.net/XML headers & schema ...
+                <resheader name="resmimetype">text/microsoft-resx</resheader>
+                <resheader name="version">1.3</resheader>
+                <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+                <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+                <data name="Name1">this is my long string</data>
+                <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+                <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+                    [base64 mime encoded serialized .NET Framework object]
+                </data>
+                <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+                    [base64 mime encoded string representing a byte array form of the .NET Framework object]
+                </data>
+        
+            There are any number of "resheader" rows that contain simple 
+            name/value pairs.
+            
+            Each data row contains a name, and value. The row also contains a 
+            type or mimetype. Type corresponds to a .NET class that support 
+            text/value conversion through the TypeConverter architecture. 
+            Classes that don't support this are serialized and stored with the 
+            mimetype set.
+                     
+            The mimetype is used for serialized objects, and tells the 
+            ResXResourceReader how to depersist the object. This is currently not 
+            extensible. For a given mimetype the value must be set accordingly:
+        
+            Note - application/x-microsoft.net.object.binary.base64 is the format 
+                   that the ResXResourceWriter will generate, however the reader can 
+                   read any of the formats listed below.
+        
+            mimetype: application/x-microsoft.net.object.binary.base64
+            value   : The object must be serialized with 
+                    : System.Serialization.Formatters.Binary.BinaryFormatter
+                    : and then encoded with base64 encoding.
+        
+            mimetype: application/x-microsoft.net.object.soap.base64
+            value   : The object must be serialized with 
+                    : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+                    : and then encoded with base64 encoding.
+            mimetype: application/x-microsoft.net.object.bytearray.base64
+            value   : The object must be serialized into a byte array 
+                    : using a System.ComponentModel.TypeConverter
+                    : and then encoded with base64 encoding.
+        -->
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.3300.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.3300.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="msg.bad.lhs.assign">
+        <value>Invalid assignment left-hand side.</value>
+    </data>
+    <data name="msg.catch.unreachable">
+        <value>any catch clauses following an unqualified catch are unreachable</value>
+    </data>
+    <data name="msg.bad.ctor.sig">
+        <value>Found constructor with wrong signature: {0} calling {1} with signature {2}</value>
+    </data>
+    <data name="msg.no.while.do">
+        <value>missing while after do-loop body</value>
+    </data>
+    <data name="msg.no.re.input.for">
+        <value>no input for {0}</value>
+    </data>
+    <data name="msg.no.paren.parms">
+        <value>missing ( before function parameters</value>
+    </data>
+    <data name="msg.no.paren.catch">
+        <value>missing ( before catch-block condition</value>
+    </data>
+    <data name="msg.bad.return">
+        <value>invalid return</value>
+    </data>
+    <data name="msg.no.semi.for.cond">
+        <value>missing ; after for-loop condition</value>
+    </data>
+    <data name="msg.bad.switch">
+        <value>invalid switch statement</value>
+    </data>
+    <data name="msg.continue.outside">
+        <value>continue must be inside loop.</value>
+    </data>
+    <data name="msg.setter.parms">
+        <value>Expected either one or two parameters for setter.</value>
+    </data>
+    <data name="msg.unterminated.string.lit">
+        <value>unterminated string literal</value>
+    </data>
+    <data name="msg.bad.octal.literal">
+        <value>illegal octal literal digit {0}; interpreting it as a decimal digit</value>
+    </data>
+    <data name="msg.instanceof.not.object">
+        <value>Can't use instanceof on a non-object.</value>
+    </data>
+    <data name="msg.unterminated.re.lit">
+        <value>unterminated regular expression literal</value>
+    </data>
+    <data name="msg.undef.to.object">
+        <value>Cannot convert undefined to an object.</value>
+    </data>
+    <data name="msg.trail.backslash">
+        <value>Trailing in regular expression.</value>
+    </data>
+    <data name="msg.method.not.found">
+        <value>Method "{0}" not found in "{1}".</value>
+    </data>
+    <data name="msg.bad.default.value">
+        <value>Object's getDefaultValue() method returned an object.</value>
+    </data>
+    <data name="msg.no.semi.stmt">
+        <value>missing ; before statement</value>
+    </data>
+    <data name="msg.no.brace.block">
+        <value>missing } in compound statement</value>
+    </data>
+    <data name="msg.bad.esc.mask">
+        <value>invalid string escape mask</value>
+    </data>
+    <data name="msg.varargs.ctor">
+        <value>Method or constructor "{0}" must be static with the signature "(Context cx, Object[] args, Function ctorObj, boolean inNewExpr)" to define a variable arguments constructor.</value>
+    </data>
+    <data name="msg.no.paren">
+        <value>missing ) in parenthetical</value>
+    </data>
+    <data name="msg.script.is.not.constructor">
+        <value>Script objects are not constructors.</value>
+    </data>
+    <data name="msg.pkg.int">
+        <value>Java package names may not be numbers.</value>
+    </data>
+    <data name="msg.bad.var">
+        <value>missing variable name</value>
+    </data>
+    <data name="msg.bad.uri">
+        <value>Malformed URI sequence.</value>
+    </data>
+    <data name="msg.arraylength.bad">
+        <value>Inappropriate array length.</value>
+    </data>
+    <data name="msg.no.brace.body">
+        <value>missing '{' before function body</value>
+    </data>
+    <data name="msg.no.brace.prop">
+        <value>missing } after property list</value>
+    </data>
+    <data name="msg.no.function.ref.found">
+        <value>no source found to decompile function reference {0}</value>
+    </data>
+    <data name="msg.instanceof.bad.prototype">
+        <value>'prototype' property of {0} is not an object.</value>
+    </data>
+    <data name="msg.setter1.parms">
+        <value>Expected single parameter setter for {0}</value>
+    </data>
+    <data name="msg.continue.nonloop">
+        <value>Can only continue to labeled iteration statement.</value>
+    </data>
+    <data name="msg.cant.instantiate">
+        <value>error instantiating ({0}): class {1} is interface or abstract</value>
+    </data>
+    <data name="msg.not.classloader">
+        <value>Constructor for "Packages" expects argument of type java.lang.Classloader</value>
+    </data>
+    <data name="msg.add.sealed">
+        <value>Cannot add a property to a sealed object.</value>
+    </data>
+    <data name="msg.no.name.after.dot">
+        <value>missing name after . operator</value>
+    </data>
+    <data name="msg.mult.index">
+        <value>Only one variable allowed in for..in loop.</value>
+    </data>
+    <data name="msg.incompat.call">
+        <value>Method "{0}" called on incompatible object.</value>
+    </data>
+    <data name="msg.setter2.expected">
+        <value>Expected static or delegated setter {0} to take two parameters.</value>
+    </data>
+    <data name="msg.no.java.ctor">
+        <value>Java constructor for "{0}" with arguments "{1}" not found.</value>
+    </data>
+    <data name="msg.undefined">
+        <value>The undefined value has no properties.</value>
+    </data>
+    <data name="msg.bad.for.in.lhs">
+        <value>Invalid left-hand side of for..in loop.</value>
+    </data>
+    <data name="msg.missing.exponent">
+        <value>missing exponent</value>
+    </data>
+    <data name="msg.no.paren.switch">
+        <value>missing ( before switch expression</value>
+    </data>
+    <data name="msg.multiple.ctors">
+        <value>Cannot have more than one constructor method, but found both {0} and {1}.</value>
+    </data>
+    <data name="msg.java.internal.field.type">
+        <value>Internal error: type conversion of {0} to assign to {1} on {2} failed.</value>
+    </data>
+    <data name="msg.ctor.multiple.parms">
+        <value>Can't define constructor or class {0} since more than one constructor has multiple parameters.</value>
+    </data>
+    <data name="msg.setter2.parms">
+        <value>Two-parameter setter must take a ScriptableObject as its first parameter.</value>
+    </data>
+    <data name="msg.no.brace.switch">
+        <value>missing '{' before switch body</value>
+    </data>
+    <data name="msg.not.ctor">
+        <value>"{0}" is not a constructor.</value>
+    </data>
+    <data name="msg.bad.getter.parms">
+        <value>In order to define a property, getter {0} must have zero parameters or a single ScriptableObject parameter.</value>
+    </data>
+    <data name="msg.token.replaces.pushback">
+        <value>ungot token {0} replaces pushback token {1}</value>
+    </data>
+    <data name="msg.bad.backref">
+        <value>back-reference exceeds number of capturing parentheses.</value>
+    </data>
+    <data name="msg.conversion.not.allowed">
+        <value>Cannot convert {0} to {1}</value>
+    </data>
+    <data name="msg.fn.redecl">
+        <value>Function "{0}" redeclared; prior definition will be ignored.</value>
+    </data>
+    <data name="msg.overlarge.max">
+        <value>Overly large maximum {0}</value>
+    </data>
+    <data name="msg.no.paren.after.with">
+        <value>missing ) after with-statement object</value>
+    </data>
+    <data name="msg.no.paren.after.cond">
+        <value>missing ) after condition</value>
+    </data>
+    <data name="msg.java.conversion.implicit_method">
+        <value>Can't find converter method "{0}" on class {1}.</value>
+    </data>
+    <data name="msg.invalid.escape">
+        <value>invalid Unicode escape sequence</value>
+    </data>
+    <data name="msg.bad.precision">
+        <value>Precision {0} out of range.</value>
+    </data>
+    <data name="msg.unterm.class">
+        <value>Unterminated character class {0}</value>
+    </data>
+    <data name="msg.constructor.ambiguous">
+        <value>The choice of Java constructor {0} matching JavaScript argument types ({1}) is ambiguous; candidate constructors are: {2}</value>
+    </data>
+    <data name="msg.unterm.quant">
+        <value>Unterminated quantifier {0}</value>
+    </data>
+    <data name="msg.unterm.paren">
+        <value>Unterminated parenthetical {0}</value>
+    </data>
+    <data name="msg.no.paren.for.ctrl">
+        <value>missing ) after for-loop control</value>
+    </data>
+    <data name="msg.eval.nonstring">
+        <value>Calling eval() with anything other than a primitive string value will simply return the value. Is this what you intended?</value>
+    </data>
+    <data name="msg.varargs.fun">
+        <value>Method "{0}" must be static with the signature "(Context cx, Scriptable thisObj, Object[] args, Function funObj)" to define a variable arguments function.</value>
+    </data>
+    <data name="msg.invalid.re.flag">
+        <value>invalid flag after regular expression</value>
+    </data>
+    <data name="msg.max.lt.min">
+        <value>Maximum {0} less than minimum</value>
+    </data>
+    <data name="msg.remove.sealed">
+        <value>Cannot remove a property from a sealed object.</value>
+    </data>
+    <data name="msg.no.paren.with">
+        <value>missing ( before with-statement object</value>
+    </data>
+    <data name="msg.no.paren.cond">
+        <value>missing ( before condition</value>
+    </data>
+    <data name="msg.try.no.catchfinally">
+        <value>'try' without 'catch' or 'finally'</value>
+    </data>
+    <data name="msg.java.method.assign">
+        <value>Java method "{0}" cannot be assigned to.</value>
+    </data>
+    <data name="msg.ambig.import">
+        <value>Ambiguous import: "{0}" and and "{1}".</value>
+    </data>
+    <data name="msg.no.bracket.index">
+        <value>missing ] in index expression</value>
+    </data>
+    <data name="msg.no.overload">
+        <value>Method "{0}" occurs multiple times in class "{1}".</value>
+    </data>
+    <data name="msg.reserved.id">
+        <value>identifier is a reserved word</value>
+    </data>
+    <data name="msg.java.no_such_method">
+        <value>Can't find method {0}.</value>
+    </data>
+    <data name="msg.primitive.expected">
+        <value>Primitive type expected (had {0} instead)</value>
+    </data>
+    <data name="msg.deprec.ctor">
+        <value>The "{0}" constructor is deprecated.</value>
+    </data>
+    <data name="msg.bad.prop">
+        <value>invalid property id</value>
+    </data>
+    <data name="msg.cyclic.value">
+        <value>Cyclic {0} value not allowed.</value>
+    </data>
+    <data name="msg.not.pkg">
+        <value>Function importPackage must be called with a package; had "{0}" instead.</value>
+    </data>
+    <data name="msg.not.class">
+        <value>Function importClass must be called with a class; had "{0}" instead.</value>
+    </data>
+    <data name="msg.arg.isnt.array">
+        <value>second argument to Function.prototype.apply must be an array</value>
+    </data>
+    <data name="msg.no.parm">
+        <value>missing formal parameter</value>
+    </data>
+    <data name="msg.bad.var.init">
+        <value>invalid variable initialization</value>
+    </data>
+    <data name="msg.no.brace.after.body">
+        <value>missing } after function body</value>
+    </data>
+    <data name="msg.no.colon.prop">
+        <value>missing : after property id</value>
+    </data>
+    <data name="msg.no.colon.case">
+        <value>missing : after case expression</value>
+    </data>
+    <data name="msg.no.colon.cond">
+        <value>missing : in conditional expression</value>
+    </data>
+    <data name="msg.getter.static">
+        <value>Getter and setter must both be static or neither be static.</value>
+    </data>
+    <data name="msg.no.function.ref.found.in">
+        <value>no source found in {1} to decompile function reference {0}</value>
+    </data>
+    <data name="msg.assn.create">
+        <value>Assignment to undefined "{0}" will create a new variable. Add a variable statement at the top level scope to remove this warning.</value>
+    </data>
+    <data name="msg.java.member.not.found">
+        <value>Java class "{0}" has no public instance field or method named "{1}".</value>
+    </data>
+    <data name="msg.no.paren.arg">
+        <value>missing ) after argument list</value>
+    </data>
+    <data name="msg.no.paren.for">
+        <value>missing ( after for</value>
+    </data>
+    <data name="msg.default.value">
+        <value>Cannot find default value for object.</value>
+    </data>
+    <data name="msg.obj.getter.parms">
+        <value>Expected static or delegated getter {0} to take a ScriptableObject parameter.</value>
+    </data>
+    <data name="msg.cant.convert">
+        <value>Can't convert to type "{0}".</value>
+    </data>
+    <data name="msg.no.bracket.arg">
+        <value>missing ] after element list</value>
+    </data>
+    <data name="msg.method.ambiguous">
+        <value>The choice of Java method {0}.{1} matching JavaScript argument types ({2}) is ambiguous; candidate methods are: {3}</value>
+    </data>
+    <data name="msg.invalid.type">
+        <value>Invalid JavaScript value of type {0}</value>
+    </data>
+    <data name="msg.unterminated.comment">
+        <value>unterminated comment</value>
+    </data>
+    <data name="msg.not.java.obj">
+        <value>Expected argument to getClass() to be a Java object.</value>
+    </data>
+    <data name="msg.no.regexp">
+        <value>Regular expressions are not available.</value>
+    </data>
+    <data name="msg.zero.arg.ctor">
+        <value>Cannot load class "{0}" which has no zero-parameter constructor.</value>
+    </data>
+    <data name="msg.bad.range">
+        <value>Invalid range in character class.</value>
+    </data>
+    <data name="msg.bad.radix">
+        <value>illegal radix {0}.</value>
+    </data>
+    <data name="msg.bad.parms">
+        <value>Bad method parameters for "{0}".</value>
+    </data>
+    <data name="msg.bad.quant">
+        <value>Invalid quantifier {0}</value>
+    </data>
+    <data name="msg.bad.break">
+        <value>Unlabelled break must be inside loop or switch.</value>
+    </data>
+    <data name="msg.bad.label">
+        <value>invalid label</value>
+    </data>
+    <data name="msg.ctor.not.found">
+        <value>Constructor for "{0}" not found.</value>
+    </data>
+    <data name="msg.only.from.new">
+        <value>"{0}" may only be invoked from a "new" expression.</value>
+    </data>
+    <data name="msg.no.paren.after.switch">
+        <value>missing ) after switch expression</value>
+    </data>
+    <data name="msg.extend.scriptable">
+        <value>{0} must extend ScriptableObject in order to define property {1}.</value>
+    </data>
+    <data name="msg.no.semi.for">
+        <value>missing ; after for-loop initializer</value>
+    </data>
+    <data name="msg.no.brace.catchblock">
+        <value>missing '{' before catch-block body</value>
+    </data>
+    <data name="msg.dup.parms">
+        <value>Duplicate parameter name "{0}".</value>
+    </data>
+    <data name="msg.dup.label">
+        <value>Duplicate label {0}.</value>
+    </data>
+    <data name="msg.isnt.function">
+        <value>{0} is not a function.</value>
+    </data>
+    <data name="msg.illegal.character">
+        <value>illegal character</value>
+    </data>
+    <data name="msg.null.to.object">
+        <value>Cannot convert null to an object.</value>
+    </data>
+    <data name="msg.zero.quant">
+        <value>Zero quantifier {0}</value>
+    </data>
+    <data name="msg.prop.defined">
+        <value>Cannot import "{0}" since a property by that name is already defined.</value>
+    </data>
+    <data name="msg.no.paren.after.parms">
+        <value>missing ) after formal parameters</value>
+    </data>
+    <data name="msg.bad.catchcond">
+        <value>invalid catch block condition</value>
+    </data>
+    <data name="msg.reserved.keyword">
+        <value>illegal usage of future reserved keyword {0}; interpreting it as ordinary identifier</value>
+    </data>
+    <data name="msg.caught.nfe">
+        <value>number format error: {0}</value>
+    </data>
+    <data name="msg.nonjava.method">
+        <value>Java method "{0}" was invoked with a 'this' value that was not a Java object.</value>
+    </data>
+    <data name="msg.java.internal.private">
+        <value>Internal error: attempt to access private/protected field "{0}".</value>
+    </data>
+    <data name="msg.prop.not.found">
+        <value>Property not found.</value>
+    </data>
+    <data name="msg.is.not.defined">
+        <value>"{0}" is not defined.</value>
+    </data>
+    <data name="msg.oct.esc.too.large">
+        <value>octal escape too large</value>
+    </data>
+    <data name="msg.undef.label">
+        <value>Undefined label {0}.</value>
+    </data>
+    <data name="msg.syntax">
+        <value>syntax error</value>
+    </data>
+</root>

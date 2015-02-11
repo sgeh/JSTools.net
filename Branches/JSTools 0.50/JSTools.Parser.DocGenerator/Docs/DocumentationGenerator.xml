@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<!--
+JSTools.Parser.DocGenerator.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+Copyright (C) 2005  Silvan Gehrig
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+Author:
+ Silvan Gehrig
+-->
+<doc>
+	<enum>
+		<example>
+			<code>
+				/// &lt;enum
+				///  accessor="public|protected|private"
+				///  parent="class|namespace"
+				///  namespace="[string]"&gt;
+				///  ...comment goes here...
+				/// &lt;/enum&gt;
+			</code>
+		</example>
+		<description>
+			Declares an enumeration. The accessor property defines the
+			scope (default is public) in which the enumeration is declared.
+			The javascript instructions after the enum comment tag will be
+			parsed as follows:
+
+			<list type="bullet">
+				<item><description>var <c>[Name]</c> = new StringEnum(/*...*/);</description></item>
+				<item><description><c>[Class|NameSpace(s)]</c>.<c>[Name]</c> = new StringEnum(/*...*/);</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.prototype.<c>[Name]</c> = new StringEnum(/*...*/);</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.prototype.<c>[Class]</c>.prototype.<c>[Name]</c> = new StringEnum(/*...*/);</description></item>
+			</list>
+
+			<para>
+				Where <c>Name</c> stands for the enumeration name,
+				<c>Class</c> for the name of the class (default is 'window')
+				which contains this enumeration and <c>NameSpace</c>
+				for the namespace (default is 'Global') in which this enum
+				is defined. You may override the <c>NameSpace(s)</c> with the
+				namespace property.
+			</para>
+
+			<para>
+				The parent attribute defines in which element the enum is defined.
+				You can also specify the <c>[Class|NameSpace]</c> elements with the
+				parent attribute.
+			</para>
+
+			<para>
+				It's possible to use the default .NET framework comment
+				tags <code>&lt;c&gt; &lt;para&gt; &lt;seealso&gt; &lt;see&gt; &lt;include&gt; &lt;list&gt;</code>
+				inside this tag.
+			</para>
+		</description>
+	</enum>
+	
+	<class>
+		<example>
+			<code>
+				/// &lt;class
+				///  accessor="public|protected|private"
+				///  modifier="none|sealed|interface|abstract"
+				///  parent="class|namespace"
+				///  extends="[string]"
+				///  implements="[string],[string]"
+				///  namespace="[string]"&gt;
+				///  ...comment goes here...
+				/// &lt;/class&gt;
+			</code>
+		</example>
+		<description>
+			Declares a class definition. The accessor property defines the
+			scope (default is public) in which the property is declared.
+			The javascript instructions after the class comment tag will be
+			parsed as follows:
+
+			<list type="bullet">
+				<item><description>function <c>[Name]</c>() { /*<c>[FunctionBody]</c>*/ };</description></item>
+				<item><description>var <c>[Name]</c> = <c>[FunctionDef]</c>;</description></item>
+				<item><description><c>[Class|NameSpace(s)]</c>.<c>[Name]</c> = <c>[FunctionDef]</c>;</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.prototype.<c>[Name]</c> = <c>[FunctionDef]</c>;</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.prototype.<c>[Class]</c>.prototype.<c>[Name]</c> = <c>[FunctionDef]</c>;</description></item>
+			</list>
+
+			<para>
+				Where <c>FunctionDef</c> may contain the following script values:
+
+				<list type="bullet">
+					<item><description>function() { /*<c>[FunctionBody]</c>*/ }</description></item>
+					<item><description>new Function("param1, param2, paramN", "/*...*/")</description></item>
+					<item><description>new Function(param1, param2, paramN, "/*...*/")</description></item>
+				</list>
+			</para>
+
+			<para>
+				Where <c>Name</c> stands for the class name,
+				<c>Class</c> for the name of the class which contains
+				this class and <c>NameSpace</c> for the namespace
+				(default is 'window') in which this class is defined. You may
+				override the <c>NameSpace(s)</c> with the namespace property.
+				The <c>FunctionBody</c> may contain other <c>Comment-Tag</c>s,
+				which will inherit the <c>Class</c> name and <c>NameSpace(s)</c>
+				from the declaring class.
+			</para>
+
+			<para>
+				The <c>parent</c> attribute defines in which element the class is defined.
+				You can also specify the <c>[Class|NameSpace]</c> elements with the
+				parent attribute. With the <c>extends</c> attribute you may specify the
+				full qualified super class. The <c>implements</c> attribute contains a
+				coma separated list which specifies the implemented interfaces.
+			</para>
+
+			<para>
+				To define the class type, you can use the modifier attribute.
+
+				<list type="table">
+					<listheader>
+						<term>Modifier</term>
+						<description>Description</description>
+					</listheader>
+					<item>
+						<term>none</term>
+						<description>Specifies that the class contains a concret implementation.
+							This represents the default value.
+						</description>
+					</item>
+					<item>
+						<term>sealed</term>
+						<description>Specifies that you cannot derive from this class.</description>
+					</item>
+					<item>
+						<term>interface</term>
+						<description>Specifies that the class contains an interface implementation only.</description>
+					</item>
+					<item>
+						<term>abstract</term>
+						<description>Specifies that the class contains an abstract implementation.</description>
+					</item>
+				</list>
+			</para>
+
+			<para>
+				It's possible to use the default .NET framework comment
+				tags <code>&lt;c&gt; &lt;para&gt; &lt;paramref&gt; &lt;seealso&gt; &lt;see&gt; &lt;include&gt; &lt;list&gt;</code>
+				inside this tag.
+			</para>
+
+			<para>
+				JavaScript does not provide a constructor function. The class
+				definition represents the constructor and thus it's required to
+				declare the constructor parameters after the &lt;class&gt; tag.
+			</para>
+		</description>
+	</class>
+
+	<function>
+		<example>
+			<code>
+				/// &lt;function
+				///  accessor="public|protected|private"
+				///  modifier="none|static|abstract"
+				///  class="[string]"&gt;
+				///  ...comment goes here...
+				/// &lt;/function&gt;
+			</code>
+		</example>
+		<description>
+			Declares a function definition. The accessor property defines the
+			scope (default is public) in which the property is declared.
+			The javascript instructions after the function comment tag will be
+			parsed as follows:
+
+			<list type="bullet">
+				<item><description>function <c>[Name]</c>() { /*<c>[FunctionBody]</c>*/ };</description></item>
+				<item><description>var <c>[Name]</c> = <c>[FunctionDef]</c>;</description></item>
+				<item><description><c>[Class]</c>.<c>[Name]</c> = <c>[FunctionDef]</c>;</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.<c>[Name]</c> = <c>[FunctionDef]</c>;</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.prototype.<c>[Name]</c> = <c>[FunctionDef]</c>;</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.prototype.<c>[Class]</c>.prototype.<c>[Name]</c> = <c>[FunctionDef]</c>;</description></item>
+			</list>
+
+			<para>
+				Where <c>FunctionDef</c> may contain the following script values:
+
+				<list type="bullet">
+					<item><description>function() { /*<c>[FunctionBody]</c>*/ }</description></item>
+					<item><description>new Function("param1, param2, paramN", "/*...*/")</description></item>
+					<item><description>new Function(param1, param2, paramN, "/*...*/")</description></item>
+				</list>
+			</para>
+
+			<para>
+				Where <c>Name</c> stands for the function name,
+				<c>Class</c> for the name of the class (default is 'window')
+				which contains this function and <c>NameSpace</c> for the namespace
+				(default is 'Global') in which the class is defined. You may override the
+				<c>Class</c> (including the namespace) with the class
+				property.
+			</para>
+
+			<para>
+				You can specify the modifier of the function. Static
+				means that you can access the function without an instance
+				of a class. Default value is none.
+			</para>
+
+			<para>
+				It's possible to use the default .NET framework comment
+				tags <code>&lt;c&gt; &lt;para&gt; &lt;paramref&gt; &lt;seealso&gt; &lt;see&gt; &lt;include&gt; &lt;list&gt;</code>
+				inside this tag.
+			</para>
+		</description>
+	</function>
+
+	<variable>
+		<example>
+			<code>
+				/// &lt;variable
+				///  accessor="public|protected|private"
+				///  modifier="none|static|abstract"
+				///  type="[string]"
+				///  class="[string]"&gt;
+				///  ...comment goes here...
+				/// &lt;/variable&gt;
+			</code>
+		</example>
+		<description>
+			Declares a variable definition. The accessor property defines the
+			scope (default is public) in which the property is declared.
+			To specify the type of the variable you should set the type property.
+			Otherwise the default type <c>Object</c> is used. The javascript instructions
+			after the variable comment tag will be parsed as follows:
+
+			<list type="bullet">
+				<item><description>var <c>[Name]</c> = "Value";</description></item>
+				<item><description><c>[Class]</c>.<c>[Name]</c> = "Value";</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.<c>[Name]</c> = "Value";</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.prototype.<c>[Name]</c> = "Value";</description></item>
+				<item><description><c>[NameSpace(s)]</c>.<c>[Class]</c>.prototype.<c>[Class]</c>.prototype.<c>[Name]</c> = "Value";</description></item>
+			</list>
+
+			<para>
+				Where <c>Name</c> stands for the variable name,
+				<c>Class</c> for the name of the class (default is 'window')
+				which contains this variable and <c>NameSpace</c> for the namespace
+				(default is 'Global') in which the class is defined. You may
+				override the <c>Class</c> (including the namespace) with the class
+				property.
+			</para>
+
+			<para>
+				You can specify the modifier of the variable. Static
+				means that you can access the variable without an instance
+				of a class. Default value is instance.
+			</para>
+
+			<para>
+				It's possible to use the default .NET framework comment
+				tags <code>&lt;c&gt; &lt;para&gt; &lt;paramref&gt; &lt;seealso&gt; &lt;see&gt; &lt;include&gt; &lt;list&gt;</code>
+				inside this tag.
+			</para>
+		</description>
+	</variable>
+
+	<returns>
+		<example>
+			<code>
+				/// &lt;returns type="[string]"&gt;
+				///  ...comment goes here...
+				/// &lt;/returns&gt;
+			</code>
+		</example>
+		<description>
+			Specifies that a function returns a value. This tag
+			can be applied to the <c>function</c> tag only.
+
+			<para>
+				The type attribute specifies the full qualified type name, which
+				the descripted item returns (e.g. JSTools.Util.Guid).
+			</para>
+		</description>
+	</returns>
+
+	<param>
+		<example>
+			<code>
+				/// &lt;param name="[string]" type="[string]|params"&gt;
+				///  ...comment goes here...
+				/// &lt;/param&gt;
+   			</code>
+		</example>
+		<description>
+			Specifies that a function takes some arguments. You may define
+			multiple arguments for the same parameter name. This means that
+			the function is overloaded. If the type contains <c>params</c>,
+			the number of arguments is variant. This tag can be applied to
+			the following comment tags:
+
+			<para>
+				<list type="bullet">
+					<item><description><c>function</c></description></item>
+					<item><description><c>class</c></description></item>
+				</list>
+			</para>
+
+			<para>
+				The type attribute specifies the full qualified type, which
+				the descripted parameter expects (e.g. JSTools.Util.Guid).
+			</para>
+		</description>
+	</param>
+
+	<field>
+		<example>
+			<code>
+				/// &lt;field name="[string]"&gt;
+				///  ...comment goes here...
+				/// &lt;/field&gt;
+   			</code>
+		</example>
+		<description>
+			Specifies a enumeration field. This tag can be applied to
+			an <c>enum</c> comment tag only.
+		</description>
+	</field>
+
+	<example>
+		<example>
+			<code>
+				/// &lt;example&gt;
+				///  ...comment goes here...
+				/// &lt;/example&gt;
+   			</code>
+		</example>
+		<description>
+			This tag is used to mark the beginning of an example showing how to
+			use the item. This tag can be applied to the following comment tags:
+
+			<para>
+				<list type="bullet">
+					<item><description><c>function</c></description></item>
+					<item><description><c>class</c></description></item>
+					<item><description><c>enum</c></description></item>
+					<item><description><c>variable</c></description></item>
+				</list>
+			</para>
+		</description>
+	</example>
+
+	<remarks>
+		<example>
+			<code>
+				/// &lt;remarks&gt;
+				///  ...comment goes here...
+				/// &lt;/remakrs&gt;
+			</code>
+		</example>
+		<description>
+			This tag is used to describe the item. This tag can be applied to
+			the following comment tags:
+
+			<para>
+				<list type="bullet">
+					<item><description><c>function</c></description></item>
+					<item><description><c>class</c></description></item>
+					<item><description><c>enum</c></description></item>
+					<item><description><c>variable</c></description></item>
+				</list>
+			</para>
+		</description>
+	</remarks>
+
+	<exception>
+		<example>
+			<code>
+				/// &lt;exception cref="[string]"&gt;
+				///  ...comment goes here...
+				/// &lt;/exception&gt;
+			</code>
+		</example>
+		<description>
+			This tag is used to describe an error which is throw during calling
+			an item. The <c>cref</c>-tag describes the exception class name. This
+			tag can be applied to the following comment tags:
+
+			<para>
+				<list type="bullet">
+					<item><description><c>function</c></description></item>
+					<item><description><c>class</c></description></item>
+					<item><description><c>enum</c></description></item>
+					<item><description><c>variable</c></description></item>
+				</list>
+			</para>
+		</description>
+	</exception>
+</doc>

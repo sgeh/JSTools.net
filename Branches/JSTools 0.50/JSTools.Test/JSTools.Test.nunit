@@ -1,0 +1,9 @@
+﻿<NUnitProject>
+  <Settings activeconfig="Debug" />
+  <Config name="Debug" binpathtype="None">
+    <assembly path="bin\Debug\JSTools.Test.dll" />
+  </Config>
+  <Config name="Release" binpathtype="Auto">
+    <assembly path="bin\Release\JSTools.Test.dll" />
+  </Config>
+</NUnitProject>

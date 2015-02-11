@@ -1,0 +1,84 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSTools.Context", "JSTools.Context\JSTools.Context.csproj", "{4CE26B76-13C1-4633-B705-065DE7FFF2F8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSTools.JavaScript", "http://localhost/JSTools.JavaScript/JSTools.JavaScript.csproj", "{3C85A319-CED7-47EA-BA11-6143458A0566}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSTools.JavaScript.Test", "http://localhost/JSTools.JavaScript.Test/JSTools.JavaScript.Test.csproj", "{21B8E92D-CFC4-4EAC-8615-9057A8B0E593}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSTools.ScriptTypes", "JSTools.ScriptTypes\JSTools.ScriptTypes.csproj", "{06E2D003-00C7-4F4B-8C8B-A74C6F3854C8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSTools.Parser.Cruncher", "JSTools.Parser.Cruncher\JSTools.Parser.Cruncher.csproj", "{6C7E0971-A37B-4A3D-840C-FAF2EC98C6A8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSTools.Config", "JSTools.Config\JSTools.Config.csproj", "{11958A59-F7E5-4160-9E0D-863E3404265C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSTools.Web", "JSTools.Web\JSTools.Web.csproj", "{8EBBD23D-8C26-4587-8766-8B0BE9528B69}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSTools.Test", "JSTools.Test\JSTools.Test.csproj", "{142A2861-DA4F-4B94-BAEA-C8FB2C8AFCF0}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSTools.Parser", "JSTools.Parser\JSTools.Parser.csproj", "{33B8DB46-46ED-4973-8554-E61FA6E7AA3E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{4CE26B76-13C1-4633-B705-065DE7FFF2F8}.Debug.ActiveCfg = Debug|.NET
+		{4CE26B76-13C1-4633-B705-065DE7FFF2F8}.Debug.Build.0 = Debug|.NET
+		{4CE26B76-13C1-4633-B705-065DE7FFF2F8}.Release.ActiveCfg = Release|.NET
+		{4CE26B76-13C1-4633-B705-065DE7FFF2F8}.Release.Build.0 = Release|.NET
+		{3C85A319-CED7-47EA-BA11-6143458A0566}.Debug.ActiveCfg = Debug|.NET
+		{3C85A319-CED7-47EA-BA11-6143458A0566}.Release.ActiveCfg = Release|.NET
+		{3C85A319-CED7-47EA-BA11-6143458A0566}.Release.Build.0 = Release|.NET
+		{21B8E92D-CFC4-4EAC-8615-9057A8B0E593}.Debug.ActiveCfg = Debug|.NET
+		{21B8E92D-CFC4-4EAC-8615-9057A8B0E593}.Debug.Build.0 = Debug|.NET
+		{21B8E92D-CFC4-4EAC-8615-9057A8B0E593}.Release.ActiveCfg = Release|.NET
+		{21B8E92D-CFC4-4EAC-8615-9057A8B0E593}.Release.Build.0 = Release|.NET
+		{06E2D003-00C7-4F4B-8C8B-A74C6F3854C8}.Debug.ActiveCfg = Debug|.NET
+		{06E2D003-00C7-4F4B-8C8B-A74C6F3854C8}.Debug.Build.0 = Debug|.NET
+		{06E2D003-00C7-4F4B-8C8B-A74C6F3854C8}.Release.ActiveCfg = Release|.NET
+		{06E2D003-00C7-4F4B-8C8B-A74C6F3854C8}.Release.Build.0 = Release|.NET
+		{6C7E0971-A37B-4A3D-840C-FAF2EC98C6A8}.Debug.ActiveCfg = Debug|.NET
+		{6C7E0971-A37B-4A3D-840C-FAF2EC98C6A8}.Debug.Build.0 = Debug|.NET
+		{6C7E0971-A37B-4A3D-840C-FAF2EC98C6A8}.Release.ActiveCfg = Release|.NET
+		{6C7E0971-A37B-4A3D-840C-FAF2EC98C6A8}.Release.Build.0 = Release|.NET
+		{11958A59-F7E5-4160-9E0D-863E3404265C}.Debug.ActiveCfg = Debug|.NET
+		{11958A59-F7E5-4160-9E0D-863E3404265C}.Debug.Build.0 = Debug|.NET
+		{11958A59-F7E5-4160-9E0D-863E3404265C}.Release.ActiveCfg = Release|.NET
+		{11958A59-F7E5-4160-9E0D-863E3404265C}.Release.Build.0 = Release|.NET
+		{8EBBD23D-8C26-4587-8766-8B0BE9528B69}.Debug.ActiveCfg = Debug|.NET
+		{8EBBD23D-8C26-4587-8766-8B0BE9528B69}.Debug.Build.0 = Debug|.NET
+		{8EBBD23D-8C26-4587-8766-8B0BE9528B69}.Release.ActiveCfg = Release|.NET
+		{8EBBD23D-8C26-4587-8766-8B0BE9528B69}.Release.Build.0 = Release|.NET
+		{142A2861-DA4F-4B94-BAEA-C8FB2C8AFCF0}.Debug.ActiveCfg = Debug|.NET
+		{142A2861-DA4F-4B94-BAEA-C8FB2C8AFCF0}.Debug.Build.0 = Debug|.NET
+		{142A2861-DA4F-4B94-BAEA-C8FB2C8AFCF0}.Release.ActiveCfg = Release|.NET
+		{142A2861-DA4F-4B94-BAEA-C8FB2C8AFCF0}.Release.Build.0 = Release|.NET
+		{33B8DB46-46ED-4973-8554-E61FA6E7AA3E}.Debug.ActiveCfg = Debug|.NET
+		{33B8DB46-46ED-4973-8554-E61FA6E7AA3E}.Debug.Build.0 = Debug|.NET
+		{33B8DB46-46ED-4973-8554-E61FA6E7AA3E}.Release.ActiveCfg = Release|.NET
+		{33B8DB46-46ED-4973-8554-E61FA6E7AA3E}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
