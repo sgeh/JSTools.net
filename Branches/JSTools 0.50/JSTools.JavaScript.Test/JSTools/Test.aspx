@@ -2,7 +2,7 @@
 <%@ Page language="c#" Codebehind="Test.aspx.cs" AutoEventWireup="false" Inherits="JSTools.JavaScript.Test.Test" %>
 <%
 /*
- * JSTools.JavaScript.Test / JSTools.net - A huge JavaScript/C# framework.
+ * JSTools.JavaScript.Test / JSTools.net - A JavaScript/C# framework.
  * Copyright (C) 2005  Silvan Gehrig
  *
  * This library is free software; you can redistribute it and/or

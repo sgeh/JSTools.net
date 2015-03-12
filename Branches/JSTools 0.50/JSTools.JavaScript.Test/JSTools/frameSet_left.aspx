@@ -2,7 +2,7 @@
 <%@ Page language="c#" Codebehind="frameSet_left.aspx.cs" Trace="true" AutoEventWireup="false" Inherits="JSTools.JavaScript.Test.frameSet_left" %>
 <%
 /*
- * JSTools.JavaScript.Test / JSTools.net - A huge JavaScript/C# framework.
+ * JSTools.JavaScript.Test / JSTools.net - A JavaScript/C# framework.
  * Copyright (C) 2005  Silvan Gehrig
  *
  * This library is free software; you can redistribute it and/or
