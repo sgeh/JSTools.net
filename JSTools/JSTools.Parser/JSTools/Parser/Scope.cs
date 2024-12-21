@@ -31,22 +31,25 @@ namespace JSTools.Parser
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private string[]			_parseItems			= null;
-		private string				_name				= null;
-		private	TokenParser			_parent				= null;
+		private string[] _parseItems = null;
+		private string _name = null;
+		private TokenParser _parent = null;
 
-		private	IParseItem			_activeItem			= null;
-		private	INode				_activeValue		= null;
-		private	bool				_itemRequired		= true;
+		private IParseItem _activeItem = null;
+		private INode _activeValue = null;
+		private bool _itemRequired = true;
 
-		private	IParseItem			_defaultItem		= null;
-		private	INode				_defaultValue		= null;
+		private IParseItem _defaultItem = null;
+		private INode _defaultValue = null;
 
-		private	int					_lineOffsetBegin	= -1;
+		private int _lineOffsetBegin = -1;
 
-		private	int					_lineNumber			= -1;
-		private	int					_lineOffset			= -1;
+		private int _lineNumber = -1;
+		private int _lineOffset = -1;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Returns the parent token parser.
@@ -56,7 +59,6 @@ namespace JSTools.Parser
 			get { return _parent; }
 		}
 
-
 		/// <summary>
 		/// Returns the current line number.
 		/// </summary>
@@ -64,7 +66,6 @@ namespace JSTools.Parser
 		{
 			get { return _lineNumber; }
 		}
-
 
 		/// <summary>
 		/// Returns the current line offset.
@@ -74,7 +75,6 @@ namespace JSTools.Parser
 			get { return _lineOffset; }
 		}
 
-
 		/// <summary>
 		/// Returns the current line offset.
 		/// </summary>
@@ -82,7 +82,6 @@ namespace JSTools.Parser
 		{
 			get { return _lineOffsetBegin; }
 		}
-
 
 		/// <summary>
 		/// True if the a parse item is required. The parse method will throw an ParseItemException,
@@ -94,7 +93,6 @@ namespace JSTools.Parser
 			get { return _itemRequired; }
 			set { _itemRequired = value; }
 		}
-
 
 		/// <summary>
 		/// Gets/sets the default parse item. It will be used, if no other IParseItem instance is
@@ -123,7 +121,6 @@ namespace JSTools.Parser
 			}
 		}
 
-
 		/// <summary>
 		/// Returns the name of this scope.
 		/// </summary>
@@ -132,7 +129,6 @@ namespace JSTools.Parser
 			get { return _name; }
 		}
 
-
 		/// <summary>
 		/// Returns the item, which is currently active.
 		/// </summary>
@@ -140,7 +136,6 @@ namespace JSTools.Parser
 		{
 			get { return _activeItem; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -157,7 +152,7 @@ namespace JSTools.Parser
 		/// <exception cref="ArgumentNullException">The given parent object contains a null reference.</exception>
 		public Scope(string name, string[] items, TokenParser parent)
 		{
-			if (name == null || name == string.Empty)
+			if (name == null || name.Length == 0)
 				throw new ArgumentException("Invalid name specified!", "parseItems");
 
 			if (items == null)
@@ -171,6 +166,9 @@ namespace JSTools.Parser
 			_name = name;
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -213,7 +211,6 @@ namespace JSTools.Parser
 			ParseEnd(toParse.Length);
 		}
 
-
 		/// <summary>
 		/// Controls the line break and line offset.
 		/// </summary>
@@ -228,7 +225,6 @@ namespace JSTools.Parser
 				_lineOffset = 0;
 			}
 		}
-
 
 		/// <summary>
 		/// Parses the specified index.
@@ -253,7 +249,6 @@ namespace JSTools.Parser
 				CheckForActiveItem(parent, toParse, index);
 			}
 		}
-
 
 		/// <summary>
 		/// Checks, if the active node ends, and returns true, if the end
@@ -297,7 +292,6 @@ namespace JSTools.Parser
 			}
 		}
 
-
 		/// <summary>
 		/// Terminates the last active node.
 		/// </summary>
@@ -315,7 +309,6 @@ namespace JSTools.Parser
 				_defaultValue = null;
 			}
 		}
-
 
 		/// <summary>
 		/// Checks, if the given pointer represents a parse item.
@@ -349,7 +342,6 @@ namespace JSTools.Parser
 			ManageDefaultValue(parent, toParse, index);
 		}
 
-
 		/// <summary>
 		/// Manages the default value, if there is no appropriated IParseItem.
 		/// </summary>
@@ -364,7 +356,7 @@ namespace JSTools.Parser
 					"The given toke can not be parsed, there is no appropriated IParseItem specified.",
 					_lineNumber,
 					_lineOffset,
-					String.Empty);
+					string.Empty);
 
 			// if the default item can be used, we have to create a new default value,
 			// if there is no active default value instance
@@ -380,7 +372,6 @@ namespace JSTools.Parser
 				}
 			}
 		}
-
 
 		/// <summary>
 		/// Creates a new node with the given parse item.

@@ -1,18 +1,18 @@
 function FormValidator(objForm)
 {
-	var _errorSummary	= false;
-	var _showMessageBox	= false;
-	var _showError		= true;
-	var _errorTitle		= "";
-	var _errorLayer		= null;
+	var _errorSummary = false;
+	var _showMessageBox = false;
+	var _showError = true;
+	var _errorTitle = "";
+	var _errorLayer = null;
 
-	var _formIsValid	= false;
-	var _formObject		= objForm;
-	var _formElements	= new Array();
-	var _errorMessage	= "";
+	var _formIsValid = false;
+	var _formObject = objForm;
+	var _formElements = new Array();
+	var _errorMessage = "";
 
-	this.SubmitEvent	= new SubmitHandler(objForm, this);
-	objForm.onsubmit	= this.SubmitEvent.OrderSubmit;
+	this.SubmitEvent = new SubmitHandler(objForm, this);
+	objForm.onsubmit = this.SubmitEvent.OrderSubmit;
 
 
 	// an error message box appears, if blnAlert is true
@@ -183,8 +183,8 @@ function FormValidator(objForm)
 	// starts the validation of the controls
 	this.ValidateControls = function()
 	{
-		_formIsValid	= true;
-		_errorMessage	= "";
+		_formIsValid = true;
+		_errorMessage = "";
 
 		for(var i = 0; i < _formElements.length && (_formIsValid || _errorSummary); ++i)
 		{
@@ -329,9 +329,9 @@ function FormValidator(objForm)
 	// private submit event handler class
 	function SubmitHandler(objFormField, objValidator)
 	{
-		var _formObject			= objFormField;
-		var _formValidator		= objValidator;
-		var _submitContainer	= new Array();
+		var _formObject = objFormField;
+		var _formValidator = objValidator;
+		var _submitContainer = new Array();
 
 
 		// adds an event to the _submitContainer

@@ -14,17 +14,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Xml;
-
 
 namespace JSTools.Xml
 {
@@ -48,7 +39,6 @@ namespace JSTools.Xml
 			return (GetValueFromNode(boolValue) != null && GetValueFromNode(boolValue).ToLower() == bool.TrueString.ToLower());
 		}
 
-
 		/// <summary>
 		/// Returns the attribute value of the specified XmlNode.
 		/// </summary>
@@ -65,7 +55,6 @@ namespace JSTools.Xml
 			return string.Empty;
 		}
 
-
 		/// <summary>
 		/// Returns the value of the specified node.
 		/// </summary>
@@ -81,7 +70,6 @@ namespace JSTools.Xml
 			return string.Empty;
 		}
 
-
 		/// <summary>
 		/// Creates a new attribute with the specified name and value. Appends it to the given
 		/// XmlNode.
@@ -93,17 +81,13 @@ namespace JSTools.Xml
 		public static void AppendAttributeToNode(XmlNode node, string attributeName, string attributeValue)
 		{
 			if (node == null)
-			{
-				throw new ArgumentNullException("node", "The specified node contains a null reference!");
-			}
+				throw new ArgumentNullException("node", "The specified node contains a null reference.");
+
 			if (node == null)
-			{
-				throw new ArgumentNullException("attributeName", "The specified attribute name contains a null reference!");
-			}
+				throw new ArgumentNullException("attributeName", "The specified attribute name contains a null reference.");
+
 			if (node == null)
-			{
-				throw new ArgumentNullException("attributeValue", "The specified attribute value a null reference!");
-			}
+				throw new ArgumentNullException("attributeValue", "The specified attribute value a null reference.");
 
 			XmlAttribute attribToAppend = node.OwnerDocument.CreateAttribute(attributeName);
 			attribToAppend.Value = attributeValue;

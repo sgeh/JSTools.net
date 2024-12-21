@@ -7,14 +7,14 @@ function LayerContainer()
 	}
 
 
-	var _this				= this;
-	var _layerNames			= new Array();
-	var _sortedLayerNames	= new Array();
-	var _layerEventHandler	= new LayerEvents(this);
+	var _this = this;
+	var _layerNames = new Array();
+	var _sortedLayerNames = new Array();
+	var _layerEventHandler = new LayerEvents(this);
 
 
 	// contains debug information for programmers
-	this.Debug				= false;
+	this.Debug = false;
 
 	// returns an array which contains all layer names
 	this.GetLayerNames = function()
@@ -31,8 +31,8 @@ function LayerContainer()
 
 		if (!_layerNames.Contains(newLayerId))
 		{
-			var containerLength		= _layerNames.length;
-			_this[containerLength]	= _this[ToString(newLayerId).ToEnumerable()] = new LayerHandler(newLayerId, containerLength, strCssClass);
+			var containerLength = _layerNames.length;
+			_this[containerLength] = _this[ToString(newLayerId).ToEnumerable()] = new LayerHandler(newLayerId, containerLength, strCssClass);
 
 			return ConstructLayer(containerLength, newLayerId);
 		}

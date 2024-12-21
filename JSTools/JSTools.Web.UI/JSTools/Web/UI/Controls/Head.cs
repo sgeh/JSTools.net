@@ -36,7 +36,6 @@ namespace JSTools.Web.UI.Controls
 		private	const string	TAG_NAME	= "head";
 		private Hashtable _headerScripts	= new Hashtable();
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -47,7 +46,6 @@ namespace JSTools.Web.UI.Controls
 		public Head()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -72,7 +70,6 @@ namespace JSTools.Web.UI.Controls
 			_headerScripts.Add(key, script);
 		}
 
-
 		/// <summary>
 		/// Adds a new script section to the header. The script tags will be filled in
 		/// automatically.
@@ -87,9 +84,8 @@ namespace JSTools.Web.UI.Controls
 			return (string)_headerScripts[key];
 		}
 
-
 		/// <summary>
-		/// <see cref="System.Web.UI.Page.Render"/>
+		/// <see cref="System.Web.UI.Page.Render" />
 		/// </summary>
 		/// <param name="output"></param>
 		protected override void Render(HtmlTextWriter output)

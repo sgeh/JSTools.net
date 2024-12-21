@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.1</since>
-/// </file>
-
 using System;
 using System.Collections;
 using System.Text;
@@ -40,8 +32,11 @@ namespace JSTools.Config.ScriptFileManagement
 		// Declarations
 		//--------------------------------------------------------------------
 
-		protected ArrayList _childModules = null;
+		private ArrayList _childModules = null;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Gets a value indicating whether access to the ICollection is synchronized.
@@ -51,7 +46,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return _childModules.IsSynchronized; }
 		}
 
-
 		/// <summary>
 		/// Gets an object that can be used to synchronize access to the ICollection.
 		/// </summary>
@@ -59,7 +53,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _childModules.SyncRoot; }
 		}
-
 
 		/// <summary>
 		/// Gets the module at the specified index.
@@ -77,7 +70,6 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 		}
 
-
 		
 		/// <summary>
 		/// Gets the module with the specified name. The module with the specified name will be replaced
@@ -89,12 +81,11 @@ namespace JSTools.Config.ScriptFileManagement
 			get
 			{
 				if (moduleName == null)
-					throw new ArgumentNullException("moduleName", "The specified module name contains a null reference!");
+					throw new ArgumentNullException("moduleName", "The specified module name contains a null reference.");
 
 				return Contains(moduleName) ? this[IndexOf(moduleName)] : null;
 			}
 		}
-
 
 		/// <summary>
 		/// Returns the count of modules.
@@ -103,7 +94,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _childModules.Count; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -117,7 +107,7 @@ namespace JSTools.Config.ScriptFileManagement
 		internal JSModuleContainer(JSModule[] childModules)
 		{
 			if (childModules == null)
-				throw new ArgumentNullException("childModules", "The given array contains a null reference!");
+				throw new ArgumentNullException("childModules", "The given array contains a null reference.");
 
 			_childModules = new ArrayList(childModules.Length);
 
@@ -127,6 +117,9 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -141,7 +134,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return _childModules.GetEnumerator();
 		}
 
-
 		/// <summary>
 		/// Copies the elements of this collection into the specified destination collection.
 		/// </summary>
@@ -153,17 +145,16 @@ namespace JSTools.Config.ScriptFileManagement
 		public void CopyTo(Array destination, int index)
 		{
 			if (destination == null)
-				throw new ArgumentNullException("destination", "Destination is a null reference!");
+				throw new ArgumentNullException("destination", "Destination is a null reference.");
 
 			if (destination.IsReadOnly)
-				throw new ArgumentException("The specified destination list is null or read only!", "destination");
+				throw new ArgumentException("The specified destination list is null or read only.", "destination");
 
 			if (!IsValidIndex(index))
-				throw new ArgumentOutOfRangeException("index", "The index is less than zero or equal or higher than the module count!");
+				throw new ArgumentOutOfRangeException("index", "The index is less than zero or equal or higher than the module count.");
 
 			_childModules.CopyTo(destination, index);
 		}
-
 
 		/// <summary>
 		/// Checks if the specified module is contained in this collection.
@@ -174,11 +165,10 @@ namespace JSTools.Config.ScriptFileManagement
 		public bool Contains(JSModule module)
 		{
 			if (module == null)
-				throw new ArgumentNullException("module", "The specified module contains a null reference!");
+				throw new ArgumentNullException("module", "The specified module contains a null reference.");
 
 			return (IndexOf(module) != -1);
 		}
-
 
 		/// <summary>
 		/// Checks if the specified module is contained in this collection.
@@ -189,11 +179,10 @@ namespace JSTools.Config.ScriptFileManagement
 		public bool Contains(string moduleName)
 		{
 			if (moduleName == null)
-				throw new ArgumentNullException("moduleName", "The specified module name contains a null reference!");
+				throw new ArgumentNullException("moduleName", "The specified module name contains a null reference.");
 
 			return (IndexOf(moduleName) != -1);
 		}
-
 
 		/// <summary>
 		/// Determines the index of a specific item in this collection. Returns -1 if nothing was found.
@@ -204,7 +193,7 @@ namespace JSTools.Config.ScriptFileManagement
 		public int IndexOf(JSModule module)
 		{
 			if (module == null)
-				throw new ArgumentNullException("module", "The specified module contains a null reference!");
+				throw new ArgumentNullException("module", "The specified module contains a null reference.");
 
 			int index = Count - 1;
 
@@ -213,7 +202,6 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 			return index;
 		}
-
 
 		/// <summary>
 		/// Determines the index of a specific item in this collection.
@@ -224,7 +212,7 @@ namespace JSTools.Config.ScriptFileManagement
 		public int IndexOf(string moduleName)
 		{
 			if (moduleName == null)
-				throw new ArgumentNullException("moduleName", "The specified module name contains a null reference!");
+				throw new ArgumentNullException("moduleName", "The specified module name contains a null reference.");
 
 			int index = Count - 1;
 
@@ -233,7 +221,6 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 			return index;
 		}
-
 
 		/// <summary>
 		/// Checks the given index for validity.

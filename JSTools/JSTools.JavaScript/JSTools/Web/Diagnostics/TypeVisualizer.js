@@ -1,18 +1,18 @@
 function ReflectionGenerator(objObject)
 {
-	var _tableGenerator	= new HtmlTableGenerator();
-	var _allOperations	= new Array();
-	var _allProperties	= new Array();
+	var _tableGenerator = new HtmlTableGenerator();
+	var _allOperations = new Array();
+	var _allProperties = new Array();
 
-	var _refObject		= objObject;
-	var _itemIndex		= 0;
-	var _debugWindow	= null;
+	var _refObject = objObject;
+	var _itemIndex = 0;
+	var _debugWindow = null;
 
 	//style definition
-	var _styles						= new ConsoleStyle();
-	_styles.WindowTitle				= "Reflection Window";
-	_styles.WindowOptions.Width		= 600;
-	_styles.WindowOptions.Height	= 400;
+	var _styles = new ConsoleStyle();
+	_styles.WindowTitle = "Reflection Window";
+	_styles.WindowOptions.Width = 600;
+	_styles.WindowOptions.Height = 400;
 
 
 
@@ -147,7 +147,7 @@ function ReflectionGenerator(objObject)
 	// creates the title row of the table
 	function CreateOperationTitleRow()
 	{
-		var titleRow	= _tableGenerator.CreateRow();
+		var titleRow = _tableGenerator.CreateRow();
 
 		with (titleRow.CreateColumn())
 		{
@@ -223,8 +223,8 @@ function ReflectionGenerator(objObject)
 
 		for(var i = 0; i < _allProperties.length; ++i)
 		{
-			var contentRow	= _tableGenerator.CreateRow();
-			var bgColor		= GetTableColor(i);
+			var contentRow = _tableGenerator.CreateRow();
+			var bgColor = GetTableColor(i);
 
 			with (contentRow.CreateColumn())
 			{

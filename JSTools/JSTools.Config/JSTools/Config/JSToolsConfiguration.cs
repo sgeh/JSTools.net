@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Collections;
 using System.Configuration;
@@ -46,22 +38,32 @@ namespace JSTools.Config
 		// Declarations
 		//--------------------------------------------------------------------
 
-		public	const	string							COMMENT_BEGIN			= "<!--";
-		public	const	string							COMMENT_END				= "-->";
-		public	const	string							CONFIG_NODE_NAME		= "configuration";
+		/// <summary>
+		/// Gets the begin tag of an HTML comment.
+		/// </summary>
+		public const string COMMENT_BEGIN = "<!--";
 
-		private	const	string							TYPE_ATTRIB				= "type";
-		private	const	string							SCRIPTS_NODE			= "scripts";
+		/// <summary>
+		/// Gets the end tag of an HTML comment.
+		/// </summary>
+		public const string COMMENT_END = "-->";
 
-		private	const	string							SECTION_COMMENT_BEGIN	= "\n" + COMMENT_BEGIN + " SECTION {0} BEGIN " + COMMENT_END + "\n\n";
-		private	const	string							SECTION_COMMENT_END		= "\n" + COMMENT_BEGIN + " SECTION {0} END " + COMMENT_END + " \n\n";
+		private const string CONFIG_NODE_NAME = "configuration";
+		private const string TYPE_ATTRIB = "type";
+		private const string SCRIPTS_NODE = "scripts";
 
-		private			JSScriptFileHandler				_scriptFileHandler		= null;
-		private			Hashtable						_configSections			= new Hashtable();
+		private const string SECTION_COMMENT_BEGIN = "\n" + COMMENT_BEGIN + " SECTION {0} BEGIN " + COMMENT_END + "\n\n";
+		private const string SECTION_COMMENT_END = "\n" + COMMENT_BEGIN + " SECTION {0} END " + COMMENT_END + " \n\n";
 
-		private			XmlDocument						_configDocument			= new XmlDocument();
-		private			bool							_configInitialized		= false;
+		private JSScriptFileHandler _scriptFileHandler = null;
+		private Hashtable _configSections = new Hashtable();
 
+		private XmlDocument _configDocument = new XmlDocument();
+		private bool _configInitialized = false;
+
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Returns the name of the representing element.
@@ -71,7 +73,6 @@ namespace JSTools.Config
 			get { return CONFIG_NODE_NAME; }
 		}
 
-
 		/// <summary>
 		/// Returns true, if the internal XmlDocument is initialized.
 		/// </summary>
@@ -80,7 +81,6 @@ namespace JSTools.Config
 			get { return _configInitialized; }
 		}
 
-
 		/// <summary>
 		/// Gets the script file handler, which handles using of the debug and release scripts.
 		/// </summary>
@@ -88,7 +88,6 @@ namespace JSTools.Config
 		{
 			get { return _scriptFileHandler; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -101,7 +100,6 @@ namespace JSTools.Config
 		{
 		}
 
-
 		/// <summary>
 		/// Initializes a new JavaScript configuration handler instance.
 		/// </summary>
@@ -112,11 +110,10 @@ namespace JSTools.Config
 		public JSToolsConfiguration(XmlDocument configDocument)
 		{
 			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given XmlDocument contains a null reference!");
+				throw new ArgumentNullException("configDocument", "The given XmlDocument contains a null reference.");
 
 			LoadXml(configDocument);
 		}
-
 
 		/// <summary>
 		/// Initializes a new JavaScript configuration handler instance.
@@ -128,7 +125,7 @@ namespace JSTools.Config
 		public JSToolsConfiguration(string configFilePath)
 		{
 			if (configFilePath == null)
-				throw new ArgumentNullException("configFilePath", "The given configuration contains a null reference!");
+				throw new ArgumentNullException("configFilePath", "The given configuration contains a null reference.");
 
 			try
 			{
@@ -141,6 +138,9 @@ namespace JSTools.Config
 			InitConfiguration();
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -157,17 +157,17 @@ namespace JSTools.Config
 		public void Render(RenderProcessTicket renderContext)
 		{
 			if (!IsXmlDocumentInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument is not specified!");
+				throw new InvalidOperationException("The configuration XmlDocument is not specified.");
 
 			if (renderContext == null)
-				throw new ArgumentNullException("renderContext", "The given RenderProcessTicket object contains a null reference!");
+				throw new ArgumentNullException("renderContext", "The given RenderProcessTicket object contains a null reference.");
 
-			foreach (IJSToolsRenderHandler renderHandler in renderContext.GetRenderHandlers())
+			foreach (IJSToolsRenderHandler renderHandler in renderContext)
 			{
 				AJSToolsSection section = GetConfig(renderHandler.SectionName);
 
 				if (section == null)
-					throw new ConfigurationException("A section with the specified name '" + renderHandler.SectionName + "' does not exist!");
+					throw new ConfigurationException("A section with the specified name '" + renderHandler.SectionName + "' does not exist.");
 
 				try
 				{
@@ -175,11 +175,10 @@ namespace JSTools.Config
 				}
 				catch (Exception e)
 				{
-					throw new ConfigurationException("Could not render configuration section '" + renderHandler.SectionName + "'! Error description: " + e.Message, e);
+					throw new ConfigurationException("Could not render configuration section '" + renderHandler.SectionName + "'. Error description: " + e.Message, e);
 				}
 			}
 		}
-
 
 		/// <summary>
 		/// Returns the requested configuration section, specified in the JSTools configuration file.
@@ -191,7 +190,7 @@ namespace JSTools.Config
 		public AJSToolsSection GetConfig(string configNodeName)
 		{
 			if (configNodeName == null)
-				throw new ArgumentNullException("configNodeName", "The specified name contains a null reference!");
+				throw new ArgumentNullException("configNodeName", "The specified name contains a null reference.");
 
 			if (_configSections.Contains(configNodeName))
 			{
@@ -199,7 +198,6 @@ namespace JSTools.Config
 			}
 			return null;
 		}
-
 
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
@@ -211,10 +209,10 @@ namespace JSTools.Config
 		public void LoadXml(XmlDocument configDocument)
 		{
 			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference!");
+				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
 
 			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified!");
+				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
 
 			// import nodes
 			foreach (XmlNode node in configDocument.ChildNodes)
@@ -224,7 +222,6 @@ namespace JSTools.Config
 			}
 			InitConfiguration();
 		}
-
 
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
@@ -237,15 +234,14 @@ namespace JSTools.Config
 		public void LoadXml(string configDocument)
 		{
 			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference!");
+				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
 
 			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified!");
+				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
 
 			_configDocument.Load(configDocument);
 			InitConfiguration();
 		}
-
 
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
@@ -258,15 +254,14 @@ namespace JSTools.Config
 		public void LoadXml(Stream configDocument)
 		{
 			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference!");
+				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
 
 			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified!");
+				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
 
 			_configDocument.Load(configDocument);
 			InitConfiguration();
 		}
-
 
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
@@ -279,15 +274,14 @@ namespace JSTools.Config
 		public void LoadXml(XmlReader configDocument)
 		{
 			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference!");
+				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
 
 			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified!");
+				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
 
 			_configDocument.Load(configDocument);
 			InitConfiguration();
 		}
-
 
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
@@ -300,15 +294,14 @@ namespace JSTools.Config
 		public void LoadXml(TextReader configDocument)
 		{
 			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference!");
+				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
 
 			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified!");
+				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
 
 			_configDocument.Load(configDocument);
 			InitConfiguration();
 		}
-
 
 		/// <summary>
 		/// Initializes the values of this configuration object.
@@ -322,7 +315,7 @@ namespace JSTools.Config
 			{
 				if (configNode.Attributes[TYPE_ATTRIB] == null)
 				{
-					throw new ConfigurationException("Could not identify the 'type' attribute of the configuration node '" + configNode.Name + "'!", configNode);
+					throw new ConfigurationException("Could not identify the 'type' attribute of the configuration node '" + configNode.Name + "'.", configNode);
 				}
 				InitNodeAndCheckForExceptions(configNode);
 			}
@@ -331,7 +324,6 @@ namespace JSTools.Config
 			InitRelations();
 			_configInitialized = true;
 		}
-
 
 		/// <summary>
 		/// Call CheckRelations procedure to initialize relations between the sections.
@@ -343,7 +335,6 @@ namespace JSTools.Config
 				((AJSToolsSection)entry.Value).CheckRelations();
 			}
 		}
-
 
 		/// <summary>
 		/// Initializes the script handler configuration section as first.
@@ -357,7 +348,6 @@ namespace JSTools.Config
 				InitNodeAndCheckForExceptions(scriptNode);
 			}
 		}
-
 
 		/// <summary>
 		/// Creates a new section instance and casts all exceptions into a ConfigurationException.
@@ -375,7 +365,6 @@ namespace JSTools.Config
 			}
 		}
 
-
 		/// <summary>
 		/// Initilizes the type specified in the "type" attribute of the given node and adds it to the
 		/// _configSections Hashtable.
@@ -384,19 +373,18 @@ namespace JSTools.Config
 		private void InitNodeType(XmlNode configNode)
 		{
 			if (_configSections.Contains(configNode.Name))
-				throw new InvalidOperationException("A configuration section with the name '" + configNode.Name + "' already exists!");
+				throw new InvalidOperationException("A configuration section with the name '" + configNode.Name + "' already exists.");
 
 			AJSToolsConfigSectionHandlerFactory handlerInstance = GetInstanceOfType(configNode.Attributes[TYPE_ATTRIB].Value);
 
 			if (handlerInstance == null)
-				throw new InvalidOperationException("The specified type is not derived from AJSToolsConfigSectionHandler!");
+				throw new InvalidOperationException("The specified type is not derived from AJSToolsConfigSectionHandler.");
 
 			if (configNode.Name != handlerInstance.SectionName)
-				throw new InvalidOperationException("The given node has not the same section name as specified in the configuration section handler!");
+				throw new InvalidOperationException("The given node has not the same section name as specified in the configuration section handler.");
 
 			_configSections.Add(configNode.Name, handlerInstance.CreateInstance(configNode, this));
 		}
-
 
 		/// <summary>
 		/// Initilizes the default configuration sections.
@@ -407,10 +395,9 @@ namespace JSTools.Config
 
 			if (_scriptFileHandler == null)
 			{
-				throw new ConfigurationException("The configuration file does not contain a '" + SCRIPTS_NODE + "' section!");
+				throw new ConfigurationException("The configuration file does not contain a '" + SCRIPTS_NODE + "' section.");
 			}
 		}
-
 
 		/// <summary>
 		/// Creates an instance from the given type and assembly name.
@@ -426,11 +413,10 @@ namespace JSTools.Config
 
 			if (type == null)
 			{
-				throw new NullReferenceException("The given node contains an invalid type definition!");
+				throw new NullReferenceException("The given node contains an invalid type definition.");
 			}
 			return CreateInstanceOfType(assembly, type);
 		}
-
 
 		/// <summary>
 		/// Creates an instance of the specified type.
@@ -449,7 +435,6 @@ namespace JSTools.Config
 				return (Activator.CreateInstance(Assembly.GetExecutingAssembly().FullName, type).Unwrap() as AJSToolsConfigSectionHandlerFactory);
 			}
 		}
-
 
 		/// <summary>
 		/// Returns the value of the given index form the specified array. If an error occurs

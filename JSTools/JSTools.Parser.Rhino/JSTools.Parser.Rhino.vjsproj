@@ -1,80 +1,166 @@
-<Project MSBuildVersion="1.2" DefaultTargets="Build">
-  <PropertyGroup>
-    <Property ProjectType="Local" />
-    <Property ProductVersion="8.0.30703" />
-    <Property SchemaVersion="2.0" />
-    <Property ProjectGuid="{AF47DB5B-03FE-417F-881E-11D9A6C8ECF4}" />
-    <Property Configuration="Debug" Condition=" '$(Configuration)' == '' " />
-    <Property AssemblyKeyContainerName="" />
-    <Property AssemblyName="JSTools.Parser.Rhino" />
-    <Property AssemblyOriginatorKeyFile="" />
-    <Property DefaultClientScript="JScript" />
-    <Property DefaultHTMLPageLayout="Grid" />
-    <Property DefaultTargetSchema="IE50" />
-    <Property OutputType="Library" />
-    <Property RootNamespace="JSTools.Parser.Rhino" />
-    <Property StartupObject="" />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <Property OutputPath="bin\Debug\" />
-    <Property BaseAddress="285212672" />
-    <Property ConfigurationOverrideFile="" />
-    <Property DefineConstants="DEBUG;TRACE" />
-    <Property DebugSymbols="true" />
-    <Property Optimize="false" />
-    <Property RegisterForComInterop="false" />
-    <Property TreatWarningsAsErrors="false" />
-    <Property WarningLevel="4" />
-    <Property AdditionalOptions="" />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <Property OutputPath="bin\Release\" />
-    <Property BaseAddress="285212672" />
-    <Property ConfigurationOverrideFile="" />
-    <Property DefineConstants="TRACE" />
-    <Property DebugSymbols="false" />
-    <Property Optimize="true" />
-    <Property RegisterForComInterop="false" />
-    <Property TreatWarningsAsErrors="false" />
-    <Property WarningLevel="4" />
-    <Property AdditionalOptions="" />
-  </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\VISUALJSHARP.Targets" />
-  <PropertyGroup>
-    <Property PreBuildEvent="" />
-    <Property PostBuildEvent="" />
-    <Property SecureScoping="On" />
-  </PropertyGroup>
-  <ItemGroup>
-    <Item Type="Reference" Include="vjslib" HintPath="C:\WINDOWS\Microsoft Visual JSharp .NET\Framework\v1.0.4205\vjslib.dll" Name="vjslib" />
-    <Item Type="Reference" Include="System" HintPath="C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll" Name="System" />
-    <Item Type="Reference" Include="System.Xml" HintPath="C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll" Name="System.XML" />
-    <Item Type="Reference" Include="System.Data" HintPath="C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll" Name="System.Data" />
-  </ItemGroup>
-  <ItemGroup>
-    <Item Type="Compile" Include="AssemblyInfo.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\BinaryDigitReader.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\Context.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\DToA.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\EvaluatorException.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\EvaluatorWarning.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\FunctionNode.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\IRFactory.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\JavaScriptException.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\LineBuffer.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\Node.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\Parser.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\ScriptRuntime.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\TokenStream.jsl" SubType="Code" />
-    <Item Type="Compile" Include="JSTools\Parser\Rhino\UIntMap.jsl" SubType="Code" />
-    <Item Type="EmbeddedResource" Include="Resources\Messages.resx" CustomToolNamespace="JSTools.Parser.Rhino" />
-  </ItemGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <CommonProperties>
-        <FL_E6FDF86B_F3D1_11D4_8576_0002A516ECE8 />
-      </CommonProperties>
-      <UserProperties />
-    </VisualStudio>
-  </ProjectExtensions>
-</Project>
+<VisualStudioProject>
+    <VISUALJSHARP
+        ProjectType = "Local"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
+        ProjectGuid = "{AF47DB5B-03FE-417F-881E-11D9A6C8ECF4}"
+    >
+        <Build>
+            <Settings
+                AssemblyKeyContainerName = ""
+                AssemblyName = "JSTools.Parser.Rhino"
+                AssemblyOriginatorKeyFile = ""
+                DefaultClientScript = "JScript"
+                DefaultHTMLPageLayout = "Grid"
+                DefaultTargetSchema = "IE50"
+                OutputType = "Library"
+                PreBuildEvent = ""
+                PostBuildEvent = ""
+                RootNamespace = "JSTools.Parser.Rhino"
+                RunPostBuildEvent = "OnBuildSuccess"
+                StartupObject = ""
+            >
+                <Config
+                    Name = "Debug"
+                    BaseAddress = "285212672"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "DEBUG;TRACE"
+                    DebugSymbols = "true"
+                    NoWarn = ""
+                    Optimize = "false"
+                    OutputPath = "bin\Debug\"
+                    RegisterForComInterop = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                    AdditionalOptions = ""
+                />
+                <Config
+                    Name = "Release"
+                    BaseAddress = "285212672"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "TRACE"
+                    DebugSymbols = "false"
+                    NoWarn = ""
+                    Optimize = "true"
+                    OutputPath = "bin\Release\"
+                    RegisterForComInterop = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                    AdditionalOptions = ""
+                />
+            </Settings>
+            <References>
+                <Reference
+                    Name = "vjslib"
+                    AssemblyName = "vjslib"
+                    HintPath = "C:\WINDOWS\Microsoft Visual JSharp .NET\Framework\v1.0.4205\vjslib.dll"
+                />
+                <Reference
+                    Name = "System"
+                    AssemblyName = "System"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll"
+                />
+                <Reference
+                    Name = "System.XML"
+                    AssemblyName = "System.Xml"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
+                />
+                <Reference
+                    Name = "System.Data"
+                    AssemblyName = "System.Data"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll"
+                />
+            </References>
+        </Build>
+        <Files>
+            <Include>
+                <File
+                    RelPath = "AssemblyInfo.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\BinaryDigitReader.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\Context.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\Decompiler.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\EvaluatorException.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\EvaluatorWarning.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\FunctionNode.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\FunctionTree.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\IRFactory.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\JavaScriptException.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\LineBuffer.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\Node.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\Parser.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\ScriptRuntime.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\TokenStream.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Rhino\UIntMap.jsl"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Resources\Messages.resx"
+                    BuildAction = "EmbeddedResource"
+                    CustomToolNamespace = "JSTools.Parser.Rhino"
+                />
+            </Include>
+        </Files>
+    </VISUALJSHARP>
+</VisualStudioProject>
+

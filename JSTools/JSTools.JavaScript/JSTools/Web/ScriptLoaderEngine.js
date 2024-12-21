@@ -12,6 +12,11 @@ JSTools.Web.ScriptLoaderEngine = function()
 
 	this.InitType(arguments, "JSTools.Web.ScriptLoaderEngine");
 
+	var SCRIPT_TAG_NAME = "script";
+	var LANGUAGE_ATTRIB = "language";
+	var TYPE_ATTRIB = "type";
+	var SOURCE_ATTRIB = "src";
+
 	var _this = this;
 
 
@@ -61,7 +66,7 @@ JSTools.Web.ScriptLoaderEngine = function()
 	/// be written into the document.
 	/// </method>
 	/// <param name="strFileLocation" type="String">The script file source (e.g. "/JSTools/Web.js").</param>
-	this.LoadFile = function(strFileLocation)
+	function LoadFile(strFileLocation)
 	{
 		if (typeof(strFileLocation) != 'string' || strFileLocation == String.Empty)
 			return;
@@ -87,6 +92,7 @@ JSTools.Web.ScriptLoaderEngine = function()
 			WriteScriptTag(strFileLocation);
 		}
 	}
+	this.LoadFile = LoadFile;
 	
 	
 	/// <method>
@@ -96,12 +102,13 @@ JSTools.Web.ScriptLoaderEngine = function()
 	function WriteScriptTag(strLocation)
 	{
 		var scriptVersion = (_this.ScriptVersion) ? _this.ScriptVersion : String.Empty;
+		var scriptElement = new JSTools.Web.Element(SCRIPT_TAG_NAME);
 
-		window.document.write('<SCRIPT LANGUAGE="'
-			+ _this.ScriptLanguage + scriptVersion
-			+ '" TYPE="text/' + String(_this.ScriptLanguage).toLowerCase()
-			+ '" SRC="' + strLocation
-			+ '"><\/SCRIPT>');
+		scriptElement.RenderEndTag = true;
+		scriptElement.GetAttributes().Add(LANGUAGE_ATTRIB, _this.ScriptLanguage + scriptVersion);
+		scriptElement.GetAttributes().Add(TYPE_ATTRIB, "text/" + String(_this.ScriptLanguage).toLowerCase());
+		scriptElement.GetAttributes().Add(SOURCE_ATTRIB, strLocation);
+		window.document.write(scriptElement.Render());
 	}
 }
 

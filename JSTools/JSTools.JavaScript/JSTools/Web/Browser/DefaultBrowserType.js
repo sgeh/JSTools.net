@@ -13,11 +13,11 @@ JSTools.Web.Browser.DefaultBrowserType = function()
 	this.InitType(arguments, "JSTools.Web.Browser.DefaultBrowserType");
 	this.Inherit(JSTools.Web.Browser.BrowserType);
 
-	var _this				= this;
-	var _versionRegExp		= /^((\d+)(\.\d+)).*$/;
-	var _version			= 0;
-	var _versionMajor		= 0;
-	var _versionMinor		= 0;
+	var _this = this;
+	var _versionRegExp = /^((\d+)(\.\d+)).*$/;
+	var _version = 0;
+	var _versionMajor = 0;
+	var _versionMinor = 0;
 
 
 	//------------------------------------------------------------------------
@@ -48,59 +48,66 @@ JSTools.Web.Browser.DefaultBrowserType = function()
 	/// Checks, if the current browser matches this browser type item.
 	/// </method>
 	/// <returns type="Boolean">Returns true, if this item is appropriated for the current browser.</returns>
-	this.MatchBrowser = function()
+	function MatchBrowser()
 	{
 		return true;
 	}
+	this.MatchBrowser = MatchBrowser;
 
 
 	/// <method>
 	/// Gets the browser name. (e.g. Netscape/Opera/Internet Explorer)
 	/// </method>
 	/// <returns type="String">Returns the name of the browser.</returns>
-	this.GetName = function()
+	function GetName()
 	{
 		return navigator.appName;
 	}
+	this.GetName = GetName;
 
 
 	/// <method>
 	/// Gets the short name of the browser. (e.g. NS/OP/IE)
 	/// </method>
 	/// <returns type="String">Returns the short name of the browser.</returns>
-	this.GetShortName = function()
+	function GetShortName()
 	{
 		return ((_this.GetName().length < 3) ? _this.GetName() : _this.GetName().substring(0, 2)).toUpperCase();
 	}
+	this.GetShortName = GetShortName;
 
 
 	/// <method>
 	/// Gets the browser version (e.g. 7.01, 6.2, 4.78, 4.06).
 	/// </method>
 	/// <returns type="Number">Returns the browser version.</returns>
-	this.GetVersion = function()
+	function GetVersion()
 	{
 		return _version;
 	}
+	this.GetVersion = GetVersion;
 
 
 	/// <method>
 	/// Gets the major version of the browser (e.g. 7, 6, 4).
 	/// </method>
 	/// <returns type="Number">Returns the major version of the browser.</returns>
-	this.GetMajor = function()
+	function GetMajor()
 	{
 		return _versionMajor;
 	}
+	this.GetMajor = GetMajor;
 
 
 	/// <method>
 	/// Gets the minor version of the browser (e.g. 0.01, 0.2, 0.78, 0.06).
 	/// </method>
 	/// <returns type="Number">Returns the minor version of the browser.</returns>
-	this.GetMinor = function()
+	function GetMinor()
 	{
 		return _versionMinor;
 	}
+	this.GetMinor = GetMinor;
+
 	Init();
 }

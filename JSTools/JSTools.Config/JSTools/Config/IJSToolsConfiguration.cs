@@ -14,30 +14,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
-using System.Collections;
 using System.Configuration;
 using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security;
-using System.Security.Permissions;
-using System.Text;
-using System.Web;
-using System.Web.UI;
 using System.Xml;
 
 using JSTools.Config.ExceptionHandling;
 using JSTools.Config.ScriptFileManagement;
+
 namespace JSTools.Config
 {
 	/// <summary>
@@ -46,28 +30,24 @@ namespace JSTools.Config
 	public interface IJSToolsConfiguration
 	{
 		//--------------------------------------------------------------------
-		// Declarations
+		// Properties
 		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Gets the script file handler, which handles using of the debug and release scripts.
 		/// </summary>
-		/// <exception cref="InvalidSessionHandlerException">Could not create an AJSToolsConfiguration instance, the session handler has returned an error.</exception>
 		JSScriptFileHandler ScriptFileHandler
 		{
 			get;
 		}
 
-
 		/// <summary>
 		/// Returns true, if a XmlDocument is initialized.
 		/// </summary>
-		/// <exception cref="InvalidSessionHandlerException">Could not create an AJSToolsConfiguration instance, the session handler has returned an error.</exception>
 		bool IsXmlDocumentInitialized
 		{
 			get;
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -81,7 +61,6 @@ namespace JSTools.Config
 		/// <exception cref="ArgumentNullException">The specified name contains a null reference.</exception>
 		AJSToolsSection GetConfig(string configNodeName);
 
-
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
 		/// </summary>
@@ -90,7 +69,6 @@ namespace JSTools.Config
 		/// <exception cref="InvalidOperationException">The configuration XmlDocument was not already specified.</exception>
 		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
 		void LoadXml(XmlDocument configDocument);
-
 
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
@@ -102,7 +80,6 @@ namespace JSTools.Config
 		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
 		void LoadXml(string configDocument);
 
-
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
 		/// </summary>
@@ -112,7 +89,6 @@ namespace JSTools.Config
 		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
 		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
 		void LoadXml(Stream configDocument);
-
 
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
@@ -124,7 +100,6 @@ namespace JSTools.Config
 		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
 		void LoadXml(XmlReader configDocument);
 
-
 		/// <summary>
 		/// Loads the given XmlDocument and initializes the configuration sections.
 		/// </summary>
@@ -135,12 +110,12 @@ namespace JSTools.Config
 		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
 		void LoadXml(TextReader configDocument);
 
-
 		/// <summary>
 		/// Writes the JSTools sections into the given render context.
 		/// </summary>
 		/// <param name="renderContext">The RenderProcessTicket object.</param>
 		/// <exception cref="ConfigurationException">Could not render a configuration section.</exception>
+		/// <exception cref="ConfigurationException">A section with the specified name does not exist.</exception>
 		/// <exception cref="InvalidOperationException">The configuration XmlDocument is not specified.</exception>
 		/// <exception cref="ArgumentNullException">The given RenderProcessTicket object contains a null reference</exception>
 		void Render(RenderProcessTicket renderContext);

@@ -14,8 +14,8 @@ JSTools.Reflection.MemberProtector = function()
 
 	this.InitType(arguments, "JSTools.Reflection.MemberProtector");
 
-	var _this		= this;
-	var _instances	= new Array();
+	var _this = this;
+	var _instances = new Array();
 
 
 	//------------------------------------------------------------------------
@@ -32,7 +32,7 @@ JSTools.Reflection.MemberProtector = function()
 	/// </method>
 	/// <param name="objInstance" type="Object">Object to register.</param>
 	/// <returns type="Array">Returns the protected member array.</returns>
-	this.GetProtectedItems = function(objInstance)
+	function GetProtectedItems(objInstance)
 	{
 		if (!objInstance || typeof(objInstance) != 'object' || !objInstance.GetType)
 			return null;
@@ -48,12 +48,13 @@ JSTools.Reflection.MemberProtector = function()
 			return Register(objInstance);
 		}
 	}
+	this.GetProtectedItems = GetProtectedItems;
 
 
 	/// <method>
 	/// returns all objects, which are derived from the representing function.
 	/// </method>
-	this.GetInstances = function()
+	function GetInstances()
 	{
 		var instances = new Array(_instances.length);
 
@@ -63,6 +64,7 @@ JSTools.Reflection.MemberProtector = function()
 		}
 		return instances;
 	}
+	this.GetInstances = GetInstances;
 
 
 	/// <method>

@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Collections;
 using System.IO;
@@ -45,18 +37,17 @@ namespace JSTools.Config.ScriptFileManagement
 		None,
 
 		/// <summary>
-		///  The whole source files of a module will be written into one file which is rendered
-		///  to the client.
+		/// The whole source files of a module will be written into one file which is rendered
+		/// to the client.
 		/// </summary>
 		Module,
 
 		/// <summary>
-		/// The whole source files will be rendered to the client. This feature is not supported
-		/// by netscape 4.x. Use module instead.
+		/// The whole source files will be rendered to the client. Netscape 4.x does not support
+		/// this feature. Use module instead.
 		/// </summary>
 		File
 	}
-
 
 	/// <summary>
 	/// Represents an instance of the &lt;scripts&gt; configuration section in the JSTools.net configuration.
@@ -67,36 +58,56 @@ namespace JSTools.Config.ScriptFileManagement
 		// Declarations
 		//--------------------------------------------------------------------
 
-		public	readonly	string						SCRIPTS_NODE_NAME;
-		public	const		char						PATH_SEPARATOR			= '/';
-		public	const		char						NAME_SEPARATOR			= '.';
+		/// <summary>
+		/// Gets a separator char which is used to create a unique path
+		/// identifiers for a scripts and modules.
+		/// </summary>
+		public const char PATH_SEPARATOR = '/';
 
-		protected			DebugMode					_debugMode				= DebugMode.Module;
-		protected			float						_scriptVersion			= 1.0F;
-		protected			string						_scriptType				= string.Empty;
-		protected			string						_contentType			= string.Empty;
-		protected			string						_source					= string.Empty;
-		protected			string						_extension				= ".js";
-		protected			JSModuleContainer			_childModules			= null;
+		/// <summary>
+		/// Gets a separator char which is used to create the full name of a
+		/// module.
+		/// </summary>
+		public const char NAME_SEPARATOR = '.';
 
-		private	const		string						TYPE_ATTRIB				= "type";
-		private	const		string						SCRIPT_VERSION_ATTRIB	= "version";
-		private	const		string						SCRIPT_TYPE_ATTRIB		= "language";
-		private	const		string						CONTENT_TYPE_ATTRIB		= "contentType";
-		private	const		string						DEBUG_ATTRIB			= "debug";
-		private	const		string						SOURCE_ATTRIB			= "src";
-		private	const		string						EXTENSION_ATTRIB		= "extension";
+		private const string TYPE_ATTRIB = "type";
+		private const string SCRIPT_VERSION_ATTRIB = "version";
+		private const string SCRIPT_TYPE_ATTRIB = "language";
+		private const string CONTENT_TYPE_ATTRIB = "contentType";
+		private const string DEBUG_ATTRIB = "debug";
+		private const string SOURCE_ATTRIB = "src";
+		private const string EXTENSION_ATTRIB = "extension";
 
-		private const		string						COMMENT_BEGIN			= "\n" + JSToolsConfiguration.COMMENT_BEGIN;
-		private const		string						COMMENT_END				= "\n//" + JSToolsConfiguration.COMMENT_END;
+		private const string COMMENT_BEGIN = "\n" + JSToolsConfiguration.COMMENT_BEGIN;
+		private const string COMMENT_END = "\n//" + JSToolsConfiguration.COMMENT_END;
 
-		private const		string						SCRIPT_END				= COMMENT_END + "\n</script>";
-		private const		string						SCRIPT_BEGIN			= "<script language=\"{0}\" type=\"text/{1}\">" + COMMENT_BEGIN;
-		private const		string						SCRIPT_FILE				= "<script language=\"{0}\" type=\"text/{1}\" src=\"{2}\">{3}</script>";
-		private	const		string						SCRIPT_FILE_DEBUG		= "'<SCRIPT LANGUAGE=\"{0}\" TYPE=\"text/{1}\" SRC=\"{2}\"><\\/SCRIPT>'";
+		private const string SCRIPT_END = "\n</script>";
+		private const string SCRIPT_BEGIN = "<script language=\"{0}\" type=\"text/{1}\">";
+		private const string SCRIPT_FILE = "<script language=\"{0}\" type=\"text/{1}\" src=\"{2}\">{3}</script>";
+		private const string SCRIPT_FILE_DEBUG = "'<SCRIPT LANGUAGE=\"{0}\" TYPE=\"text/{1}\" SRC=\"{2}\"><\\/SCRIPT>'";
 
-		private				XmlNode						_configSection			= null;
+		private DebugMode _debugMode = DebugMode.Module;
+		private float _scriptVersion = 1.0F;
+		private string _scriptType = string.Empty;
+		private string _contentType = string.Empty;
+		private string _source = string.Empty;
+		private string _extension = ".js";
+		private JSModuleContainer _childModules = null;
 
+		private string _sectionName = string.Empty;
+		private XmlNode _configSection = null;
+
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
+
+		/// <summary>
+		/// Gets the unique id of this section.
+		/// </summary>
+		public override string Id
+		{
+			get { return SectionName; }
+		}
 
 		/// <summary>
 		/// Returns the child modules of this module container.
@@ -105,7 +116,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _childModules; }
 		}
-
 
 		/// <summary>
 		/// Specifies if the script should be crunched and additional debug informations should
@@ -116,7 +126,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return _debugMode; }
 		}
 
-
 		/// <summary>
 		/// Gets the type of the scripts e.g. "javascript".
 		/// </summary>
@@ -124,7 +133,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _scriptType; }
 		}
-
 
 		/// <summary>
 		/// Gets the content type of the scripts e.g. "text/javascript". This content type is used by
@@ -135,7 +143,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return _contentType; }
 		}
 
-
 		/// <summary>
 		/// Gets the version of the scripts e.g. 1.3 .
 		/// </summary>
@@ -143,7 +150,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _scriptVersion; }
 		}
-
 
 		/// <summary>
 		/// Gets the type of the scripts e.g. "JavaScript1.3".
@@ -153,7 +159,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return ScriptType + ScriptVersion; }
 		}
 
-
 		/// <summary>
 		/// Gets the url, where the debug scripts are stored.
 		/// </summary>
@@ -161,7 +166,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _source; }
 		}
-
 
 		/// <summary>
 		/// Gets the file extension, which will be used for rendering modules and files. (e.g. ".js")
@@ -171,15 +175,13 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return _extension; }
 		}
 
-
 		/// <summary>
 		/// Gets the name of the representing xml node.
 		/// </summary>
 		public string SectionName
 		{
-			get { return SCRIPTS_NODE_NAME; }
+			get { return _sectionName; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -196,17 +198,20 @@ namespace JSTools.Config.ScriptFileManagement
 		public JSScriptFileHandler(XmlNode section, IJSToolsConfiguration ownerConfig, string nodeName) : base(ownerConfig)
 		{
 			if (section == null)
-				throw new ArgumentNullException("section", "The given xml section contains a null reference!");
+				throw new ArgumentNullException("section", "The given xml section contains a null reference.");
 
 			if (nodeName == null)
-				throw new ArgumentNullException("nodeName", "The given node name contains a null reference!");
+				throw new ArgumentNullException("nodeName", "The given node name contains a null reference.");
 
-			SCRIPTS_NODE_NAME	= nodeName;
-			_configSection		= section;
+			_sectionName = nodeName;
+			_configSection = section;
 
 			InitConfiguration();
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -222,7 +227,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return (toCheck != null && IsModuleRegistered(toCheck.FullName));
 		}
 
-
 		/// <summary>
 		/// Checks, if a module is registered.
 		/// </summary>
@@ -232,7 +236,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			return (GetModuleByName(fullModuleName) != null);
 		}
-
 
 		/// <summary>
 		/// Checks, if a script file is registered.
@@ -244,7 +247,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return (toCheck != null && IsScriptRegistered(toCheck.Path));
 		}
 
-
 		/// <summary>
 		/// Checks, if a script file is registered.
 		/// </summary>
@@ -254,7 +256,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			return (GetScript(scriptPath) != null);
 		}
-
 
 		/// <summary>
 		/// Searches for a section instance with the given path.
@@ -273,7 +274,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return section; 
 		}
 
-
 		/// <summary>
 		/// Searches for a section instance with the given path.
 		/// </summary>
@@ -283,7 +283,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			return (GetSection(sectionPath) != null);
 		}
-
 
 		/// <summary>
 		/// Searches in the configuration document for a module with the given name (e.g. JSTools.Web).
@@ -300,7 +299,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return null;
 		}
 
-
 		/// <summary>
 		/// Searches in the configuration document for a module with the given path (e.g. JSTools/Web).
 		/// </summary>
@@ -316,7 +314,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return null;
 		}
 
-
 		/// <summary>
 		/// Searches in the configuration document for a module with the given name.
 		/// </summary>
@@ -327,7 +324,7 @@ namespace JSTools.Config.ScriptFileManagement
 		public JSModule GetModule(string[] moduleNames)
 		{
 			if (moduleNames == null || moduleNames.Length == 0)
-				throw new ArgumentNullException("moduleNames", "The specified module name collection contains an invalid value!");
+				throw new ArgumentNullException("moduleNames", "The specified module name collection contains an invalid value.");
 
 			if (moduleNames.Length == 1)
 				return ChildModules[moduleNames[0]];
@@ -348,7 +345,6 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 		}
 
-
 		/// <summary>
 		/// Searches in the configuration document for a script file with the given
 		/// path (e.g. JSTools/Web/ImageHandler).
@@ -358,7 +354,7 @@ namespace JSTools.Config.ScriptFileManagement
 		/// return the expected AJSScript instance.</returns>
 		public JSScript GetScript(string scriptPath)
 		{
-			if (scriptPath != null && scriptPath != String.Empty)
+			if (scriptPath != null && scriptPath.Length != 0)
 			{
 				int splitIndex = scriptPath.LastIndexOf(PATH_SEPARATOR);
 
@@ -383,23 +379,23 @@ namespace JSTools.Config.ScriptFileManagement
 		/// can be used in conjunction with document.write() method.
 		/// </summary>
 		/// <param name="script">Script file object to get tag.</param>
+		/// <param name="pathPrefix">Prefix which is combined with given script file name.</param>
 		/// <returns>Returns the generated string.</returns>
 		/// <exception cref="ArgumentNullException">The given script contains a null reference.</exception>
 		/// <exception cref="ArgumentNullException">The given path prefix contains a null reference.</exception>
 		public string GetScriptFileJavaScriptTag(JSScript script, string pathPrefix)
 		{
 			if (script == null)
-				throw new ArgumentNullException("script", "The given script contains a null reference!");
+				throw new ArgumentNullException("script", "The given script contains a null reference.");
 
 			if (pathPrefix == null)
-				throw new ArgumentNullException("pathPrefix", "The given path prefix contains a null reference!");
+				throw new ArgumentNullException("pathPrefix", "The given path prefix contains a null reference.");
 
 			return String.Format(SCRIPT_FILE_DEBUG,
 				GetScriptLanguageString(_scriptType, _scriptVersion),
 				_scriptType,
 				CombinePathPrefix(pathPrefix, script.RequestPath));
 		}
-
 
 		/// <summary>
 		/// Returns a script tag which contains the specified file path attribute.
@@ -412,9 +408,8 @@ namespace JSTools.Config.ScriptFileManagement
 				GetScriptLanguageString(_scriptType, _scriptVersion),
 				_scriptType,
 				filePath,
-				String.Empty);
+				string.Empty);
 		}
-
 
 		/// <summary>
 		/// Returns a script tag which contains the specified file path attribute.
@@ -427,16 +422,16 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			return String.Format(SCRIPT_FILE,
 				GetScriptLanguageString(scriptType, scriptVersion),
-				_scriptType,
+				scriptType,
 				filePath,
-				String.Empty);
+				string.Empty);
 		}
-
 
 		/// <summary>
 		/// Returns a script tag which contains the specified file path attribute.
 		/// </summary>
 		/// <param name="filePath">This path will be written into the value of the 'src' attribute.</param>
+		/// <param name="commentCode">Code which is written inside the comment tags. This code is ignored by the browser.</param>
 		/// <param name="scriptType">Script type (e.g. JavaScript / VBScript)</param>
 		/// <param name="scriptVersion">Script version (e.g. 1.2 / 1.5)</param>
 		/// <returns>Returns the generated string.</returns>
@@ -444,17 +439,16 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			return String.Format(SCRIPT_FILE,
 				GetScriptLanguageString(scriptType, scriptVersion),
-				_scriptType,
+				scriptType,
 				filePath,
 				COMMENT_BEGIN + commentCode + COMMENT_END);
 		}
-
 
 		/// <summary>
 		/// Returns a script tag which contains the specified file path attribute.
 		/// </summary>
 		/// <param name="filePath">This path will be written into the value of the 'src' attribute.</param>
-		/// <param name="commentCode">Comment to descript the functionality, which is written in the file.</param>
+		/// <param name="commentCode">Code which is written inside the comment tags. This code is ignored by the browser.</param>
 		/// <returns>Returns the generated string.</returns>
 		public string GetScriptFileTag(string filePath, string commentCode)
 		{
@@ -465,25 +459,24 @@ namespace JSTools.Config.ScriptFileManagement
 				COMMENT_BEGIN + commentCode + COMMENT_END);
 		}
 
-
 		/// <summary>
 		/// Returns a script tag which contains the specified file path attribute.
 		/// </summary>
 		/// <param name="script">Script file object to get tag.</param>
+		/// <param name="pathPrefix">Prefix which is combined with given script file name.</param>
 		/// <returns>Returns the generated string.</returns>
 		/// <exception cref="ArgumentNullException">The given script contains a null reference.</exception>
 		/// <exception cref="ArgumentNullException">The given path prefix contains a null reference.</exception>
 		public string GetScriptFileTag(JSScript script, string pathPrefix)
 		{
 			if (script == null)
-				throw new ArgumentNullException("script", "The given script contains a null reference!");
+				throw new ArgumentNullException("script", "The given script contains a null reference.");
 
 			if (pathPrefix == null)
-				throw new ArgumentNullException("pathPrefix", "The given path prefix contains a null reference!");
+				throw new ArgumentNullException("pathPrefix", "The given path prefix contains a null reference.");
 
 			return GetScriptFileTag(CombinePathPrefix(pathPrefix, script.RequestPath));
 		}
-
 
 		/// <summary>
 		/// Returns a script tag which contains the specified file path attribute.
@@ -496,18 +489,14 @@ namespace JSTools.Config.ScriptFileManagement
 			return GetScriptFileTag(script, string.Empty);
 		}
 
-
 		/// <summary>
 		/// Returns a script begin tag without a source attribute.
 		/// </summary>
 		/// <returns>Returns the generated string.</returns>
 		public string GetScriptBeginTag()
 		{
-			return String.Format(SCRIPT_BEGIN,
-				GetScriptLanguageString(_scriptType, _scriptVersion),
-				_scriptType);
+			return GetScriptBeginTag(_scriptType, _scriptVersion);
 		}
-
 
 		/// <summary>
 		/// Returns a script begin tag without a source attribute.
@@ -517,11 +506,25 @@ namespace JSTools.Config.ScriptFileManagement
 		/// <returns>Returns the generated string.</returns>
 		public string GetScriptBeginTag(string scriptType, float scriptVersion)
 		{
-			return String.Format(SCRIPT_BEGIN,
-				GetScriptLanguageString(scriptType, scriptVersion),
-				_scriptType);
+			return GetScriptBeginTag(scriptType, scriptVersion, true);
 		}
 
+		/// <summary>
+		/// Returns a script begin tag without a source attribute.
+		/// </summary>
+		/// <param name="scriptType">Script type (e.g. JavaScript / VBScript)</param>
+		/// <param name="scriptVersion">Script version (e.g. 1.2 / 1.5)</param>
+		/// <param name="includeComments">True to include HTML comment tags, which are used to 
+		/// hide the scripts from 3. generation browser.</param>
+		/// <returns>Returns the generated string.</returns>
+		public string GetScriptBeginTag(string scriptType, float scriptVersion, bool includeComments)
+		{
+			string scriptTag = String.Format(SCRIPT_BEGIN,
+					GetScriptLanguageString(scriptType, scriptVersion),
+					scriptType);
+
+			return (includeComments) ? scriptTag + COMMENT_BEGIN : scriptTag;
+		}
 
 		/// <summary>
 		/// Returns a script end tag.
@@ -529,9 +532,19 @@ namespace JSTools.Config.ScriptFileManagement
 		/// <returns>Returns the generated string.</returns>
 		public string GetScriptEndTag()
 		{
-			return SCRIPT_END;
+			return GetScriptEndTag(true);
 		}
 
+		/// <summary>
+		/// Returns a script end tag.
+		/// </summary>
+		/// <param name="includeComments">True to include HTML comment tags, which are used to 
+		/// hide the scripts from 3. generation browser.</param>
+		/// <returns>Returns the generated string.</returns>
+		public string GetScriptEndTag(bool includeComments)
+		{
+			return (includeComments) ? COMMENT_END + SCRIPT_END : SCRIPT_END;
+		}
 
 		/// <summary>
 		/// Combines the given prefix with the specified path.
@@ -540,7 +553,7 @@ namespace JSTools.Config.ScriptFileManagement
 		/// <param name="path">Path to adjust.</param>
 		public string CombinePathPrefix(string prefix, string path)
 		{
-			if (prefix == string.Empty)
+			if (prefix == null || prefix.Length == 0)
 				return path;
 
 			if (prefix[prefix.Length - 1] == JSScriptFileHandler.PATH_SEPARATOR)
@@ -553,14 +566,12 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 		}
 
-
 		/// <summary>
 		/// Returns a module, which is contained was specified by the names array. This
 		/// procedure will create a recursive loop to find the specified module.
 		/// </summary>
 		/// <param name="module">Parent module instance.</param>
 		/// <param name="names">Array, which contains the module names.</param>
-		/// <param name="namePointer">Pointer (nestlevel), used by the names array.</param>
 		/// <returns>Returns the expected module or a null reference.</returns>
 		private JSModule GetChildModuleByName(JSModule module, string[] names)
 		{
@@ -580,7 +591,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return result;
 		}
 
-
 		/// <summary>
 		/// Initializes the values of this configuration object.
 		/// </summary>
@@ -593,7 +603,6 @@ namespace JSTools.Config.ScriptFileManagement
 			InitModuleNodes();
 		}
 
-
 		/// <summary>
 		/// Checks the extension given by the configuration for validity.
 		/// </summary>
@@ -602,17 +611,14 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			string extension = JSToolsXmlFunctions.GetAttributeFromNode(_configSection, EXTENSION_ATTRIB);
 
-			if (extension == string.Empty)
-			{
+			if (extension == null || extension.Length == 0)
 				return _extension;
-			}
+
 			if (!extension.StartsWith("."))
-			{
 				return "." + extension;
-			}
+
 			return extension;
 		}
-
 
 		/// <summary>
 		/// Returns the specified path with a valid termination.
@@ -631,7 +637,6 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 		}
 
-
 		/// <summary>
 		/// Initializes the values of the &lt;scripts&gt; node.
 		/// </summary>
@@ -643,7 +648,6 @@ namespace JSTools.Config.ScriptFileManagement
 			_scriptType = JSToolsXmlFunctions.GetValueFromNode(_configSection.Attributes[SCRIPT_TYPE_ATTRIB]).ToLower();
 			_contentType = JSToolsXmlFunctions.GetValueFromNode(_configSection.Attributes[CONTENT_TYPE_ATTRIB]).ToLower();
 		}
-
 
 		/// <summary>
 		/// Initializes the value of the debug attribute.
@@ -659,7 +663,6 @@ namespace JSTools.Config.ScriptFileManagement
 				// ignore value if an exception occurs
 			}
 		}
-
 
 		/// <summary>
 		/// Initializes the value of the scriptVersion attribute.
@@ -677,7 +680,6 @@ namespace JSTools.Config.ScriptFileManagement
 				// ignore value if an exception occurs
 			}
 		}
-
 
 		/// <summary>
 		/// Initializes all module nodes.
@@ -698,7 +700,6 @@ namespace JSTools.Config.ScriptFileManagement
 			// check created module hierarchy for valid relations
 			base.OnCheckModuleRelations(this, EventArgs.Empty);
 		}
-
 
 		/// <summary>
 		/// Appends the script type to the script version. (e.g. JavaScript1.3)

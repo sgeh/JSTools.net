@@ -7,8 +7,8 @@ function DomModelFactory(objLayerHandler)
 	arguments.Call(BaseModelFactory);
 
 	// copies a reference of the protected members for using from outside the constructor
-	var _protected		= arguments.Protected;
-	this.LayerHandler	= objLayerHandler;
-	this.Constructor	= new DomLayerConstructor(this);
+	var _protected = arguments.Protected;
+	this.LayerHandler = objLayerHandler;
+	this.Constructor = new DomLayerConstructor(this);
 }
 LayerHandler.ModelFactories.Add(new LayerFactoryDescription(DomModelFactory, window.Browser.IsDOM()));

@@ -12,24 +12,24 @@ JSTools.Util.Guid = function(strRawGuid)
 	// Declarations
 	//------------------------------------------------------------------------
 
-	var GUID_LENGTH			= 32;
-	var GUID_SEPARATOR		= "-";
-	var GUID_BLOCK_SIZE		= 4;
-	var INPUT_CHECK_REGEXP	= new RegExp("^[0-9a-f]{" + GUID_LENGTH + "," + GUID_LENGTH + "}$", "i");
-	var MAX_BLOCK_NUMBER	= 0xFFFF;
+	var GUID_LENGTH = 32;
+	var GUID_SEPARATOR = "-";
+	var GUID_BLOCK_SIZE = 4;
+	var INPUT_CHECK_REGEXP = new RegExp("^[0-9a-f]{" + GUID_LENGTH + "," + GUID_LENGTH + "}$", "i");
+	var MAX_BLOCK_NUMBER = 0xFFFF;
 
-	var DEFAULT_PATTERN		= "{D}";
-	var NORMAL_PATTERN		= "{N}";
-	var PATTERN_CATALOG		= [
+	var DEFAULT_PATTERN = "{D}";
+	var NORMAL_PATTERN = "{N}";
+	var PATTERN_CATALOG =	[
 								{ Letter: "N", Pattern: "{0}", SeparatorMask: 0x00 },
 								{ Letter: "D", Pattern: "{0}", SeparatorMask: 0x1E },
 								{ Letter: "B", Pattern: "({0})", SeparatorMask: 0x1E },
 								{ Letter: "P", Pattern: "{{0}}", SeparatorMask: 0x1E }
-							  ];
+							];
 
-	var _this				= this;
-	var _guidBlocks			= Math.ceil(GUID_LENGTH / GUID_BLOCK_SIZE);
-	var _intGuid			= new Array(_guidBlocks);
+	var _this = this;
+	var _guidBlocks = Math.ceil(GUID_LENGTH / GUID_BLOCK_SIZE);
+	var _intGuid = new Array(_guidBlocks);
 
 
 	//------------------------------------------------------------------------
@@ -69,10 +69,11 @@ JSTools.Util.Guid = function(strRawGuid)
 	/// Creates a new guid string and converts it into a number.
 	/// </method>
 	/// <returns type="Integer">Returns the guid as a number (integer).</returns>
-	this.valueOf = function()
+	function ValueOf()
 	{
 		return this.toString(NORMAL_PATTERN);
 	}
+	this.valueOf = ValueOf;
 
 
 	/// <method>
@@ -91,7 +92,7 @@ JSTools.Util.Guid = function(strRawGuid)
 	/// </method>
 	/// <param name="strFormat" type="String">Object to register.</param>
 	/// <returns type="String">Returns the protected member array.</returns>
-	this.toString = function(strFormat)
+	function ToString(strFormat)
 	{
 		var generatedGuid = "";
 
@@ -108,6 +109,7 @@ JSTools.Util.Guid = function(strRawGuid)
 		}
 		return generatedGuid;
 	}
+	this.toString = ToString;
 
 
 	/// <method>

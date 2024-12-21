@@ -90,8 +90,8 @@
                     HintPath = "C:\WINNT\Microsoft.NET\Framework\v1.0.3705\System.XML.dll"
                 />
                 <Reference
-                    Name = "JSTools.Web.UI"
-                    Project = "{EE3A9993-BA75-4A15-93E4-CB0CCFC1E695}"
+                    Name = "JSTools.Web"
+                    Project = "{8EBBD23D-8C26-4587-8766-8B0BE9528B69}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
@@ -150,7 +150,7 @@
                 <File
                     RelPath = "JSTools\Test.aspx.cs"
                     DependentUpon = "Test.aspx"
-                    SubType = "ASPXCodeBehind"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File

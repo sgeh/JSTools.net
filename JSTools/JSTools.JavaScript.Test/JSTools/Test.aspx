@@ -1,11 +1,10 @@
+<%@ Register TagPrefix="jstools" NameSpace="JSTools.Web.UI.Controls" Assembly="JSTools.Web" %>
 <%@ Page language="c#" Codebehind="Test.aspx.cs" AutoEventWireup="false" Inherits="JSTools.JavaScript.Test.Test" %>
-<%@ Register TagPrefix="jstools" NameSpace="JSTools.Web.UI.Controls" Assembly="JSTools.Web.UI" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
-<html>
-	<JSTools:Head runat="server">
-		<title>JSTools</title>
-	</JSTools:Head>
-	<JSTools:Script optimization="Crunch" runat="server">function ConsoleMessage(strMessageType, strMessage)
+<HTML>
+	<TITLE>JSTools</TITLE>
+	<JSTools:Head runat="server" id="Head1"></JSTools:Head>
+	<JSTools:Script optimization="Crunch" runat="server" id="Script1">function ConsoleMessage(strMessageType, strMessage)
 {
 	// init type manager, required for inheritance
 	this.InitTypeManager(arguments);
@@ -56,9 +55,11 @@
 	{
 		return "~" + _messageType + ": " + _message;
 	}
-}</JSTools:Script>
+}</JSTools:Script>
 	<frameset cols="50%,50%" border="0" framespacing="0" frameborder="NO">
-		<frame name="left" src="frameSet_left.aspx" marginwidth="0" leftmargin="0" marginheight="0" topmargin="0" scrolling="NO" noresize frameborder="NO" border="0" />
-		<frame name="right" src="frameSet_right.html" marginwidth="0" leftmargin="0" marginheight="0" topmargin="0" scrolling="NO" noresize frameborder="NO" border="0" />
+		<frame name="left" src="frameSet_left.aspx" marginwidth="0" leftmargin="0" marginheight="0"
+			topmargin="0" scrolling="yes" noresize frameborder="NO" border="0">
+		<frame name="right" src="frameSet_right.html" marginwidth="0" leftmargin="0" marginheight="0"
+			topmargin="0" scrolling="yes" noresize frameborder="NO" border="0">
 	</frameset>
-</html>
+</HTML>

@@ -19,20 +19,20 @@ JSTools.Timers.Timer = function()
 
 	this.InitType(arguments, "JSTools.Timers.Timer");
 
-	var DEFAULT_INTERVAL	= 20;
-	var SUBJECT_LIST_NAME	= "ontick";
+	var DEFAULT_INTERVAL = 20;
+	var SUBJECT_LIST_NAME = "ontick";
 
-	var _this				= this;
-	var _timer				= 0;
-	var _isEnabled			= false;
-	var _tickEvents			= new JSTools.Event.SubjectList();
-	var _arguments			= [ ];
+	var _this = this;
+	var _timer = 0;
+	var _isEnabled = false;
+	var _tickEvents = new JSTools.Event.SubjectList();
+	var _arguments = [ ];
 
 
 	/// <property type="Integer">
 	/// Gets or sets the interval (milliseconds) at which to raise the Tick event. Default is 20ms.
 	/// </property>
-	this.Interval			= 0;
+	this.Interval = 0;
 
 
 	//------------------------------------------------------------------------
@@ -57,10 +57,11 @@ JSTools.Timers.Timer = function()
 	/// shared between your code and the reciever functions.
 	/// </method>
 	/// <returns type="Array">Returns an array, which is passed as event argument to the tick method.</returns>
-	this.GetArguments = function()
+	function GetArguments()
 	{
 		return _arguments;
 	}
+	this.GetArguments = GetArguments;
 
 
 	/// <method>
@@ -70,10 +71,11 @@ JSTools.Timers.Timer = function()
 	/// The given method will be called by each tick.</param>
 	/// <returns type="Integer">Returns the index, at which the observer object has been added.
 	/// Returns -1 if the given observer object is invalid and has not be added.</returns>
-	this.AddTickMethodInfo = function(objMethodInfoToAdd)
+	function AddTickMethodInfo(objMethodInfoToAdd)
 	{
 		return _tickEvents.AttachMethodInfo(SUBJECT_LIST_NAME, objMethodInfoToAdd);
 	}
+	this.AddTickMethodInfo = AddTickMethodInfo;
 
 
 	/// <method>
@@ -83,25 +85,27 @@ JSTools.Timers.Timer = function()
 	/// The given method will be called by each tick.</param>
 	/// <returns type="Integer">Returns the index, at which the observer object has been added.
 	/// Returns -1 if the given observer object is invalid and has not be added.</returns>
-	this.AddTickFunction = function(objFunction)
+	function AddTickFunction(objFunction)
 	{
 		return _tickEvents.AttachFunction(SUBJECT_LIST_NAME, objFunction);
 	}
+	this.AddTickFunction = AddTickFunction;
 
 
 	/// <method>
 	/// Returns true, if the timer is enabled.
 	/// </method>
-	this.IsEnabled = function()
+	function IsEnabled()
 	{
 		return _isEnabled;
 	}
+	this.IsEnabled = IsEnabled;
 
 
 	/// <method>
 	/// Stops the timer interval and sets the IsEnabled() flag to false.
 	/// </method>
-	this.Stop = function()
+	function Stop()
 	{
 		_isEnabled = false;
 		
@@ -111,12 +115,13 @@ JSTools.Timers.Timer = function()
 			_timer = 0;
 		}
 	}
+	this.Stop = Stop;
 
 
 	/// <method>
 	/// Starts the timer interval and sets the IsEnabled() flag to true.
 	/// </method>
-	this.Start = function()
+	function Start()
 	{
 		if (_isEnabled && _timer)
 			_this.Stop();
@@ -128,6 +133,7 @@ JSTools.Timers.Timer = function()
 		_isEnabled = true;
 		_timer = setInterval(Run, _this.Interval);
 	}
+	this.Start = Start;
 	
 	
 	/// <method>

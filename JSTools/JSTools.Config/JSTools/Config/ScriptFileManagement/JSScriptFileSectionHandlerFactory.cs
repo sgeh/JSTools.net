@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Xml;
 
@@ -38,7 +30,6 @@ namespace JSTools.Config.ScriptFileManagement
 
 		public const string SECTION_NAME = "scripts";
 
-
 		/// <summary>
 		/// Returns the name of the section.
 		/// </summary>
@@ -47,7 +38,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return SECTION_NAME; }
 		}
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -55,7 +45,6 @@ namespace JSTools.Config.ScriptFileManagement
 		public JSScriptFileSectionHandlerFactory()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods

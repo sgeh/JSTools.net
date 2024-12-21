@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.1</since>
-/// </file>
-
 using System;
 using System.Collections;
 
@@ -38,9 +30,12 @@ namespace JSTools.Config.ScriptFileManagement
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private		int		_count		= -1;
-		private		IList	_container	= null;
+		private int _count = -1;
+		private IList _container = null;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Gets the current element in the collection.
@@ -50,7 +45,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return Current; }
 		}
-
 
 		/// <summary>
 		/// Gets the current element in the collection.
@@ -68,7 +62,6 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 		}
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -81,11 +74,14 @@ namespace JSTools.Config.ScriptFileManagement
 		internal JSFileSectionEnumerator(IList container)
 		{
 			if (container == null)
-				throw new ArgumentNullException("container", "The specified container contains a null reference!");
+				throw new ArgumentNullException("container", "The specified container contains a null reference.");
 
 			_container = container;
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -98,7 +94,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			_count = -1;
 		}
-
 
 		/// <summary>
 		/// Advances the enumerator to the next element of the collection.

@@ -22,16 +22,16 @@ JSTools.Timers.Timeout = function()
 
 	this.InitType(arguments, "JSTools.Timers.Timeout");
 
-	var DEFAULT_TIMEOUT		= 20;
+	var DEFAULT_TIMEOUT = 20;
 
-	var _this				= this;
-	var _timer				= new JSTools.Timers.Timer();
+	var _this = this;
+	var _timer = new JSTools.Timers.Timer();
 
 
 	/// <property type="Integer">
 	/// Gets or sets the timeout (milliseconds) at which to call the Timeout event. Default is 20ms.
 	/// </property>
-	this.Timeout			= DEFAULT_TIMEOUT;
+	this.Timeout = DEFAULT_TIMEOUT;
 
 
 	//------------------------------------------------------------------------
@@ -56,10 +56,11 @@ JSTools.Timers.Timeout = function()
 	/// shared between your code and the reciever functions.
 	/// </method>
 	/// <returns type="Array">Returns an array, which is passed as event argument to the tick method.</returns>
-	this.GetArguments = function()
+	function GetArguments()
 	{
 		return _timer.GetArguments();
 	}
+	this.GetArguments = GetArguments;
 
 
 	/// <method>
@@ -67,10 +68,11 @@ JSTools.Timers.Timeout = function()
 	/// </method>
 	/// <param name="objMethodInfoToAdd" type="JSTools.Reflection.MethodInfo">Attaches the given Function or MethodInfo object.
 	/// The given method will be called by each tick.</param>
-	this.AddTimeoutMethodInfo = function(objMethodInfoToAdd)
+	function AddTimeoutMethodInfo(objMethodInfoToAdd)
 	{
 		return _timer.AddTickMethodInfo(objMethodInfoToAdd);
 	}
+	this.AddTimeoutMethodInfo = AddTimeoutMethodInfo;
 
 
 	/// <method>
@@ -78,38 +80,42 @@ JSTools.Timers.Timeout = function()
 	/// </method>
 	/// <param name="objFunction" type="Function">Attaches the given Function or MethodInfo object.
 	/// The given method will be called by each tick.</param>
-	this.AddTimeoutFunction = function(objFunction)
+	function AddTimeoutFunction(objFunction)
 	{
 		return _timer.AddTickFunction(objFunction);
 	}
+	this.AddTimeoutFunction = AddTimeoutFunction;
 
 
 	/// <method>
 	/// Returns true, if the timer is enabled.
 	/// </method>
-	this.IsEnabled = function()
+	function IsEnabled()
 	{
 		return _timer.IsEnabled();
 	}
+	this.IsEnabled = IsEnabled;
 
 
 	/// <method>
 	/// Stops the timer interval and sets the IsEnabled() flag to false.
 	/// </method>
-	this.Stop = function()
+	function Stop()
 	{
 		_timer.Stop();
 	}
+	this.Stop = Stop;
 
 
 	/// <method>
 	/// Starts the timer interval and sets the IsEnabled() flag to true. If the 
 	/// </method>
-	this.Start = function()
+	function Start()
 	{
 		_timer.Interval = !isNaN(_this.Timeout) ? Number(_this.Timeout) : DEFAULT_TIMEOUT;
 		_timer.Start();
 	}
+	this.Start = Start;
 
 
 	/// <method>

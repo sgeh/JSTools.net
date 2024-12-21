@@ -13,10 +13,10 @@ JSTools.Enum.FlagsEnum = function()
 	// Declarations
 	//------------------------------------------------------------------------
 
-	var _this				= this;
-	var _arguments			= arguments;
-	var _registeredValues	= new Array();
-	var _registeredNames	= new Array();
+	var _this = this;
+	var _arguments = arguments;
+	var _registeredValues = new Array();
+	var _registeredNames = new Array();
 
 
 	//------------------------------------------------------------------------
@@ -51,20 +51,22 @@ JSTools.Enum.FlagsEnum = function()
 	/// Creates a new array and copies the enum values.
 	/// </method>
 	/// <returns type="Array">Returns all values, which are stored in this enum.</returns>
-	this.GetValues = function()
+	function GetValues()
 	{
 		return _registeredValues.Copy();
 	}
+	this.GetValues = GetValues; 
 
 
 	/// <method>
 	/// Creates a new array and copies the given enum names.
 	/// </method>
 	/// <returns type="Array">Returns all names, which are stored in this enum.</returns>
-	this.GetNames = function()
+	function GetNames()
 	{
 		return _registeredNames.Copy();
 	}
+	this.GetNames = GetNames;
 
 
 	/// <method>
@@ -72,7 +74,7 @@ JSTools.Enum.FlagsEnum = function()
 	/// </method>
 	/// <param type="Integer" name="intValue">Value of the expected name.</param>
 	/// <returns type="String">Returns the name of the requested value.</returns>
-	this.GetName = function(intValue)
+	function GetName(intValue)
 	{
 		var valueIndex = _registeredValues.IndexOf(intValue);
 		
@@ -90,6 +92,7 @@ JSTools.Enum.FlagsEnum = function()
 			return name;
 		}
 	}
+	this.GetName = GetName;
 
 
 	/// <method>
@@ -97,7 +100,7 @@ JSTools.Enum.FlagsEnum = function()
 	/// </method>
 	/// <param type="Integer" name="intValue">Value of the expected name.</param>
 	/// <returns type="String">Returns the name of the requested value.</returns>
-	this.toString = function()
+	function ToString()
 	{
 		var enumString = "[enum";
 
@@ -107,5 +110,7 @@ JSTools.Enum.FlagsEnum = function()
 		}
 		return enumString + "]";
 	}
+	this.toString = ToString; 
+
 	Init();
 }

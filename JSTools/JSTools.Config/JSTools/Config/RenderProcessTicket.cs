@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Collections;
 using System.Text;
@@ -31,25 +23,26 @@ namespace JSTools.Config
 	/// <summary>
 	/// Contains informations, which are requried to render configuration sections.
 	/// </summary>
-	public class RenderProcessTicket
+	public class RenderProcessTicket : IEnumerable
 	{
 		//--------------------------------------------------------------------
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private	ArrayList			_renderHandlers			= new ArrayList();
-		private	Hashtable			_items					= new Hashtable();
+		private ArrayList _renderHandlers = new ArrayList();
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
-		/// Gets a key-value collection that can be used to organize and share data between your
-		/// code and an IJSToolsRenderHandler during rendering the section scripts.
+		/// Gets all registered render handler instances.
 		/// </summary>
-		public IDictionary Items
+		/// <returns>Returns the registered render handler instances.</returns>
+		private IJSToolsRenderHandler[] RenderHandlers
 		{
-			get { return _items; }
+			get { return (IJSToolsRenderHandler[])_renderHandlers.ToArray(typeof(IJSToolsRenderHandler)); }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -62,6 +55,9 @@ namespace JSTools.Config
 		{
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -78,25 +74,30 @@ namespace JSTools.Config
 		public void AddRenderHandler(IJSToolsRenderHandler renderHandler)
 		{
 			if (renderHandler == null)
-				throw new ArgumentNullException("renderHandler", "The given render handler contains a null reference!");
+				throw new ArgumentNullException("renderHandler", "The given render handler contains a null reference.");
 
-			if (renderHandler.SectionName == string.Empty || renderHandler.SectionName == null)
-				throw new ArgumentException("The given render handler contains an invalid section name!", "renderHandler");
+			if (renderHandler.SectionName == null || renderHandler.SectionName.Length == 0)
+				throw new ArgumentException("The given render handler contains an invalid section name.", "renderHandler");
 
 			if (_renderHandlers.Contains(renderHandler))
-				throw new InvalidOperationException("A render handler for the given section was already sepcified!");
+				throw new InvalidOperationException("A render handler for the given section was already sepcified.");
 
 			_renderHandlers.Add(renderHandler);
 		}
 
+		#region IEnumerable Member
 
 		/// <summary>
-		/// Gets all registered render handler instances.
+		///  <see cref="IEnumerator"/>
 		/// </summary>
-		/// <returns>Returns the registered render handler instances.</returns>
-		public IJSToolsRenderHandler[] GetRenderHandlers()
+		/// <returns>
+		///  <see cref="IEnumerator"/>
+		/// </returns>
+		public IEnumerator GetEnumerator()
 		{
-			return (IJSToolsRenderHandler[])_renderHandlers.ToArray(typeof(IJSToolsRenderHandler));
+			return new RenderProcessTicketEnumerator(RenderHandlers);
 		}
+
+		#endregion
 	}
 }

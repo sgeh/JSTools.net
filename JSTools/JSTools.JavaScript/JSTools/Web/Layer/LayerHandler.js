@@ -1,13 +1,13 @@
 function LayerHandler(strLayerId, intIndex, strCssClass)
 {
-	var _this				= this;
-	var _index				= ToNumber(intIndex);
-	var _identifier			= ToString(strLayerId);
-	var _name				= _identifier.ToEnumerable();
+	var _this = this;
+	var _index = ToNumber(intIndex);
+	var _identifier = ToString(strLayerId);
+	var _name = _identifier.ToEnumerable();
 
-	var _cssClass			= (!IsUndefined(strCssClass) ? strCssClass : null);
-	var _callTable			= new Array();
-	var _layerModel			= null;
+	var _cssClass = (!IsUndefined(strCssClass) ? strCssClass : null);
+	var _callTable = new Array();
+	var _layerModel = null;
 
 	// gets the model factory and writes it into the _layerModel variable
 	if (LayerHandler.GetFactoryDescription() != null)
@@ -312,10 +312,10 @@ LayerHandler.prototype.toString = function()
 }
 
 // make sure that the LayerHandler implements all ILayerValueCollection members
-LayerHandler.prototype		= new ILayerValueContainer();
+LayerHandler.prototype = new ILayerValueContainer();
 
 // contains a reference to the ModelFactory types.
-LayerHandler.ModelFactories	= new Array();
+LayerHandler.ModelFactories = new Array();
 LayerHandler.ModelFactories.ActiveFactoryIndex = -1;
 
 // returns a valid instance of a model factory or a null reference

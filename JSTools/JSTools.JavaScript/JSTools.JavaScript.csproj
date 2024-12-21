@@ -63,28 +63,7 @@
                     WarningLevel = "4"
                 />
             </Settings>
-            <References>
-                <Reference
-                    Name = "System"
-                    AssemblyName = "System"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll"
-                />
-                <Reference
-                    Name = "System.Web"
-                    AssemblyName = "System.Web"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Web.dll"
-                />
-                <Reference
-                    Name = "System.Drawing"
-                    AssemblyName = "System.Drawing"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Drawing.dll"
-                />
-                <Reference
-                    Name = "System.Data"
-                    AssemblyName = "System.Data"
-                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll"
-                />
-            </References>
+            <References/>
         </Build>
         <Files>
             <Include>
@@ -138,6 +117,10 @@
                 />
                 <File
                     RelPath = "JSTools\Event\SubjectList.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\ExceptionHandling\ArgumentException.js"
                     BuildAction = "Content"
                 />
                 <File
@@ -349,6 +332,10 @@
                     BuildAction = "Content"
                 />
                 <File
+                    RelPath = "JSTools\Web\Window\Window.js"
+                    BuildAction = "Content"
+                />
+                <File
                     RelPath = "JSTools\Web\Window\WindowErrorArgument.js"
                     BuildAction = "Content"
                 />
@@ -365,21 +352,10 @@
                     BuildAction = "Content"
                 />
                 <File
-                    RelPath = "JSTools\Web\Window\Event\BaseEventContainer.js"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "JSTools\Web\Window\Event\ElementEvent.js"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "JSTools\Web\Window\Event\EventArgument.js"
-                    BuildAction = "Content"
-                />
-                <File
                     RelPath = "JSTools\Web\Window\Event\IEventArgument.js"
                     BuildAction = "Content"
                 />
+                <Folder RelPath = "JSTools\Xml\" />
             </Include>
         </Files>
     </CSHARP>

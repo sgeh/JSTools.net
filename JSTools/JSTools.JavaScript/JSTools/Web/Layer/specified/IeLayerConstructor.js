@@ -7,9 +7,9 @@ function IeLayerConstructor(objDelegate)
 	arguments.Call(BaseLayerConstructor);
 
 	// copies a reference of the protected members for using from outside the constructor
-	var _protected		= arguments.Protected;
-	var _modelObject	= objDelegate;
-	var _this			= this;
+	var _protected = arguments.Protected;
+	var _modelObject = objDelegate;
+	var _this = this;
 
 
 	// constructs the layer and searches the layer object, fires the "init" event

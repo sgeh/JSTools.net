@@ -18,20 +18,20 @@ JSTools.Reflection.TypeParser = function(objToParse)
 		return;
 
 
-	var FUNCTION_ANONYMOUS_REGEXP	= Function.__anonymousParsePattern;
-	var FUNCTION_QUALIFIED_REGEXP	= Function.__qualifiedParsePattern;
-	var WHITE_SPACE_REGEXP			= new RegExp("\\s+", "g");
+	var FUNCTION_ANONYMOUS_REGEXP = Function.__anonymousParsePattern;
+	var FUNCTION_QUALIFIED_REGEXP = Function.__qualifiedParsePattern;
+	var WHITE_SPACE_REGEXP = new RegExp("\\s+", "g");
 
-	var PRIVATE_FIELD_REGEXP		= new RegExp("var\\s+([0-9a-zA-Z$_]+\\s*(,\\s*[0-9a-zA-Z$_]+\\s*)*)", "g");
-	var PRIVATE_FIELD_DECL			= new RegExp("var|\\s+", "g");
+	var PRIVATE_FIELD_REGEXP = new RegExp("var\\s+([0-9a-zA-Z$_]+\\s*(,\\s*[0-9a-zA-Z$_]+\\s*)*)", "g");
+	var PRIVATE_FIELD_DECL = new RegExp("var|\\s+", "g");
 
-	var _this						= this;
-	var _object						= objToParse;
-	var _function					= objToParse.GetType().GetConstructor();
-	var _functionString				= String.Empty;
+	var _this = this;
+	var _object = objToParse;
+	var _function = objToParse.GetType().GetConstructor();
+	var _functionString = String.Empty;
 
-	var _functions					= [ ];
-	var _fields						= [ ];
+	var _functions = [ ];
+	var _fields = [ ];
 
 
 	//------------------------------------------------------------------------
@@ -67,20 +67,22 @@ JSTools.Reflection.TypeParser = function(objToParse)
 	/// Gets the private methods of the representing class.
 	/// </method>
 	/// <returns type="Array">Returns the name of the private methods.</returns>
-	this.GetPrivateMethods = function()
+	function GetPrivateMethods()
 	{
 		return _functions;
 	}
+	this.GetPrivateMethods = GetPrivateMethods;
 
 
 	/// <method>
 	/// Gets the private fields of the representing class.
 	/// </method>
 	/// <returns type="Array">Returns the name of the private fields.</returns>
-	this.GetPrivateFields = function()
+	function GetPrivateFields()
 	{
 		return _fields;
 	}
+	this.GetPrivateFields = GetPrivateFields;
 
 
 	/// <method>

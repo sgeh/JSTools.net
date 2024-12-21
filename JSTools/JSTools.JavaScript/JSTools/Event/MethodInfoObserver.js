@@ -15,7 +15,7 @@ JSTools.Event.MethodInfoObserver = function(objMethodInfo)
 	this.InitType(arguments, "JSTools.Event.MethodInfoObserver");
 	this.Inherit(JSTools.Event.IObserver);
 	
-	var _this				= this;
+	var _this = this;
 	var _methodInfoToNotify = objMethodInfo;
 
 
@@ -27,11 +27,12 @@ JSTools.Event.MethodInfoObserver = function(objMethodInfo)
 	/// Notifies the observer about an update.
 	/// </method>
 	/// <param name="objEvent" type="Object">An object instance, which represents the event argument.</param>
-	this.Update = function(objEvent)
+	function Update(objEvent)
 	{
 		if (_methodInfoToNotify && typeof(_methodInfoToNotify) == 'object' && _methodInfoToNotify.Invoke)
 		{
 			_methodInfoToNotify.Invoke(objEvent);
 		}
 	}
+	this.Update = Update;
 }

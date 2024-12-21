@@ -35,7 +35,6 @@ namespace JSTools.Web.UI
 	{
 		private ArrayList _controls = new ArrayList();
 
-
 		//--------------------------------------------------------------------
 		// Declarations
 		//--------------------------------------------------------------------
@@ -48,7 +47,6 @@ namespace JSTools.Web.UI
 			get { return _controls.Count; }
 		}
 
-
 		/// <summary>
 		/// Gets the control at the specified index.
 		/// </summary>
@@ -56,7 +54,6 @@ namespace JSTools.Web.UI
 		{
 			get { return (_controls[index] as Control); }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -68,7 +65,6 @@ namespace JSTools.Web.UI
 		public JSControlCollection()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -87,7 +83,6 @@ namespace JSTools.Web.UI
 			_controls.Add(toAdd);
 		}
 
-
 		/// <summary>
 		/// Adds a range of controls to the end of this collection.
 		/// </summary>
@@ -99,7 +94,6 @@ namespace JSTools.Web.UI
 
 			_controls.AddRange(toAdd);
 		}
-
 
 		/// <summary>
 		/// Inserts the given control at the specified index.
@@ -113,7 +107,6 @@ namespace JSTools.Web.UI
 			_controls.Insert(index, toInsert);
 		}
 
-
 		/// <summary>
 		/// Determines whether a control is in this collection.
 		/// </summary>
@@ -124,7 +117,6 @@ namespace JSTools.Web.UI
 			return _controls.Contains(toSearch);
 		}
 
-
 		/// <summary>
 		/// Searches for the specified control.
 		/// </summary>
@@ -134,7 +126,6 @@ namespace JSTools.Web.UI
 		{
 			return _controls.IndexOf(toSearch);
 		}
-
 
 		/// <summary>
 		/// Returns an enumerator for the entire control collection.

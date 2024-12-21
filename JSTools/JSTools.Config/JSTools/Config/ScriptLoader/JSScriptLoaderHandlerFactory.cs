@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Configuration;
 using System.Xml;
@@ -29,8 +21,8 @@ using System.Xml;
 namespace JSTools.Config.ScriptLoader
 {
 	/// <summary>
-	/// Represents the section handler, which will be called from the JSTools.config file. The
-	/// "Create()" method returns instances, which represents the &lt;scriptFileLoader&gt; node.
+	/// Creates new JSScriptLoaderHandler instances, which represent the
+	/// scriptFileLoader section of the configuration document.
 	/// </summary>
 	public class JSScriptLoaderHandlerFactory : AJSToolsConfigSectionHandlerFactory
 	{
@@ -38,8 +30,14 @@ namespace JSTools.Config.ScriptLoader
 		// Declarations
 		//--------------------------------------------------------------------
 
+		/// <summary>
+		/// Gets the name of the script file loader xml section.
+		/// </summary>
 		public const string SECTION_NAME = "scriptFileLoader";
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Name of the section node.
@@ -48,7 +46,6 @@ namespace JSTools.Config.ScriptLoader
 		{
 			get { return SECTION_NAME; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -61,6 +58,9 @@ namespace JSTools.Config.ScriptLoader
 		{
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods

@@ -30,7 +30,6 @@ namespace JSTools.Web.UI.Controls
 		// Declarations
 		//--------------------------------------------------------------------
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -44,7 +43,6 @@ namespace JSTools.Web.UI.Controls
 		{
 		}
 
-
 		/// <summary>
 		/// Creates a new ScriptOptimizationException instance.
 		/// </summary>
@@ -53,7 +51,6 @@ namespace JSTools.Web.UI.Controls
 		public ScriptOptimizationException(string message) : base(message)
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods

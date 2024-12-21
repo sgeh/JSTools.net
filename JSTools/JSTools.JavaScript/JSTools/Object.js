@@ -57,27 +57,8 @@ Object.prototype.Inherit = function(objFunction)
 	if (objFunction == Object || typeof(objFunction) != 'function')
 		return this.GetType().GetConstructor().GetMemberProtector().GetProtectedItems(this);
 
-	// add the function pointer to this object
-	this.__constructor = objFunction;
-
-	if (arguments.length > 1)
-	{
-		// create argument string
-		var constructArgString = String.CreateArgumentString(arguments.length, "arguments", 1);
-
-		// call function pointer. this procedure will write all members into the objApply object
-		eval("this.__constructor(" + constructArgString + ");");
-	}
-	else
-	{
-		// call function pointer, without parameters.
-		// this call is much faster than the call with parameters
-		this.__constructor();
-	}
-
-	// clean up memory, this will remove the function pointer
-	this.__constructor = null;
-	delete this.__constructor;
+	// change context and call function pointer 
+	Function.CallChangeContext(objFunction, this, Array.GetRange(arguments, 1, arguments.length - 1));
 
 	// get protected members of top object
 	return this.GetType().GetConstructor().GetMemberProtector().GetProtectedItems(this);

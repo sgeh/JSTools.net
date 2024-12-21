@@ -50,13 +50,13 @@ public class Node implements Cloneable
 	private static class NumberNode extends Node 
 	{
 
-		NumberNode(double number) 
+		NumberNode(String number) 
 		{
 			super(TokenStream.NUMBER);
 			this.number = number;
 		}
 
-		double number;
+		String number;
 	}
 
 	private static class StringNode extends Node 
@@ -126,7 +126,7 @@ public class Node implements Cloneable
 		intDatum = value;
 	}
 
-	public static Node newNumber(double number) 
+	public static Node newNumber(String number) 
 	{
 		return new NumberNode(number);
 	}
@@ -364,54 +364,6 @@ public class Node implements Cloneable
 		LEFT = 1,
 		RIGHT = 2;
 
-	private static final String propToString(int propType) 
-	{
-		if (Context.printTrees) 
-		{
-			// If Context.printTrees is false, the compiler
-			// can remove all these strings.
-			switch (propType) 
-			{
-				case TARGET_PROP:        return "target";
-				case BREAK_PROP:         return "break";
-				case CONTINUE_PROP:      return "continue";
-				case ENUM_PROP:          return "enum";
-				case FUNCTION_PROP:      return "function";
-				case TEMP_PROP:          return "temp";
-				case LOCAL_PROP:         return "local";
-				case CODEOFFSET_PROP:    return "codeoffset";
-				case FIXUPS_PROP:        return "fixups";
-				case VARS_PROP:          return "vars";
-				case USES_PROP:          return "uses";
-				case REGEXP_PROP:        return "regexp";
-				case CASES_PROP:         return "cases";
-				case DEFAULT_PROP:       return "default";
-				case CASEARRAY_PROP:     return "casearray";
-				case SOURCENAME_PROP:    return "sourcename";
-				case SOURCE_PROP:        return "source";
-				case TYPE_PROP:          return "type";
-				case SPECIAL_PROP_PROP:  return "special_prop";
-				case LABEL_PROP:         return "label";
-				case FINALLY_PROP:       return "finally";
-				case LOCALCOUNT_PROP:    return "localcount";
-
-				case TARGETBLOCK_PROP:   return "targetblock";
-				case VARIABLE_PROP:      return "variable";
-				case LASTUSE_PROP:       return "lastuse";
-				case ISNUMBER_PROP:      return "isnumber";
-				case DIRECTCALL_PROP:    return "directcall";
-
-				case BASE_LINENO_PROP:   return "base_lineno";
-				case END_LINENO_PROP:    return "end_lineno";
-				case SPECIALCALL_PROP:   return "specialcall";
-				case DEBUGSOURCE_PROP:   return "debugsource";
-
-				default: Context.codeBug();
-			}
-		}
-		return null;
-	}
-
 	public Object getProp(int propType) 
 	{
 		if (props == null)
@@ -424,11 +376,6 @@ public class Node implements Cloneable
 		if (props == null)
 			return defaultValue;
 		return props.getInt(propType, defaultValue);
-	}
-
-	public int getExistingIntProp(int propType) 
-	{
-		return props.getExistingInt(propType);
 	}
 
 	public void putProp(int propType, Object prop) 
@@ -489,12 +436,6 @@ public class Node implements Cloneable
 		return intDatum;
 	}
 
-	/** Can only be called when <tt>getType() == TokenStream.NUMBER</tt> */
-	public double getDouble() 
-	{
-		return ((NumberNode)this).number;
-	}
-
 	/** Can only be called when node has String context. */
 	public String getString() 
 	{
@@ -516,117 +457,6 @@ public class Node implements Cloneable
 			throw new RuntimeException(e.getMessage());
 		}
 		return result;
-	}
-
-	public String toString() 
-	{
-		if (Context.printTrees) 
-		{
-			StringBuffer sb = new StringBuffer(TokenStream.tokenToName(type));
-			if (this instanceof StringNode) 
-			{
-				sb.append(' ');
-				sb.append(getString());
-			} 
-			else 
-			{
-				switch (type) 
-				{
-					case TokenStream.TARGET:
-						sb.append(' ');
-						sb.append(hashCode());
-						break;
-					case TokenStream.NUMBER:
-						sb.append(' ');
-						sb.append(getDouble());
-						break;
-					case TokenStream.FUNCTION:
-						FunctionNode fn = (FunctionNode)this;
-						sb.append(' ');
-						sb.append(fn.getFunctionName());
-						break;
-				}
-			}
-			if (intDatum != -1) 
-			{
-				sb.append(' ');
-				sb.append(intDatum);
-			}
-			if (props == null)
-				return sb.toString();
-
-			int[] keys = props.getKeys();
-			for (int i = 0; i != keys.length; ++i) 
-			{
-				int key = keys[i];
-				sb.append(" [");
-				sb.append(propToString(key));
-				sb.append(": ");
-				switch (key) 
-				{
-					case FIXUPS_PROP : // can't add this as it recurses
-						sb.append("fixups property");
-						break;
-					case SOURCE_PROP : // can't add this as it has unprintables
-						sb.append("source property");
-						break;
-					case TARGETBLOCK_PROP : // can't add this as it recurses
-						sb.append("target block property");
-						break;
-					case LASTUSE_PROP :     // can't add this as it is dull
-						sb.append("last use property");
-						break;
-					default :
-						Object obj = props.getObject(key);
-						if (obj != null) 
-						{
-							sb.append(obj.toString());
-						} 
-						else 
-						{
-							sb.append(props.getExistingInt(key));
-						}
-						break;
-				}
-				sb.append(']');
-			}
-			return sb.toString();
-		}
-		return null;
-	}
-
-	public String toStringTree() 
-	{
-		return toStringTreeHelper(0);
-	}
-
-
-	private String toStringTreeHelper(int level) 
-	{
-		if (Context.printTrees) 
-		{
-			StringBuffer s = new StringBuffer();
-			for (int i=0; i < level; i++) 
-			{
-				s.append("    ");
-			}
-			s.append(toString());
-			s.append('\n');
-			for (Node cursor = getFirstChild(); cursor != null;
-				cursor = cursor.getNext())
-			{
-				Node n = cursor;
-				if (cursor.getType() == TokenStream.FUNCTION) 
-				{
-					Node p = (Node) cursor.getProp(Node.FUNCTION_PROP);
-					if (p != null)
-						n = p;
-				}
-				s.append(n.toStringTreeHelper(level+1));
-			}
-			return s.toString();
-		}
-		return "";
 	}
 
 	int type;              // type of the node; TokenStream.NAME for example

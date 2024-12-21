@@ -6,11 +6,11 @@ function LayerClip(objLayer, intTop, intLeft, intBottom, intRight)
 		return null;
 	}
 
-	var _topMargin	= (IsNumeric(intTop) ? intTop : 0);
-	var _leftMargin	= (IsNumeric(intLeft) ? intLeft : 0);
-	var _height		= (IsNumeric(intBottom - intTop) && (intBottom - intTop > 0) ? intBottom - intTop : 0);
-	var _width		= (IsNumeric(intRight - intLeft) && (intRight - intLeft > 0) ? intRight - intLeft : 0);
-	var _layer		= objLayer;
+	var _topMargin = (IsNumeric(intTop) ? intTop : 0);
+	var _leftMargin = (IsNumeric(intLeft) ? intLeft : 0);
+	var _height = (IsNumeric(intBottom - intTop) && (intBottom - intTop > 0) ? intBottom - intTop : 0);
+	var _width = (IsNumeric(intRight - intLeft) && (intRight - intLeft > 0) ? intRight - intLeft : 0);
+	var _layer = objLayer;
 
 
 	// contains an alias for GetTopMargin

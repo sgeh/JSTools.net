@@ -10,8 +10,8 @@ JSTools.Util.StringConverter = function()
 	// Declarations
 	//------------------------------------------------------------------------
 
-	var MAX_HEX_CONVERT		= 2147483647;
-	var HEX_FIGURES			= "0123456789ABCDEF";
+	var MAX_HEX_CONVERT = 2147483647;
+	var HEX_FIGURES = "0123456789ABCDEF";
 
 	var _this = this;
 
@@ -31,7 +31,7 @@ JSTools.Util.StringConverter = function()
 	/// </method>
 	/// <param name="intToConvert" type="Integer">Integer which should be converted.</param>
 	/// <returns type="String">Returns a string, which contains the hex number.</returns>
-	this.DecToHex = function(intToConvert)
+	function DecToHex(intToConvert)
 	{
 		if (isNaN(intToConvert))
 			return String.Empty;
@@ -49,6 +49,7 @@ JSTools.Util.StringConverter = function()
 		}
 		return outPutString;
 	}
+	this.DecToHex = DecToHex;
 
 
 	/// <method>
@@ -57,13 +58,14 @@ JSTools.Util.StringConverter = function()
 	/// </method>
 	/// <param name="strToConvert" type="Integer">String which should be converted.</param>
 	/// <returns type="Integer">Returns the converted string.</returns>
-	this.HexToDec = function(strToConvert)
+	function HexToDec(strToConvert)
 	{
 		if (typeof(strToConvert) != 'string')
 			return Number.NaN;
 
 		return parseInt(strToConvert.toUpperCase(), 16);
 	}
+	this.HexToDec = HexToDec;
 }
 
 

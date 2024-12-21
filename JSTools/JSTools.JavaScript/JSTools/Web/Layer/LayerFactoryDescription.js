@@ -6,8 +6,8 @@ function LayerFactoryDescription(objModelFactory, blnIsActive)
 		return null;
 	}
 
-	var _objModelFactory	= objModelFactory;
-	var _blnIsActive		= ToBoolean(blnIsActive);
+	var _objModelFactory = objModelFactory;
+	var _blnIsActive = ToBoolean(blnIsActive);
 
 
 	// returns true, if the used browser is compatible with the layer tools

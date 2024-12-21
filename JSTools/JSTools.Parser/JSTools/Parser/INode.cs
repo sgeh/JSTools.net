@@ -24,7 +24,7 @@ namespace JSTools.Parser
 	public interface INode
 	{
 		//--------------------------------------------------------------------
-		// Declarations
+		// Properties
 		//--------------------------------------------------------------------
 
 		/// <summary>
@@ -32,12 +32,10 @@ namespace JSTools.Parser
 		/// </summary>
 		event EventHandler OnBegin;
 
-
 		/// <summary>
 		/// Fired if a node ends.
 		/// </summary>
 		event EventHandler OnEnd;
-
 
 		/// <summary>
 		/// Returns the children of the current node instance.
@@ -47,7 +45,6 @@ namespace JSTools.Parser
 			get;
 		}
 
-
 		/// <summary>
 		/// Returns the line number on which this item begins.
 		/// </summary>
@@ -55,7 +52,6 @@ namespace JSTools.Parser
 		{
 			get;
 		}
-
 
 		/// <summary>
 		/// Returns the line number on which this item ends.
@@ -65,7 +61,6 @@ namespace JSTools.Parser
 			get;
 		}
 
-
 		/// <summary>
 		/// Gets/sets the absolute start offset.
 		/// </summary>
@@ -73,7 +68,6 @@ namespace JSTools.Parser
 		{
 			get;
 		}
-
 
 		/// <summary>
 		/// Gets/sets the absolute end offset.
@@ -83,7 +77,6 @@ namespace JSTools.Parser
 			get;
 		}
 
-
 		/// <summary>
 		/// Gets/sets the start offset of the start line.
 		/// </summary>
@@ -91,7 +84,6 @@ namespace JSTools.Parser
 		{
 			get;
 		}
-
 
 		/// <summary>
 		/// Gets/sets the end offset of the start end.
@@ -101,7 +93,6 @@ namespace JSTools.Parser
 			get;
 		}
 
-
 		/// <summary>
 		/// Returns the name of the representing parse item.
 		/// </summary>
@@ -109,7 +100,6 @@ namespace JSTools.Parser
 		{
 			get;
 		}
-
 
 		/// <summary>
 		/// Gets/sets the whole code.
@@ -119,7 +109,6 @@ namespace JSTools.Parser
 			get;
 		}
 
-
 		/// <summary>
 		/// Gets/sets the code, which represents this object.
 		/// </summary>
@@ -127,7 +116,6 @@ namespace JSTools.Parser
 		{
 			get;
 		}
-
 
 		/// <summary>
 		/// Gets/sets the current length of the code. This value will be incremented after
@@ -138,7 +126,6 @@ namespace JSTools.Parser
 			get;
 			set;
 		}
-
 
 		/// <summary>
 		/// Gets/sets the child at the given index.
@@ -151,7 +138,6 @@ namespace JSTools.Parser
 			set;
 		}
 
-
 		/// <summary>
 		/// Gets/sets the first child. Returns null, if no child exists.
 		/// </summary>
@@ -159,7 +145,6 @@ namespace JSTools.Parser
 		{
 			get;
 		}
-
 
 		/// <summary>
 		/// Gets/sets the last child. Returns null, if no child exists.
@@ -169,20 +154,19 @@ namespace JSTools.Parser
 			get;
 		}
 
-
 		//--------------------------------------------------------------------
 		// Methods
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		/// Initilizes this node instance. Informations will be given by this method.
+		/// Initilizes this node instance. Informations about the line number and line offset
+		/// are specified with the arguments of this method.
 		/// </summary>
 		/// <param name="globalCode">Whole code to parse.</param>
 		/// <param name="offsetBegin">Absolute start offset.</param>
 		/// <param name="lineOffsetBegin">Offset of the start line.</param>
 		/// <param name="lineNumberBegin">Line number, at which this instance begins.</param>
 		void SetUpBegin(string globalCode, int offsetBegin, int lineOffsetBegin, int lineNumberBegin);
-
 
 		/// <summary>
 		/// Initilizes the end of this instance.
@@ -191,14 +175,12 @@ namespace JSTools.Parser
 		/// <param name="lineNumberEnd">Line number, at which this instance ends.</param>
 		void SetUpEnd(int lineOffsetEnd, int lineNumberEnd);
 
-
 		/// <summary>
 		/// Adds a new child to the current node. It will be append on the end of the list.
 		/// </summary>
 		/// <param name="child">Child node to add.</param>
 		/// <exception cref="ArgumentNullException">The specified child contains a null reference.</exception>
 		void AddChild(INode child);
-
 
 		/// <summary>
 		/// Returns the index of the specified child.
@@ -207,14 +189,12 @@ namespace JSTools.Parser
 		/// <returns>Returns -1, if the given node was not found.</returns>
 		int GetChildNodeIndex(INode child);
 
-
 		/// <summary>
 		/// Returns the child node, which is stored at the specified index.
 		/// </summary>
 		/// <param name="index">Index to determine the node instance.</param>
 		/// <returns>Returns a null reference, if no node was found.</returns>
 		INode GetChildNodeByIndex(int index);
-
 
 		/// <summary>
 		/// Inserts the given child at the specified index.
@@ -225,7 +205,6 @@ namespace JSTools.Parser
 		/// <exception cref="ArgumentNullException">The specified child contains a null reference.</exception>
 		void InsertChild(int index, INode child);
 
-
 		/// <summary>
 		/// Removes the specified child at the specified index.
 		/// </summary>
@@ -233,7 +212,6 @@ namespace JSTools.Parser
 		/// <returns>Returns the removed node instance. You will obtain a null pointer if the specified
 		/// index could not be found.</returns>
 		INode RemoveChild(int index);
-
 
 		/// <summary>
 		/// Replaces the specified child with the given node to insert.

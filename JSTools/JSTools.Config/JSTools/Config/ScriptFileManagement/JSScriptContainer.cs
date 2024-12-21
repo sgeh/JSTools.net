@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.1</since>
-/// </file>
-
 using System;
 using System.Collections;
 using System.Text;
@@ -41,8 +33,11 @@ namespace JSTools.Config.ScriptFileManagement
 		// Declarations
 		//--------------------------------------------------------------------
 
-		protected ArrayList _childScripts = null;
+		private ArrayList _childScripts = null;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Gets a value indicating whether access to the ICollection is synchronized.
@@ -52,7 +47,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return _childScripts.IsSynchronized; }
 		}
 
-
 		/// <summary>
 		/// Gets an object that can be used to synchronize access to the ICollection.
 		/// </summary>
@@ -60,7 +54,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _childScripts.SyncRoot; }
 		}
-
 
 		/// <summary>
 		/// Gets/sets the script at the specified index.
@@ -72,7 +65,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return (JSScript)_childScripts[index]; }
 		}
 
-
 		/// <summary>
 		/// Gets/sets the script with the specified name. The script with the specified name will be replaced
 		/// with the given value. 
@@ -83,12 +75,11 @@ namespace JSTools.Config.ScriptFileManagement
 			get
 			{
 				if (scriptName == null)
-					throw new ArgumentNullException("scriptName", "The specified script name contains a null reference!");
+					throw new ArgumentNullException("scriptName", "The specified script name contains a null reference.");
 
 				return Contains(scriptName) ? this[IndexOf(scriptName)] : null;
 			}
 		}
-
 
 		/// <summary>
 		/// Returns the count of scripts.
@@ -97,7 +88,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _childScripts.Count; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -111,7 +101,7 @@ namespace JSTools.Config.ScriptFileManagement
 		internal JSScriptContainer(JSScript[] childScripts)
 		{
 			if (childScripts == null)
-				throw new ArgumentNullException("childScripts", "The given array contains a null reference!");
+				throw new ArgumentNullException("childScripts", "The given array contains a null reference.");
 
 			_childScripts = new ArrayList(childScripts.Length);
 
@@ -121,6 +111,9 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -135,7 +128,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return _childScripts.GetEnumerator();
 		}
 
-
 		/// <summary>
 		/// Copies the elements of this collection into the specified destination collection.
 		/// </summary>
@@ -147,17 +139,16 @@ namespace JSTools.Config.ScriptFileManagement
 		public void CopyTo(Array destination, int index)
 		{
 			if (destination == null)
-				throw new ArgumentNullException("destination", "Destination is a null reference!");
+				throw new ArgumentNullException("destination", "Destination is a null reference.");
 
 			if (destination.IsReadOnly)
-				throw new ArgumentException("The specified destination list is null or read only!", "destination");
+				throw new ArgumentException("The specified destination list is null or read only.", "destination");
 
 			if (!IsValidIndex(index))
-				throw new ArgumentOutOfRangeException("index", "The index is less than zero or equal or higher than the script count!");
+				throw new ArgumentOutOfRangeException("index", "The index is less than zero or equal or higher than the script count.");
 
 			_childScripts.CopyTo(destination, index);
 		}
-
 
 		/// <summary>
 		/// Checks if the specified script is contained in this collection.
@@ -168,11 +159,10 @@ namespace JSTools.Config.ScriptFileManagement
 		public bool Contains(JSScript script)
 		{
 			if (script == null)
-				throw new ArgumentNullException("The specified script contains a null reference!");
+				throw new ArgumentNullException("The specified script contains a null reference.");
 
 			return (IndexOf(script) != -1);
 		}
-
 
 		/// <summary>
 		/// Checks if the specified script is contained in this collection.
@@ -183,11 +173,10 @@ namespace JSTools.Config.ScriptFileManagement
 		public bool Contains(string scriptName)
 		{
 			if (scriptName == null)
-				throw new ArgumentNullException("The specified script name contains a null reference!");
+				throw new ArgumentNullException("The specified script name contains a null reference.");
 
 			return (IndexOf(scriptName) != -1);
 		}
-
 
 		/// <summary>
 		/// Determines the index of a specific item in this collection. Returns -1 if nothing was found.
@@ -198,7 +187,7 @@ namespace JSTools.Config.ScriptFileManagement
 		public int IndexOf(JSScript script)
 		{
 			if (script == null)
-				throw new ArgumentNullException("The specified script contains a null reference!");
+				throw new ArgumentNullException("The specified script contains a null reference.");
 
 			int index = Count - 1;
 
@@ -208,17 +197,16 @@ namespace JSTools.Config.ScriptFileManagement
 			return index;
 		}
 
-
 		/// <summary>
 		/// Determines the index of a specific item in this collection.
 		/// </summary>
-		/// <param name="scriptFileName">Script to search.</param>
+		/// <param name="scriptName">Script to search.</param>
 		/// <returns>Returns -1 if nothing was found. Otherwise the expected index.</returns>
 		/// <exception cref="ArgumentNullException">The specified script name contains a null reference.</exception>
 		public int IndexOf(string scriptName)
 		{
 			if (scriptName == null)
-				throw new ArgumentNullException("The specified script name contains a null reference!");
+				throw new ArgumentNullException("The specified script name contains a null reference.");
 
 			int index = Count - 1;
 
@@ -227,7 +215,6 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 			return index;
 		}
-
 
 		/// <summary>
 		/// Checks the given index for validity.

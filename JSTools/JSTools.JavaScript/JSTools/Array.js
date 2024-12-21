@@ -1,4 +1,31 @@
 /// <method>
+/// Gets the string representation of the current array. The array
+/// values will be formated as follows:
+///  String output: [ value1, value2, null, undefined, 5, ... ]
+/// </method>
+/// <returns type="String">Calls the toString method of each child item,
+/// separates them with ', ' and returns the concated string.</returns>
+Array.prototype.toString = function()
+{
+	var output = "[ ";
+	
+	for (var i = 0; i < this.length; ++i)
+	{
+		if (typeof(this[i]) == 'undefined')
+			output += 'undefined';
+		else if (this[i] == null)
+			output += 'null';
+		else
+			output += this[i].toString();
+		
+		if (i + 1 != this.length)
+			output += ", ";
+	}
+	return output + (this.length > 0 ? " ]" : "]");
+}
+
+
+/// <method>
 /// Gets the number of stored items.
 /// </method>
 /// <returns type="Integer">Returns the number of stored items.</returns>
@@ -266,4 +293,30 @@ Array.prototype.SortAscend = function()
 			return 0;
 		}
 	);
+}
+
+
+/// <method>
+/// Gets the range of the specified array.
+/// </method>
+/// <param name="arrToGetRange" type="Array">Array which subset should be returned.</param>
+/// <param name="intIndex" type="Integer">A zero-based index at which the range starts.</param>
+/// <param name="intLength" type="Integer">The number of elements in the range.</param>
+/// <returns type="Array">Returns a new array instance which contains the specified range.</returns>
+Array.GetRange = function(arrToGetRange, intIndex, intLength)
+{
+	var range = [ ];
+	var index = (!isNaN(intIndex) && Number(intIndex) > -1) ? Number(intIndex) : 0;
+	var length = (!isNaN(intLength) && Number(intLength) > -1) ? Number(intLength) : 0;
+
+	if (arrToGetRange
+		&& typeof(arrToGetRange) == 'object'
+		&& typeof(arrToGetRange.length) == 'number')
+	{
+		for (var i = 0; i < length && index < arrToGetRange.length; ++i)
+		{
+			range.Add(arrToGetRange[index++]);
+		}
+	}
+	return range;
 }

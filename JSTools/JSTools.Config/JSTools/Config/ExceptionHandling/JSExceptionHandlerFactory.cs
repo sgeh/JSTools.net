@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Configuration;
 using System.Xml;
@@ -29,8 +21,8 @@ using System.Xml;
 namespace JSTools.Config.ExceptionHandling
 {
 	/// <summary>
-	/// Represents the section handler, which will be called from the JSTools.config file. The
-	/// "Create()" method returns instances, which represents the &lt;exception&gt; node.
+	/// Creates new JSExceptionHandler instances, which represent the
+	/// exceptionHandling section of the configuration document.
 	/// </summary>
 	public class JSExceptionHandlerFactory : AJSToolsConfigSectionHandlerFactory
 	{
@@ -38,8 +30,14 @@ namespace JSTools.Config.ExceptionHandling
 		// Declarations
 		//--------------------------------------------------------------------
 
+		/// <summary>
+		/// Gets the name of the exception handling xml section.
+		/// </summary>
 		public const string SECTION_NAME = "exceptionHandling";
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Name of the section node.
@@ -48,7 +46,6 @@ namespace JSTools.Config.ExceptionHandling
 		{
 			get { return SECTION_NAME; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -61,6 +58,9 @@ namespace JSTools.Config.ExceptionHandling
 		{
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods

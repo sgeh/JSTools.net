@@ -1,22 +1,22 @@
 function LayerEventHandler(objAttach, strLayerId)
 {
-	var _objAttach		= objAttach;
-	var _strLayerId		= strLayerId;
-	var _newEvents		= new EventLocator(this, _strLayerId);
+	var _objAttach = objAttach;
+	var _strLayerId = strLayerId;
+	var _newEvents = new EventLocator(this, _strLayerId);
 
-	var _eventName		= "";
-	var _triggerName	= "";
-	var _eventObject	= null;
-	var _eventService	= false;
-	var _eventContainer	= new Array();
+	var _eventName = "";
+	var _triggerName = "";
+	var _eventObject = null;
+	var _eventService = false;
+	var _eventContainer = new Array();
 
 
 	// public function to handle an event
 	this.HandleEvent = function(intEventNumber, objHandle, strTriggerName, blnIsService)
 	{
-		_eventService	= blnIsService;
-		_triggerName	= ToString(strTriggerName).ToEnumerable();
-		_eventObject	= objHandle;
+		_eventService = blnIsService;
+		_triggerName = ToString(strTriggerName).ToEnumerable();
+		_eventObject = objHandle;
 
 		SearchLayerDefinedEvents(intEventNumber, "predefined", HandleRegistration);
 		SearchLayerDefinedEvents(intEventNumber, "layerdefined", HandleRegistration);
@@ -170,9 +170,9 @@ function LayerEventHandler(objAttach, strLayerId)
 		}
 
 		_eventContainer[_eventName].Add(_triggerName);
-		_eventContainer[_eventName][_triggerName]							= _eventObject;
-		_eventContainer[_eventName][_triggerName].IsPreDefinedEvent			= ToBoolean(blnPreDefined);
-		_eventContainer[_eventName][_triggerName].IsJavaScriptEventService	= ToBoolean(_eventService);
+		_eventContainer[_eventName][_triggerName] = _eventObject;
+		_eventContainer[_eventName][_triggerName].IsPreDefinedEvent = ToBoolean(blnPreDefined);
+		_eventContainer[_eventName][_triggerName].IsJavaScriptEventService = ToBoolean(_eventService);
 
 		return _eventContainer[_eventName].length - 1;
 	}
@@ -188,16 +188,16 @@ function LayerEventHandler(objAttach, strLayerId)
 	// event locator for drag and drop events
 	function EventLocator(objEventHandler, strLayerId)
 	{
-		var _eventHandler	= objEventHandler;
-		var _strLayerId		= strLayerId;
-		var _systemEvents	= [LayerEvent.MOUSEUP, LayerEvent.MOUSEDOWN, LayerEvent.MOUSEMOVE, LayerEvent.MOUSEOVER];
-		var _eventsIndexer	= new Array();
+		var _eventHandler = objEventHandler;
+		var _strLayerId = strLayerId;
+		var _systemEvents = [LayerEvent.MOUSEUP, LayerEvent.MOUSEDOWN, LayerEvent.MOUSEMOVE, LayerEvent.MOUSEOVER];
+		var _eventsIndexer = new Array();
 
-		var _returnValue	= true;
-		var _mouseDown		= false;
-		var _isDraged		= false;
+		var _returnValue = true;
+		var _mouseDown = false;
+		var _isDraged = false;
 
-		this.IsInitialized	= false;
+		this.IsInitialized = false;
 
 
 		// if layer onmouseup
@@ -210,14 +210,14 @@ function LayerEventHandler(objAttach, strLayerId)
 				DelegateDragDropEvent(LayerEvent.DROP, objEvent);
 			}
 
-			_mouseDown	= false;
+			_mouseDown = false;
 		}
 
 
 		// if layer onmousedown
 		this.SystemONMOUSEDOWN = function(objEvent)
 		{
-			_mouseDown	= true;
+			_mouseDown = true;
 		}
 
 
@@ -236,8 +236,8 @@ function LayerEventHandler(objAttach, strLayerId)
 		// if layer onmouseover
 		this.SystemONMOUSEOVER = function(objEvent)
 		{
-			_mouseDown	= false;
-			_isDraged	= false;
+			_mouseDown = false;
+			_isDraged = false;
 		}
 
 

@@ -29,6 +29,7 @@ namespace JSTools.JavaScript.Test
 	public class Test : JSToolsPage
 	{
 		protected Head Header1;
+		protected JSTools.Web.UI.Controls.Head Head1;
 		protected Script Script1;
 	
 		private void Page_Load(object sender, System.EventArgs e)

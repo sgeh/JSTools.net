@@ -7,8 +7,8 @@ function IeLayerGetter(objDelegate)
 	arguments.Call(DomLayerGetter, objDelegate);
 
 	// copies a reference of the protected members for using from outside the constructor
-	var _protected		= arguments.Protected;
-	var _delegateObject	= objDelegate;
+	var _protected = arguments.Protected;
+	var _delegateObject = objDelegate;
 
 
 	// returns all elements with the specified tag name in a new Array, [override]

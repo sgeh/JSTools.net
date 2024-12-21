@@ -1,6 +1,30 @@
 namespace("JSTools.Reflection");
 
 
+/// <enum>
+/// Represents the type of a member.
+/// </enum>
+/// <field name="Type">Specifies that the member is a class (Type class).</field>
+/// <field name="Field">Specifies that the member is a field (FieldInfo class).</field>
+/// <field name="Method">Specifies that the member is a method (MethodInfo class).</field>
+JSTools.Reflection.MemberType = new JSTools.Enum.StringEnum(
+	"Type",
+	"Field",
+	"Method" );
+
+
+/// <enum>
+/// Represents the visibility of a member.
+/// </enum>
+/// <field name="Public">Specifies that the member is accessible from the global code.</field>
+/// <field name="Protected">Specifies that the member is accessible from the class internal and from derived code.</field>
+/// <field name="Private">Specifies that the member is accessible from the class internal only.</field>
+JSTools.Reflection.MemberVisibility = new JSTools.Enum.StringEnum(
+	"Public",
+	"Protected",
+	"Private" );
+
+
 /// <class>
 /// Type class, used for reflection and inherit calls. Each object has a type, which
 /// contains the metadata of the members.
@@ -20,18 +44,18 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 	if (!objFunction || typeof(objFunction) != 'function')
 		return;
 
-	var NAME_PATTERN	= "[object {0}]";
+	var NAME_PATTERN = "[object {0}]";
 
-	var _this			= this;
-	var _object			= objToRepresent;
-	var _function		= objFunction;
+	var _this = this;
+	var _object = objToRepresent;
+	var _function = objFunction;
 
-	var _name			= (typeof(strFunctionName) == 'undefined') ? String.Empty : String(strFunctionName);
-	var _toStringName	= String.Format(NAME_PATTERN, _name);
+	var _name = (typeof(strFunctionName) == 'undefined') ? String.Empty : String(strFunctionName);
+	var _toStringName = String.Format(NAME_PATTERN, _name);
 
-	var _guid			= new JSTools.Util.Guid();
-	var _typeParser		= null;
-	var _baseTypes		= [ ];
+	var _guid = new JSTools.Util.Guid();
+	var _typeParser = null;
+	var _baseTypes = [ ];
 
 
 	/// <property type="Boolean">
@@ -71,42 +95,36 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 	/// <param name="objFunctionType" type="Function">Function to check.</param>
 	/// <returns type="Boolean">Returns true, if the given function is equal to the type or a base type
 	/// of this object.</returns>
-	this.IsTypeOf = function(objFunctionType)
+	function IsTypeOf(objFunctionType)
 	{
 		if (typeof(objFunctionType) != 'function')
 			return false;
 
-		var functionType = objFunctionType.toString();
-
-		if (_function.toString() == functionType)
-		{
+		if (String(_function) == String(objFunctionType))
 			return true;
-		}
 
 		var baseTypes = _this.GetBaseTypes();
 
 		for (var i = 0; i < baseTypes.length; ++i)
 		{
 			if (baseTypes[i].IsTypeOf(objFunctionType))
-			{
 				return true;
-			}
 		}
 		return false;
 	}
+	this.IsTypeOf = IsTypeOf;
 
 
 	/// <method>
 	/// Adds the given type as base type to the current type instance.
 	/// </method>
 	/// <param name="objType" type="JSTools.Reflection.Type">Base type to add.</param>
-	this.AddBaseType = function(objType)
+	function AddBaseType(objType)
 	{
 		if (objType && typeof(objType) == 'object' && objType.IsTypeInstance)
-		{
 			_baseTypes.Add(objType);
-		}
 	}
+	this.AddBaseType = AddBaseType;
 
 
 	/// <method>
@@ -114,7 +132,7 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 	/// </method>
 	/// <returns type="Array">Returns the base type instances (JSTools.Reflection.Type)
 	/// of this type instance.</returns>
-	this.GetBaseTypes = function()
+	function GetBaseTypes()
 	{
 		var baseTypes = [ ];
 		_baseTypes.CopyTo(baseTypes);
@@ -127,26 +145,29 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 		}
 		return baseTypes;
 	}
+	this.GetBaseTypes = GetBaseTypes;
 
 
 	/// <method>
 	/// Returns the name of this member.
 	/// </method>
 	/// <returns type="String">Returns the name of this member.</returns>
-	this.GetName = function()
+	function GetName()
 	{
 		return _name;
 	}
+	this.GetName = GetName;
 
 
 	/// <method>
 	/// Returns the member type.
 	/// </method>
 	/// <returns type="JSTools.Reflection.MemberType">Returns the type of this member.</returns>
-	this.GetMemberType = function()
+	function GetMemberType()
 	{
 		return JSTools.Reflection.MemberType.Type;
 	}
+	this.GetMemberType = GetMemberType;
 
 
 	/// <method>
@@ -154,59 +175,66 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 	/// Members should not be used from your code.
 	/// </method>
 	/// <returns type="Boolean">Returns true, if this member is used for internal purposes.</returns>
-	this.IsInternal = function()
+	function IsInternal()
 	{
 		return _this.GetName().StartsWith("__");
 	}
+	this.IsInternal = IsInternal;
 
 
 	/// <method>
 	/// Gets the constructor function object.
 	/// </method>
 	/// <returns type="Function">Returns the constructor function object.</returns>
-	this.GetConstructor = function()
+	function GetConstructor()
 	{
 		return _function;
 	}
+	this.GetConstructor = GetConstructor;
 
 
 	/// <method>
 	/// Checks if the representing object is an array.
 	/// </method>
 	/// <returns type="Boolean">Returns true, if the representing object is an array.</returns>
-	this.IsArray = function()
+	function IsArray()
 	{
 		return (_function == Array);
 	}
+	this.IsArray = IsArray;
 
 
 	/// <method>
 	/// Checks if the representing object is a function.
 	/// </method>
 	/// <returns type="Boolean">Returns true, if the representing object is a function.</returns>
-	this.IsFunction = function()
+	function IsFunction()
 	{
 		return (typeof(_object) == 'function');
 	}
+	this.IsFunction = IsFunction;
+
 
 	/// <method>
 	/// Checks if the representing object is an enumeration.
 	/// </method>
 	/// <returns type="Boolean">Returns true, if the representing object is an enumeration.</returns>
-	this.IsEnum = function()
+	function IsEnum()
 	{
 		return (_function == JSTools.Enum.FlagsEnum || _function == JSTools.Enum.StringEnum);
 	}
+	this.IsEnum = IsEnum;
 
 
 	/// <method>
 	/// Gets the guid of the current object type.
 	/// </method>
 	/// <returns type="JSTools.Util.Guid">Returns the guid of the current object type.</returns>
-	this.GetGuid = function()
+	function GetGuid()
 	{
 		return _guid;
 	}
+	this.GetGuid = GetGuid;
 
 
 	/// <method>
@@ -214,7 +242,7 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 	/// </method>
 	/// <returns type="String">Returns the NameSpace of this type. If there is no NameSpace,
 	/// you will obtain an empty string.</returns>
-	this.GetNameSpace = function()
+	function GetNameSpace()
 	{
 		if (_name.indexOf(".") != -1)
 		{
@@ -222,6 +250,7 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 		}
 		return String.Empty;
 	}
+	this.GetNameSpace = GetNameSpace;
 
 
 	/// <method>
@@ -230,17 +259,18 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 	/// <param name="strMemberName">Name of the member to search.</param>
 	/// <returns type="JSTools.Reflection.IMemberInfo">Returns the first MethodInfo object with
 	/// the given member name.</returns>
-	this.GetMember = function(strMemberName)
+	function GetMember(strMemberName)
 	{
 		return GetMemberFromArray(this.GetMembers(), strMemberName);
 	}
+	this.GetMember = GetMember;
 
 
 	/// <method>
 	/// Gets all members which are contained in this type.
 	/// </method>
 	/// <returns type="Array">Returns all members which are contained in this type.</returns>
-	this.GetMembers = function()
+	function GetMembers()
 	{
 		var fields = this.GetFields();
 		var methods = this.GetMethods();
@@ -251,6 +281,7 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 
 		return members;
 	}
+	this.GetMembers = GetMembers;
 
 
 	/// <method>
@@ -259,17 +290,18 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 	/// <param name="strFieldName">Name of the member to search.</param>
 	/// <returns type="JSTools.Reflection.FieldInfo">Returns the first FieldInfo object with
 	/// the given member name.</returns>
-	this.GetField = function(strFieldName)
+	function GetField(strFieldName)
 	{
 		return GetMemberFromArray(this.GetFields(), strFieldName);
 	}
+	this.GetField = GetField;
 
 
 	/// <method>
 	/// Gets all FieldInfo members of this type.
 	/// </method>
 	/// <returns type="Array">Returns all JSTools.Reflection.FieldInfo members of this type.</returns>
-	this.GetFields = function()
+	function GetFields()
 	{
 		var fields = [ ];
 
@@ -293,6 +325,7 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 
 		return fields;
 	}
+	this.GetFields = GetFields;
 
 
 	/// <method>
@@ -301,17 +334,18 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 	/// <param name="strMethodName">Name of the member to search.</param>
 	/// <returns type="JSTools.Reflection.MethodInfo">Returns the first FieldInfo object with
 	/// the given member name.</returns>
-	this.GetMethod = function(strMethodName)
+	function GetMethod(strMethodName)
 	{
 		return GetMemberFromArray(this.GetMethods(), strMethodName);
 	}
+	this.GetMethod = GetMethod;
 
 
 	/// <method>
 	/// Gets all MethodInfo members of this type.
 	/// </method>
 	/// <returns type="Array">Returns all JSTools.Reflection.MethodInfo members of this type.</returns>
-	this.GetMethods = function()
+	function GetMethods()
 	{
 		var methods = [ ];
 
@@ -335,6 +369,7 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 
 		return methods;
 	}
+	this.GetMethods = GetMethods;
 
 
 	/// <method>
@@ -416,27 +451,3 @@ JSTools.Reflection.Type = function(objToRepresent, objFunction, strFunctionName)
 
 // implement JSTools.Reflection.IMemberInfo interface
 JSTools.Reflection.Type.prototype = new JSTools.Reflection.IMemberInfo();
-
-
-/// <enum>
-/// Represents the type of a member.
-/// </enum>
-/// <field name="Type">Specifies that the member is a class (Type class).</field>
-/// <field name="Field">Specifies that the member is a field (FieldInfo class).</field>
-/// <field name="Method">Specifies that the member is a method (MethodInfo class).</field>
-JSTools.Reflection.MemberType = new JSTools.Enum.StringEnum(
-	"Type",
-	"Field",
-	"Method" );
-
-
-/// <enum>
-/// Represents the visibility of a member.
-/// </enum>
-/// <field name="Public">Specifies that the member is accessible from the global code.</field>
-/// <field name="Protected">Specifies that the member is accessible from the class internal and from derived code.</field>
-/// <field name="Private">Specifies that the member is accessible from the class internal only.</field>
-JSTools.Reflection.MemberVisibility = new JSTools.Enum.StringEnum(
-	"Public",
-	"Protected",
-	"Private" );

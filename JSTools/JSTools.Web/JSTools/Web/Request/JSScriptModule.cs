@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -31,7 +23,8 @@ using System.Web;
 
 using JSTools.Config;
 using JSTools.Config.ScriptFileManagement;
-using JSTools.Web.Config;
+using JSTools.Context;
+using JSTools.Context.Cache;
 
 namespace JSTools.Web.Request
 {
@@ -45,35 +38,13 @@ namespace JSTools.Web.Request
 		// Declarations
 		//--------------------------------------------------------------------
 
-		/// <summary>
-		/// Application path key. (string)
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public const string RENDER_HANDLER_APPLICATION_KEY = "JSScriptModule_Application_Attribute";
+		private const string CONTENT_LENGTH_HEADER = "Content-Length";
 
+		private bool _isDisposed = false;
 
-		/// <summary>
-		/// Render context of the file. (StringBuilder)
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public const string RENDER_HANDLER_CONTEXT_KEY = "JSScriptModule_Context_Attribute";
-
-
-		/// <summary>
-		/// Expiration date of the file. (DateTime)
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public const string RENDER_HANDLER_DATE_EXPIRE = "JSScriptModule_Date_Expired";
-
-
-		/// <summary>
-		/// Last update of the file. (DateTime)
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public const string RENDER_HANDLER_LAST_UPDATED = "JSScriptModule_Date_Modified";
-
-		private const			string		CONTENT_LENGTH_HEADER	= "Content-Length";
-
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -86,27 +57,23 @@ namespace JSTools.Web.Request
 		{
 		}
 
-
-		//--------------------------------------------------------------------
-		// Methods
-		//--------------------------------------------------------------------
-
 		/// <summary>
-		/// <see cref="System.Web.IHttpModule.Init"/>
+		/// Releases the current instance. Follows the dispose pattern.
 		/// </summary>
-		public void Init(HttpApplication context)
+		~JSScriptModule()
 		{
-			context.BeginRequest += new EventHandler(OnBeginRequest);
+			Dispose(true);
+			// This object will be cleaned up by the Dispose method.
+			// Therefore, you should call GC.SupressFinalize to
+			// take this object off the finalization queue 
+			// and prevent finalization code for this object
+			// from executing a second time.
+			GC.SuppressFinalize(this);
 		}
 
-
-		/// <summary>
-		/// <see cref="System.Web.IHttpModule.Dispose"/>
-		/// </summary>
-		public void Dispose()
-		{
-		}
-
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Handles a request begin.
@@ -117,18 +84,10 @@ namespace JSTools.Web.Request
 		{
 			try
 			{
-				HttpApplication application = (sender as HttpApplication);
-				JSScriptFileHandler handler = JSToolsWebConfiguration.Instance.Configuration.ScriptFileHandler;
-
-				if (Path.GetExtension(application.Request.Path) == handler.ScriptExtension)
-				{
-					AJSToolsScriptFileSection section = handler.GetSection(GetSectionPathFromUri(application.Request));
-
-					if (section != null)
-					{
-						ProcessRequestedConfigScript(application.Context, section);
-					}
-				}
+				IScriptContainer requestedItem = JSToolsWebContext.Instance.GetCachedItemByPath(((HttpApplication)sender).Request.Path);
+				
+				if (requestedItem != null)
+					RespondRequestedItem((HttpApplication)sender, requestedItem);
 			}
 			catch (ThreadAbortException)
 			{
@@ -138,142 +97,86 @@ namespace JSTools.Web.Request
 			}
 			catch (Exception e)
 			{
-				throw new HttpException(500, "Internal Server Error! Error description: " + e.Message, e);
+				throw new HttpException(500, "Internal Server Error. Error description: " + e.Message, e);
 			}
 		}
 
+		//--------------------------------------------------------------------
+		// Methods
+		//--------------------------------------------------------------------
 
+		#region Dispose Pattern
 		/// <summary>
-		/// Writes the requested config file into the response stream.
+		/// <see cref="System.Web.IHttpModule.Dispose"/>
 		/// </summary>
-		/// <param name="context">Encapsulates all HTTP-specific information about an individual HTTP request.</param>
-		private void ProcessRequestedConfigScript(HttpContext context, AJSToolsScriptFileSection requestedSection)
+		public void Dispose()
 		{
-			// create render ticket
-			RenderProcessTicket ticket = new RenderProcessTicket();
-
-			// add required items to render the configuration
-			ticket.Items[RENDER_HANDLER_APPLICATION_KEY] = context.Request.ApplicationPath;
-			ticket.Items[RENDER_HANDLER_CONTEXT_KEY] = new StringBuilder();
-			ticket.Items[RENDER_HANDLER_DATE_EXPIRE] = null;
-			ticket.Items[RENDER_HANDLER_LAST_UPDATED] = null;
-
-			// create render handler for rendering the configuration
-			ticket.AddRenderHandler(new JSScriptModuleRenderHandler(requestedSection));
-
-			// render configuration
-			JSToolsWebConfiguration.Instance.Configuration.Render(ticket);
-
-			// send created script to the client, this procedure may fire a ThreadAbortException
-			SendResponse(context, ticket);
+			Dispose(true);
 		}
 
+		/// <summary>
+		/// Dispose resources associated with the current instance.
+		/// </summary>
+		/// <param name="disposing">True to clean up external managed resources.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (_isDisposed)
+			{
+				if (!disposing)
+				{
+					// clean up external referenced resources
+					// -> call _member.Dispose() method
+				}
+
+				// clean up unmanaged resources
+				_isDisposed = true;
+			}
+		}
+		#endregion
 
 		/// <summary>
-		/// Initializes the response and sends the given string to the client browser.
+		/// <see cref="System.Web.IHttpModule.Init"/>
 		/// </summary>
-		/// <param name="context">Context into which should be written.</param>
-		/// <param name="toWrite">Ticket (script) to write.</param>
-		private void SendResponse(HttpContext context, RenderProcessTicket toWrite)
+		public void Init(HttpApplication context)
+		{
+			context.BeginRequest += new EventHandler(OnBeginRequest);
+		}
+
+		private void RespondRequestedItem(HttpApplication currentApp, IScriptContainer toRespond)
 		{
 			// clear response before writing
-			context.Response.Clear();
+			currentApp.Response.Clear();
 
 			// buffer script output
-			context.Response.BufferOutput = true;
+			currentApp.Response.BufferOutput = true;
 
 			// init content type
-			context.Response.ContentType = JSToolsWebConfiguration.Instance.Configuration.ScriptFileHandler.ContentType;
+			currentApp.Response.ContentType = JSToolsWebContext.Instance.Configuration.ScriptFileHandler.ContentType;
 
-			InitCacheHeaders(context.Response, toWrite);
+			#region Enable client side cache.
 
-			// write rendered configuration into the output stream
-			if ((toWrite.Items[RENDER_HANDLER_CONTEXT_KEY] as StringBuilder) != null)
+			if (toRespond.ExpirationTime != DateTime.MinValue)
 			{
-				string contentToWrite = (toWrite.Items[RENDER_HANDLER_CONTEXT_KEY] as StringBuilder).ToString();
-				byte[] bytes = context.Response.ContentEncoding.GetBytes(contentToWrite);
-
-				context.Response.AppendHeader(CONTENT_LENGTH_HEADER, bytes.Length.ToString());
-				context.Response.BinaryWrite(bytes);
+				// init cache headers
+				currentApp.Response.Cache.SetLastModified(toRespond.LastUpdate);
+				currentApp.Response.Cache.SetCacheability(HttpCacheability.Public);
+				currentApp.Response.Cache.SetExpires(toRespond.ExpirationTime);
 			}
+
+			#endregion
+
+			#region Write rendered script data into the output stream.
+
+			byte[] bytes = currentApp.Response.ContentEncoding.GetBytes(toRespond.GetCachedCode());
+
+			currentApp.Response.AppendHeader(CONTENT_LENGTH_HEADER, bytes.Length.ToString());
+			currentApp.Response.BinaryWrite(bytes);
+
+			#endregion
 
 			// flush and quit response
-			context.Response.Flush();
-			context.Response.End();
-		}
-
-
-		/// <summary>
-		/// Initializes the headers, if they are provided by the JSScriptModuleRenderHandler
-		/// instance.
-		/// </summary>
-		/// <param name="toInit">Response to initialize.</param>
-		/// <param name="toWrite">Ticket (script) to write.</param>
-		private void InitCacheHeaders(HttpResponse toInit, RenderProcessTicket toWrite)
-		{
-			if (toWrite.Items[RENDER_HANDLER_LAST_UPDATED] != null
-				&& toWrite.Items[RENDER_HANDLER_LAST_UPDATED].GetType() == typeof(DateTime))
-			{
-				toInit.Cache.SetLastModified((DateTime)toWrite.Items[RENDER_HANDLER_LAST_UPDATED]);
-			}
-
-			if (toWrite.Items[RENDER_HANDLER_DATE_EXPIRE] != null
-				&& toWrite.Items[RENDER_HANDLER_DATE_EXPIRE].GetType() == typeof(DateTime))
-			{
-				toInit.Cache.SetExpires((DateTime)toWrite.Items[RENDER_HANDLER_DATE_EXPIRE]);
-			}
-
-			// enable client side cache
-			toInit.Cache.SetCacheability(HttpCacheability.Public);
-		}
-
-
-		/// <summary>
-		/// Gets the section path from the given uri.
-		/// </summary>
-		/// <param name="toGetSection">Uri, which contains the section path.</param>
-		/// <returns>Returns a valid JSTools config section path.</returns>
-		private string GetSectionPathFromUri(HttpRequest toGetSection)
-		{
-			if (toGetSection.Url.AbsolutePath == null || toGetSection.Url.AbsolutePath == string.Empty)
-				return string.Empty;
-
-			string sectionPath = GetValidSectionStart(toGetSection.ApplicationPath, toGetSection.Url.AbsolutePath);
-			return GetValidSectionEnd(sectionPath);
-		}
-
-
-		/// <summary>
-		/// Gets a valid section path start string.
-		/// </summary>
-		/// <param name="toCheck">Section path to check.</param>
-		/// <returns>Returns the validated string.</returns>
-		private string GetValidSectionStart(string trimStart, string toCheck)
-		{
-			string trim = (trimStart.EndsWith("/") ? trimStart : trimStart + "/");
-
-			if (toCheck.StartsWith(trim))
-			{
-				return toCheck.Substring(trim.Length);
-			}
-			return toCheck;
-		}
-
-
-		/// <summary>
-		/// Gets a valid section path end string.
-		/// </summary>
-		/// <param name="toCheck">Section path to check.</param>
-		/// <returns>Returns the validated string.</returns>
-		private string GetValidSectionEnd(string toCheck)
-		{
-			int indexOfDot = toCheck.LastIndexOf('.');
-
-			if (indexOfDot != -1)
-			{
-				return toCheck.Substring(0, indexOfDot);
-			}
-			return toCheck;
+			currentApp.Response.Flush();
+			currentApp.Response.End();
 		}
 	}
 }

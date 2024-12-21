@@ -2,33 +2,33 @@ function ILayerValueContainer(objBaseLayerGetter)
 {
 	// returns the content of the layer. the default
 	// value of this property is [nothing]
-	this.GetContent			= function() { };
+	this.GetContent = function() { };
 
 	// returns the margin to the left border
-	this.GetLeftMargin		= function() { };
+	this.GetLeftMargin = function() { };
 
 	// returns the margin to the top border
-	this.GetTopMargin		= function() { };
+	this.GetTopMargin = function() { };
 
 	// returns the z-index of the layer
-	this.GetZIndex			= function() { };
+	this.GetZIndex = function() { };
 
 	// returns the layer clip object
-	this.GetClip			= function() { };
+	this.GetClip = function() { };
 
 	// sets the visibility of this layer. false means the layer hides,
 	// true means the layer visualizes
-	this.GetVisibility		= function() { };
+	this.GetVisibility = function() { };
 	
 	// returns the width of the layer
-	this.GetWidth			= function() { };
+	this.GetWidth = function() { };
 
 	// returns the height of the layer
-	this.GetHeight			= function() { };
+	this.GetHeight = function() { };
 	
 	// returns the source of the background image object
-	this.GetBackgroundImage	= function() { };
+	this.GetBackgroundImage = function() { };
 
 	// returns the background color
-	this.GetBackgroundColor	= function() { };
+	this.GetBackgroundColor = function() { };
 }

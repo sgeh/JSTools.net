@@ -6,14 +6,14 @@ function WindowEvent()
 		return null;
 	}
 
-	var _errorEvent				= new EventSubject("onerror");
-	var _windowEventNames		=
+	var _errorEvent = new EventSubject("onerror");
+	var _windowEventNames =
 	[
 		// window events
 		"onblur", "onfocus", "onload", "onresize", "onunload"
 	];
 
-	var _documentEventNames		=
+	var _documentEventNames =
 	[
 		// key events
 		"onkeydown", "onkeypress", "onkeyup",
@@ -21,12 +21,12 @@ function WindowEvent()
 		"onclick", "ondblclick", "onmousedown", "onmousemove", "onmouseout", "onmouseover", "onmouseup"
 	];
 
-	var _windowEvents			= new ElementEvent(window, _windowEventNames);
-	var _documentEvents			= new ElementEvent(window.document, _documentEventNames);
+	var _windowEvents = new ElementEvent(window, _windowEventNames);
+	var _documentEvents = new ElementEvent(window.document, _documentEventNames);
 
-	this.DocumentLoaded			= false;
-	this.MouseX					= null;
-	this.MouseY					= null;
+	this.DocumentLoaded = false;
+	this.MouseX = null;
+	this.MouseY = null;
 
 
 	// adds an error event trigger to the error subject container
@@ -129,7 +129,7 @@ function WindowEvent()
 
 	this.AddEventListener("onload", OnDocumentLoad);
 	this.AddEventListener("onmousemove", OnMouseMove);
-	window.onerror = OnError;
+//	window.onerror = OnError;
 }
 WindowEvent.prototype.toString = function()
 {

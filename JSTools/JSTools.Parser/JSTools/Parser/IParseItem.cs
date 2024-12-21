@@ -29,7 +29,7 @@ namespace JSTools.Parser
 	public interface IParseItem
 	{
 		//--------------------------------------------------------------------
-		// Declarations
+		// Properties
 		//--------------------------------------------------------------------
 
 		/// <summary>
@@ -39,7 +39,6 @@ namespace JSTools.Parser
 		{
 			get;
 		}
-
 
 		/// <summary>
 		/// Returns true, if the ending character can not be a start character
@@ -52,7 +51,6 @@ namespace JSTools.Parser
 			get;
 		}
 
-
 		//--------------------------------------------------------------------
 		// Methods
 		//--------------------------------------------------------------------
@@ -62,7 +60,6 @@ namespace JSTools.Parser
 		/// </summary>
 		INode CreateNode();
 
-
 		/// <summary>
 		/// Returns true, if this parse item begins at the specified index.
 		/// </summary>
@@ -71,7 +68,6 @@ namespace JSTools.Parser
 		/// <param name="index">Long value, which represents the current scan index.</param>
 		bool Begin(INode parentNode, string parseString, int index);
 
-
 		/// <summary>
 		/// Returns true, if the given char ends this parse item.
 		/// </summary>
@@ -79,7 +75,6 @@ namespace JSTools.Parser
 		/// <param name="parseString">String, which should be parsed.</param>
 		/// <param name="index">Long value, which represents the current scan index.</param>
 		bool End(INode parentNode, string parseString, int index);
-
 
 		/// <summary>
 		/// Sets the parent parser, which can be used to create recursive calls.

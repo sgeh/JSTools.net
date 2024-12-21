@@ -45,7 +45,6 @@ namespace JSTools.Web.UI
 
 		private const string SCRIPT_SECTION = "// Section {0}";
 
-
 		/// <summary>
 		/// Name of the section to render with this render handler.
 		/// </summary>
@@ -53,7 +52,6 @@ namespace JSTools.Web.UI
 		{
 			get { return JSScriptLoaderHandlerFactory.SECTION_NAME; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -65,7 +63,6 @@ namespace JSTools.Web.UI
 		public JSScriptLoaderRenderHandler()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -104,7 +101,6 @@ namespace JSTools.Web.UI
 			controls.Add(new LiteralControl("\n"));
 		}
 
-
 		/// <summary>
 		/// Renders the script loader settings.
 		/// </summary>
@@ -127,7 +123,6 @@ namespace JSTools.Web.UI
 			return toWrite.ToString();
 		}
 
-
 		/// <summary>
 		/// Returns the script file location, which should be used for the using directive.
 		/// </summary>
@@ -147,7 +142,6 @@ namespace JSTools.Web.UI
 			}
 		}
 
-
 		/// <summary>
 		/// Renders a variable and assignes the given value with double quotes (").
 		/// </summary>
@@ -162,7 +156,6 @@ namespace JSTools.Web.UI
 			toWrite.Append(variableValue);
 			toWrite.Append("\";");
 		}
-
 
 		/// <summary>
 		/// Renders a variable and assignes the given value.

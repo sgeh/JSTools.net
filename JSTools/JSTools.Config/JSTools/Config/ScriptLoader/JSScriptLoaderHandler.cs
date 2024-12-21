@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Configuration;
 using System.Text;
@@ -41,27 +33,28 @@ namespace JSTools.Config.ScriptLoader
 		// Declarations
 		//--------------------------------------------------------------------
 
-		public	readonly	string							SECTION_NAME;
+		private const string REQUIRES_ATTIRB = "requires";
+		private const string LOCATION_ATTIRB = "scriptFileLocation";
+		private const string INSERT_PREFIX_ATTIRB = "insertAppPrefix";
+		private const string ENCODE_LOCATION_ATTIRB = "encodeFileLocation";
 
-		private	const		string							REQUIRES_ATTIRB			= "requires";
-		private	const		string							LOCATION_ATTIRB			= "scriptFileLocation";
-		private	const		string							INSERT_PREFIX_ATTIRB	= "insertAppPrefix";
-		private	const		string							ENCODE_LOCATION_ATTIRB	= "encodeFileLocation";
+		private string _requiredModule = "";
+		private string _location = "";
+		private bool _insertLocationPrefix = false;
+		private bool _encodeLocation = false;
+		private string _sectionName = string.Empty;
 
-		private				string							_requiredModule			= "";
-		private				string							_location				= "";
-		private				bool							_insertLocationPrefix	= false;
-		private				bool							_encodeLocation			= false;
-
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Returns the name of the representing element.
 		/// </summary>
 		public string SectionName
 		{
-			get { return SECTION_NAME; }
+			get { return _sectionName; }
 		}
-
 
 		/// <summary>
 		/// Returns the location, where the scripts are stored.
@@ -71,7 +64,6 @@ namespace JSTools.Config.ScriptLoader
 			get { return _location; }
 		}
 
-
 		/// <summary>
 		/// Returns, if the current application path should be inserted as location prefix.
 		/// </summary>
@@ -79,7 +71,6 @@ namespace JSTools.Config.ScriptLoader
 		{
 			get { return _insertLocationPrefix; }
 		}
-
 
 		/// <summary>
 		/// Returns, if the inserted location ({0} pattern) should be encoded.
@@ -89,7 +80,6 @@ namespace JSTools.Config.ScriptLoader
 			get { return _encodeLocation; }
 		}
 
-
 		/// <summary>
 		/// Gets the name of the required module.
 		/// </summary>
@@ -97,7 +87,6 @@ namespace JSTools.Config.ScriptLoader
 		{
 			get { return _requiredModule; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -113,18 +102,21 @@ namespace JSTools.Config.ScriptLoader
 		public JSScriptLoaderHandler(XmlNode scriptLoaderNode, IJSToolsConfiguration ownerConfig, string nodeName) : base(ownerConfig)
 		{
 			if (scriptLoaderNode == null)
-				throw new ArgumentNullException("scriptLoaderNode", "The given xml section contains a null reference!");
+				throw new ArgumentNullException("scriptLoaderNode", "The given xml section contains a null reference.");
 
 			if (nodeName == null)
-				throw new ArgumentNullException("nodeName", "The given node name contains a null reference!");
+				throw new ArgumentNullException("nodeName", "The given node name contains a null reference.");
 
-			SECTION_NAME			= nodeName;
-			_requiredModule			= JSToolsXmlFunctions.GetAttributeFromNode(scriptLoaderNode, REQUIRES_ATTIRB);
-			_location				= JSToolsXmlFunctions.GetAttributeFromNode(scriptLoaderNode, LOCATION_ATTIRB);
-			_insertLocationPrefix	= JSToolsXmlFunctions.GetBoolFromNodeValue(scriptLoaderNode.Attributes[INSERT_PREFIX_ATTIRB]);
-			_encodeLocation			= JSToolsXmlFunctions.GetBoolFromNodeValue(scriptLoaderNode.Attributes[ENCODE_LOCATION_ATTIRB]);
+			_sectionName = nodeName;
+			_requiredModule = JSToolsXmlFunctions.GetAttributeFromNode(scriptLoaderNode, REQUIRES_ATTIRB);
+			_location = JSToolsXmlFunctions.GetAttributeFromNode(scriptLoaderNode, LOCATION_ATTIRB);
+			_insertLocationPrefix = JSToolsXmlFunctions.GetBoolFromNodeValue(scriptLoaderNode.Attributes[INSERT_PREFIX_ATTIRB]);
+			_encodeLocation = JSToolsXmlFunctions.GetBoolFromNodeValue(scriptLoaderNode.Attributes[ENCODE_LOCATION_ATTIRB]);
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -139,10 +131,10 @@ namespace JSTools.Config.ScriptLoader
 		public override void CheckRelations()
 		{
 			if (OwnerConfiguration.ScriptFileHandler == null)
-				throw new ConfigurationException("The script file handling section was not initialized!");
+				throw new ConfigurationException("The script file handling section was not initialized.");
 
 			if (OwnerConfiguration.ScriptFileHandler.GetModuleByName(_requiredModule) == null)
-				throw new InvalidOperationException("Could not find a module with the name '" + _requiredModule + "'!");
+				throw new InvalidOperationException("Could not find a module with the name '" + _requiredModule + "'.");
 		}
 	}
 }

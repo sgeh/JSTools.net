@@ -29,7 +29,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Web.UI;
 
-
 namespace JSTools.Controls
 {
 	/// <summary>
@@ -45,7 +44,6 @@ namespace JSTools.Controls
 		private int		_topMargin	= 0;
 		private	int		_leftMargin	= 0;
 
-
 		/// <summary>
 		/// Sets or gets the margin to the top border of the window
 		/// </summary>
@@ -55,7 +53,6 @@ namespace JSTools.Controls
 			get { return _topMargin; }
 			set { _topMargin = value; }
 		}
-
 
 		/// <summary>
 		/// Sets or gets the margin to the left border of the window
@@ -67,7 +64,6 @@ namespace JSTools.Controls
 			set { _leftMargin = value; }
 		}
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -78,7 +74,6 @@ namespace JSTools.Controls
 		public Layer()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods

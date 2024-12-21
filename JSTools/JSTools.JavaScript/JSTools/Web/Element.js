@@ -2,8 +2,8 @@ namespace("JSTools.Web");
 
 
 /// <class>
-/// Represents an html element tag. Can be used as base class or as html
-/// rendering help.
+/// Represents an html element tag. Can be used as base class or as a help for
+/// rendering html tags.
 /// </class>
 /// <param name="strTagName" type="String">Name of the element to initialize.</param>
 JSTools.Web.Element = function(strTagName)
@@ -14,17 +14,23 @@ JSTools.Web.Element = function(strTagName)
 
 	this.InitType(arguments, "JSTools.Web.Element");
 
-	var _this			= this;
-	var _attributes		= new JSTools.Util.Hashtable();
-	var _tagName		= (strTagName) ? String(strTagName) : String.Empty;
-	var _children		= [ ];
-	var _parent			= null;
+	var _this = this;
+	var _attributes = new JSTools.Util.Hashtable();
+	var _tagName = (strTagName) ? String(strTagName) : String.Empty;
+	var _children = [ ];
+	var _parent = null;
 
 
 	/// <property type="Boolean">
 	/// True to enable html rendering, otherwise false.
 	/// </property>
-	this.Enabled		= true;
+	this.Enabled = true;
+
+
+	/// <property type="Boolean">
+	/// The full end tag will be rendered, if the element has no children.
+	/// </property>
+	this.RenderEndTag = false;
 
 
 	//------------------------------------------------------------------------
@@ -59,10 +65,11 @@ JSTools.Web.Element = function(strTagName)
 	/// </method>
 	/// <returns type="JSTools.Web.Element">Returns the parent instance
 	/// or a null reference.</returns>
-	this.GetParent = function()
+	function GetParent()
 	{
-		return _attributes;
+		return _parent;
 	}
+	this.GetParent = GetParent;
 
 
 	/// <method>
@@ -70,7 +77,7 @@ JSTools.Web.Element = function(strTagName)
 	/// </method>
 	/// <param name="objParent" type="JSTools.Web.Element">Returns the parent instance
 	/// or a null reference.</returns>
-	this.SetParent = function(objParent)
+	function SetParent(objParent)
 	{
 		if (objParent
 			&& typeof(objParent) == 'object'
@@ -79,16 +86,18 @@ JSTools.Web.Element = function(strTagName)
 			_parent = objParent;
 		}
 	}
+	this.SetParent = SetParent;
 
 
 	/// <method>
 	/// Gets the stored attributes.
 	/// </method>
 	/// <returns type="JSTools.Util.Hashtable">Returns the attributes for this element.</returns>
-	this.GetAttributes = function()
+	function GetAttributes()
 	{
 		return _attributes;
 	}
+	this.GetAttributes = GetAttributes;
 
 
 	/// <method>
@@ -96,46 +105,64 @@ JSTools.Web.Element = function(strTagName)
 	/// will be rendered.
 	/// </method>
 	/// <returns type="Array">Returns the child elements.</returns>
-	this.GetControls = function()
+	function GetControls()
 	{
 		return _children;
 	}
+	this.GetControls = GetControls;
 
 
 	/// <method>
 	/// Renders the data stored in this element.
 	/// </method>
 	/// <returns type="String">Returns the html string representation of this object.</returns>
-	this.Render = function()
+	function Render()
 	{
 		if (!_this.Enabled)
 			return String.Empty;
 
-		var renderedString = "<" + _tagName + " ";
+		var renderedString = "<" + _tagName;
 
 		for (var attributeName in _attributes.GetElements())
 		{
-			renderedString += String(attributeName) + "='" + String(_attributes.Get(attributeName)).replace(/'/g, "\\'") + "'";
+			renderedString += " "
+				+ String(attributeName)
+				+ "='"
+				+ String(_attributes.Get(attributeName)).replace(/'/g, "\\'")
+				+ "'";
 		}
 
-		if (_children.length > 0)
+		if (_this.RenderEndTag)
 		{
-			renderedString += ">";
-			
-			for (var i = 0; i < _children.length; ++i)
-			{
-				if (_children[i]
-					&& typeof(_children[i]) == 'object'
-					&& _children[i].IsTypeOf(JSTools.Web.Element))
-				{
-					renderedString += _children[i].Render();
-				}
-			}
-			renderedString += "</" + _tagName + ">";
+			renderedString += ">"
+				+ RenderChildren()
+				+ "</" + _tagName + ">";
 		}
 		else
 		{
-			renderedString += "/>";
+			renderedString += " />";
+		}
+		return renderedString;
+	}
+	this.Render = Render;
+
+
+	/// <method>
+	/// Renders the child elements.
+	/// </method>
+	/// <returns type="String">Returns the rendered child element string.</returns>
+	function RenderChildren()
+	{
+		var renderedString = String.Empty;
+		
+		for (var i = 0; i < _children.length; ++i)
+		{
+			if (_children[i]
+				&& typeof(_children[i]) == 'object'
+				&& _children[i].IsTypeOf(JSTools.Web.Element))
+			{
+				renderedString += _children[i].Render();
+			}
 		}
 		return renderedString;
 	}

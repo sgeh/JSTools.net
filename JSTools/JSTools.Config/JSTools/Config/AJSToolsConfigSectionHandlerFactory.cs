@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Xml;
 
@@ -54,6 +46,10 @@ namespace JSTools.Config
 		// Declarations
 		//--------------------------------------------------------------------
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
+
 		/// <summary>
 		/// Name of the section node.
 		/// </summary>
@@ -62,6 +58,13 @@ namespace JSTools.Config
 			get;
 		}
 
+		//--------------------------------------------------------------------
+		// Constructors / Destructor
+		//--------------------------------------------------------------------
+
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods

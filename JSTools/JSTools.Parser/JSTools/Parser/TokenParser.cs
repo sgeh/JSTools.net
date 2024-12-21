@@ -28,13 +28,16 @@ namespace JSTools.Parser
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private	const	string	GLOBAL_SCOPE	= "Global Parser Scope";
+		private const string GLOBAL_SCOPE = "Global Parser Scope";
 
-		private Hashtable		_parseItems		= null;
-		private	Hashtable		_scopes			= null;
+		private Hashtable _parseItems = null;
+		private Hashtable _scopes = null;
 
-		private	Scope			_globalScope	= null;
+		private Scope _globalScope = null;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Returns the global scope instance, which is used to parse the global context.
@@ -43,7 +46,6 @@ namespace JSTools.Parser
 		{
 			get { return _globalScope; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -61,12 +63,15 @@ namespace JSTools.Parser
 				throw new ArgumentException("Could not parse a string without parse items!", "parseItems");
 
 			_parseItems = new Hashtable(parseItems.Length);
-			_scopes		= new Hashtable();
+			_scopes = new Hashtable();
 			_scopes.Add(GLOBAL_SCOPE, null);
 
 			InitParseItems(parseItems);
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -82,7 +87,6 @@ namespace JSTools.Parser
 			return (toCheck == '\n' || toCheck == '\r' || toCheck == 0x02028 || toCheck == 0x02029);
 		}
 
-
 		/// <summary>
 		/// Checks, if the given char is a valid windows line break.
 		/// </summary>
@@ -93,7 +97,6 @@ namespace JSTools.Parser
 		{
 			return (toCheck.Length > index + 1 && toCheck[index] == 0x0D && toCheck[index + 1] == 0x0A);
 		}
-
 
 		/// <summary>
 		/// Sets the global scope instance, which is used to parse the global context.
@@ -110,7 +113,6 @@ namespace JSTools.Parser
 			_globalScope = GetScopeInstance(GLOBAL_SCOPE);
 		}
 
-
 		/// <summary>
 		/// Returns the parse item with the specified name.
 		/// </summary>
@@ -121,11 +123,10 @@ namespace JSTools.Parser
 			return (IParseItem)_parseItems[itemName];
 		}
 
-
 		/// <summary>
 		/// Searches for a scope with the given name.
 		/// </summary>
-		/// <param name="name">Scope to get.</param>
+		/// <param name="scopeName">Scope to get.</param>
 		/// <returns>Returns the scope with the given name or null, if it does not exist.</returns>
 		public Scope GetScopeInstance(string scopeName)
 		{
@@ -135,7 +136,6 @@ namespace JSTools.Parser
 			}
 			return null;
 		}
-
 
 		/// <summary>
 		/// Creates a new scope instance.
@@ -152,7 +152,7 @@ namespace JSTools.Parser
 			if (parseItems == null)
 				throw new ArgumentNullException("parseItmes", "The given string array contains a null reference!");
 
-			if (name == null || name == String.Empty)
+			if (name == null || name.Length == 0)
 				throw new ArgumentException("Invalid scope name specified.", "name");
 
 			if (_scopes.Contains(name))
@@ -160,7 +160,7 @@ namespace JSTools.Parser
 
 			foreach (string parseItemName in parseItems)
 			{
-				if (parseItemName == null || parseItemName == String.Empty)
+				if (parseItemName == null || parseItemName.Length == 0)
 					throw new ArgumentException("Invalid parser name specified.", "name");
 
 				if (_parseItems[parseItemName] == null)
@@ -169,13 +169,12 @@ namespace JSTools.Parser
 			_scopes.Add(name, parseItems);
 		}
 
-
 		/// <summary>
 		/// Parses the specified string with the given scope. Creates a new GlobalNode instance, in
 		/// which the parsed items will be stored.
 		/// </summary>
 		/// <param name="toParse">String, you'd like to parse.</param>
-		/// <param name="scopeToParse">Name of the scope, which should parse the string.</param>
+		/// <param name="scopeName">Name of the scope, which should parse the string.</param>
 		/// <returns>Returns a INode, which represents the parsed string.</returns>
 		/// <exception cref="ParseItemException">Error while executing the parsing operations.</exception>
 		/// <exception cref="ArgumentNullException">The given scope contains a null reference.</exception>
@@ -195,7 +194,6 @@ namespace JSTools.Parser
 			return ParseScope(toParse, scope);
 		}
 
-
 		/// <summary>
 		/// Parses the specified string with the given scope. Creates a new GlobalNode instance, in
 		/// which the parsed items will be stored.
@@ -209,7 +207,7 @@ namespace JSTools.Parser
 		/// <exception cref="ArgumentNullException">The given parent node contains a null reference.</exception>
 		public INode ParseScope(string toParse, Scope scopeToParse)
 		{
-			if (toParse == null || toParse == string.Empty)
+			if (toParse == null || toParse.Length == 0)
 				return null;
 
 			INode global = new GlobalNode();
@@ -226,13 +224,12 @@ namespace JSTools.Parser
 			return global;
 		}
 
-
 		/// <summary>
 		/// Parses the specified string with the given scope. Fills the children
 		/// into the given parent node instance.
 		/// </summary>
 		/// <param name="toParse">String, you'd like to parse.</param>
-		/// <param name="scopeToParse">Scope, which should parse the string.</param>
+		/// <param name="scopeName">Scope, which should parse the string.</param>
 		/// <param name="parentNode">The parsing result will be filled into this node.</param>
 		/// <exception cref="ParseItemException">Error while executing the parsing operations.</exception>
 		/// <exception cref="ArgumentNullException">The given scope name contains a null reference.</exception>
@@ -252,7 +249,6 @@ namespace JSTools.Parser
 			ParseScope(toParse, scope, parentNode);
 		}
 
-
 		/// <summary>
 		/// Parses the specified string with the given scope. Fills the children
 		/// into the given parent node instance.
@@ -266,7 +262,7 @@ namespace JSTools.Parser
 		/// <exception cref="ArgumentNullException">The given parent node contains a null reference.</exception>
 		public void ParseScope(string toParse, Scope scopeToParse, INode parentNode)
 		{
-			if (toParse == null || toParse == string.Empty)
+			if (toParse == null || toParse.Length == 0)
 				return;
 
 			if (scopeToParse == null)
@@ -277,7 +273,6 @@ namespace JSTools.Parser
 
 			if (parentNode == null)
 				throw new ArgumentNullException("parentNode", "The given parent node contains a null reference!");
-
 
 			try
 			{
@@ -300,7 +295,6 @@ namespace JSTools.Parser
 			}
 		}
 
-
 		/// <summary>
 		/// Parses the specified string. Creates a new GlobalNode instance, in
 		/// which the parsed items will be stored.
@@ -311,7 +305,7 @@ namespace JSTools.Parser
 		/// <exception cref="ParseItemException">Error while executing the parsing operations.</exception>
 		public INode Parse(string toParse)
 		{
-			if (toParse == null || toParse == string.Empty)
+			if (toParse == null || toParse.Length == 0)
 				return null;
 
 			if (_globalScope == null)
@@ -319,7 +313,6 @@ namespace JSTools.Parser
 
 			return ParseScope(toParse, _globalScope);
 		}
-
 
 		/// <summary>
 		/// Initializes the given parse items.

@@ -9,10 +9,8 @@
 /// <param name="strNameSpace" type="String">NameSpace to create, separated by '.'.</param>
 function namespace(strNameSpace)
 {
-	if (namespace.Manager.IsNameSpaceLoaded(strNameSpace))
-		return;
-
-	namespace.Manager.Add(strNameSpace);
+	if (!namespace.Manager.IsNameSpaceLoaded(strNameSpace))
+		namespace.Manager.Add(strNameSpace);
 }
 
 

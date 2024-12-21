@@ -14,20 +14,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
+/*
 using System;
 using System.Text;
 using System.Xml;
 
 using JSTools.Config.ScriptFileManagement;
 using JSTools.Config;
+using JSTools.Context;
 
 namespace JSTools.Web.Request
 {
@@ -44,20 +38,23 @@ namespace JSTools.Web.Request
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private	const	double						EXPIRATION_DAYS		= 2;
-		private	const	string						DEBUG_FILE_MODE		= "document.write({0});\n\n";
-		private	const	string						DEBUG_FILE_FOOTER	= "\n\n\n\n";
-		private	const	string						DEBUG_FILE_HEADER	=
+		private const double EXPIRATION_DAYS = 2;
+		private const string DEBUG_FILE_MODE = "document.write({0});\n\n";
+		private const string DEBUG_FILE_FOOTER = "\n\n\n\n";
+		private const string DEBUG_FILE_HEADER =
 			"//----------------------------------------------------------------------------\n"
 			+ "//--- Source File: {0}\n"
 			+ "//--- Last Update: {1}\n"
 			+ "//----------------------------------------------------------------------------\n\n";
 
-		private			JSScriptFileHandler			_section			= null;
-		private			AJSToolsScriptFileSection	_requestedSection	= null;
-		private			string						_applicationPath	= null;
-		private			StringBuilder				_renderContext		= null;
+		private JSScriptFileHandler _section = null;
+		private AJSToolsScriptFileSection _requestedSection = null;
+		private string _applicationPath = null;
+		private StringBuilder _renderContext = null;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Name of the section to render with this render handler.
@@ -66,7 +63,6 @@ namespace JSTools.Web.Request
 		{
 			get { return JSScriptFileSectionHandlerFactory.SECTION_NAME; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -86,6 +82,9 @@ namespace JSTools.Web.Request
 			_requestedSection = requestedSection;
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -101,7 +100,7 @@ namespace JSTools.Web.Request
 		/// <exception cref="ArgumentException">The given ticket does not contain an application path item.</exception>
 		/// <exception cref="ArgumentException">The given ticket does not contain a render context item.</exception>
 		public void RenderSection(RenderProcessTicket ticket, AJSToolsSection sectionToRender)
-		{
+		{/*
 			_section = (sectionToRender as JSScriptFileHandler);
 			_applicationPath = (ticket.Items[JSScriptModule.RENDER_HANDLER_APPLICATION_KEY] as string);
 			_renderContext = (ticket.Items[JSScriptModule.RENDER_HANDLER_CONTEXT_KEY] as StringBuilder);
@@ -115,30 +114,15 @@ namespace JSTools.Web.Request
 			if (_renderContext == null)
 				throw new ArgumentException("The given ticket does not contain a render context item!");
 
-			InitScriptVersion();
-
-			if ((_requestedSection as JSScript) != null)
+			if (_requestedSection is JSScript)
 			{
 				RenderScript((JSScript)_requestedSection, ticket, true);
 			}
-			else if ((_requestedSection as JSModule) != null)
+			else if (_requestedSection is JSModule)
 			{
 				RenderModule((JSModule)_requestedSection, ticket);
 			}
 		}
-
-
-		/// <summary>
-		/// Initializes the script version of the cache.
-		/// </summary>
-		private void InitScriptVersion()
-		{
-			if (JSScriptCache.Instance.Version != _section.ScriptVersion)
-			{
-				JSScriptCache.Instance.Version = _section.ScriptVersion;
-			}
-		}
-
 
 		/// <summary>
 		/// Renders the given module to the client.
@@ -161,7 +145,6 @@ namespace JSTools.Web.Request
 			}
 		}
 
-
 		/// <summary>
 		/// Renders the given module in debug file mode to the client.
 		/// </summary>
@@ -174,7 +157,6 @@ namespace JSTools.Web.Request
 					_section.GetScriptFileJavaScriptTag(script, _applicationPath)));
 			}
 		}
-
 
 		/// <summary>
 		/// Renders the given module in debug module mode to the client.
@@ -195,7 +177,6 @@ namespace JSTools.Web.Request
 			}
 		}
 
-
 		/// <summary>
 		/// Renders the given module in release mode to the client.
 		/// </summary>
@@ -209,7 +190,6 @@ namespace JSTools.Web.Request
 			}
 		}
 
-
 		/// <summary>
 		/// Render given script instance (with crunching in debug mode).
 		/// </summary>
@@ -220,19 +200,15 @@ namespace JSTools.Web.Request
 		{
 			// render headers
 			if (renderUpdateHeader)
-			{
-				ticket.Items[JSScriptModule.RENDER_HANDLER_LAST_UPDATED] = JSScriptCache.Instance.GetLastUpdateOfScript(scriptToRender.PhysicalPath);
-			}
+				ticket.Items[JSScriptModule.RENDER_HANDLER_LAST_UPDATED] = JSToolsContext.Instance.GetLastUpdateOfScript(scriptToRender.PhysicalPath);
 
 			// set cache header, if we are not in debug mode
 			if (_section.DebugMode == DebugMode.None)
-			{
 				ticket.Items[JSScriptModule.RENDER_HANDLER_DATE_EXPIRE] = DateTime.Now.AddDays(EXPIRATION_DAYS);
-			}
 
 			// crunch, if we are not in debug mode
 			_renderContext.Append(JSScriptCache.Instance.GetScript(scriptToRender.PhysicalPath, (_section.DebugMode == DebugMode.None)));
 			_renderContext.Append("\n");
 		}
 	}
-}
+}*/

@@ -70,8 +70,8 @@ function DocumentChecker()
 	{
 		if(IsRefreshRequired(document.images, _checkedImages))
 		{
-			_checkedImages			= RefreshDocumentObject(document.images);
-			_checkedImages.startTag	= "img";
+			_checkedImages = RefreshDocumentObject(document.images);
+			_checkedImages.startTag = "img";
 		}
 	}
 
@@ -81,8 +81,8 @@ function DocumentChecker()
 	{
 		if(IsRefreshRequired(document.forms, _checkedForms))
 		{
-			_checkedForms			= RefreshDocumentObject(document.forms);
-			_checkedForms.startTag	= "form";
+			_checkedForms = RefreshDocumentObject(document.forms);
+			_checkedForms.startTag = "form";
 		}
 	}
 
@@ -92,16 +92,16 @@ function DocumentChecker()
 	{
 		if(IsRefreshRequired(document.links, _checkedLinks))
 		{
-			_checkedLinks			= RefreshDocumentObject(document.links);
-			_checkedLinks.startTag	= "a";
+			_checkedLinks = RefreshDocumentObject(document.links);
+			_checkedLinks.startTag = "a";
 		}
 	}
 
 
 
-	var _checkedImages		= new Array();
-	var _checkedLinks		= new Array();
-	var _checkedForms		= new Array();
+	var _checkedImages = new Array();
+	var _checkedLinks = new Array();
+	var _checkedForms = new Array();
 }
 DocumentChecker.prototype.toString = function()
 {

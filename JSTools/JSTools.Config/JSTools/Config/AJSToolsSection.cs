@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Collections;
 using System.Text;
@@ -38,8 +30,11 @@ namespace JSTools.Config
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private	IJSToolsConfiguration _owner = null;
+		private IJSToolsConfiguration _owner = null;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Returns the configuration instance which has created this FileHandler.
@@ -48,7 +43,6 @@ namespace JSTools.Config
 		{
 			get { return _owner; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -62,11 +56,10 @@ namespace JSTools.Config
 		public AJSToolsSection(IJSToolsConfiguration owner)
 		{
 			if (owner == null)
-				throw new ArgumentNullException("owner", "The specified owner configuration contains a null reference!");
+				throw new ArgumentNullException("owner", "The specified owner configuration contains a null reference.");
 
 			_owner = owner;
 		}
-
 
 		/// <summary>
 		/// Creates a new top level AJSToolsSection instance.
@@ -75,9 +68,12 @@ namespace JSTools.Config
 		public AJSToolsSection()
 		{
 			if ((_owner = (this as IJSToolsConfiguration)) == null)
-				throw new InvalidOperationException("This instance is not derived from IJSToolsConfiguration!");
+				throw new InvalidOperationException("This instance is not derived from IJSToolsConfiguration.");
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods

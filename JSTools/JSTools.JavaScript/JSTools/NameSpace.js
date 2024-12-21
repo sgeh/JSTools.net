@@ -1,7 +1,8 @@
 /// <class>
 /// Creates new NameSpaces and assignes them to the global object. Manages
 /// the namespace directive. The functions will be cached in the global (top)
-/// window object. Thus script files will not be loaded twice.
+/// window object. Thus script files will not be loaded twice if they are specified
+/// in the same window object.
 /// </class>
 /// <param name="objCurrent" type="Object">The current scope object (this).</param>
 /// <param name="objTop" type="Object">The top scope object (this.top).</param>
@@ -13,9 +14,9 @@ function NameSpaceManager(objCurrent, objTop)
 
 	var NAME_SPACE_SEPARATOR = ".";
 
-	var _this		= this;
-	var _scope		= (typeof(objCurrent) != 'object' || !objCurrent) ? new Object() : objCurrent;
-	var _global		= (typeof(objTop) != 'object' || !objTop) ? new Object() : objTop;
+	var _this = this;
+	var _scope = (typeof(objCurrent) != 'object' || !objCurrent) ? new Object() : objCurrent;
+	var _global = (typeof(objTop) != 'object' || !objTop) ? new Object() : objTop;
 
 
 	//------------------------------------------------------------------------
@@ -34,11 +35,11 @@ function NameSpaceManager(objCurrent, objTop)
 	// Methods
 	//------------------------------------------------------------------------
 
-	/// <method>
+	/// <method scope="public">
 	/// Adds the given NameSpace to the global object.
 	/// </method>
 	/// <param name="strNameSpace" type="String">NameSpace to create, separated by '.'.</param>
-	this.Add = function(strNameSpace)
+	function Add(strNameSpace)
 	{
 		if (typeof(strNameSpace) != 'string')
 			return;
@@ -54,14 +55,15 @@ function NameSpaceManager(objCurrent, objTop)
 		// copy references into the scope, if there are new global namespaces
 		InitScopeReference(nameSpaces);
 	}
+	this.Add = Add;
 
 
-	/// <method>
+	/// <method scope="public">
 	/// Gets the NameSpace with the given name.
 	/// </method>
 	/// <param name="strNameSpace" type="String">NameSpace to get, separated by '.'.</param>
 	/// <returns type="NameSpaceObject">Returns the requested NameSpace or a null reference, if nothing was found.</returns>
-	this.GetNameSpace = function(strNameSpace)
+	function GetNameSpace(strNameSpace)
 	{
 		if (typeof(strNameSpace) != 'string')
 			return null;
@@ -85,17 +87,19 @@ function NameSpaceManager(objCurrent, objTop)
 		}
 		return nameSpace;
 	}
+	this.GetNameSpace = GetNameSpace;
 
 
-	/// <method>
+	/// <method scope="public">
 	/// Checks, if the given NameSpace was loaded yet.
 	/// </method>
 	/// <param name="strNameSpace" type="String">NameSpace to search, separated by '.'.</param>
 	/// <returns type="Boolean">Returns true, if the given NameSpace was loaded yet, otherwise false.</returns>
-	this.IsNameSpaceLoaded = function(strNameSpace)
+	function IsNameSpaceLoaded(strNameSpace)
 	{
 		return (_this.GetNameSpace(strNameSpace) != null);
 	}
+	this.IsNameSpaceLoaded = IsNameSpaceLoaded;
 
 
 	/// <method>
@@ -204,10 +208,15 @@ function NameSpaceManager(objCurrent, objTop)
 		// Methods
 		//------------------------------------------------------------------------
 
-		this.toString = function()
+		/// <method scope="public">
+		/// Gets a string representation of this object.
+		/// </method>
+		function ToString()
 		{
-			return "[object NameSpace { " + this.FullName + " } ]";
+			return "[object NameSpace { " + _this.FullName + " } ]";
 		}
+		this.toString = ToString;
+
 		Init();
 	}
 	Init();

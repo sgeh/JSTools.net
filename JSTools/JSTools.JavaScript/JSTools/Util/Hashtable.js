@@ -11,8 +11,8 @@ JSTools.Util.Hashtable = function()
 	// Declarations
 	//------------------------------------------------------------------------
 
-	var _this		= this;
-	var _storage	= null;
+	var _this = this;
+	var _storage = null;
 
 
 	//------------------------------------------------------------------------
@@ -36,7 +36,7 @@ JSTools.Util.Hashtable = function()
 	/// Gets the number of stored items.
 	/// </method>
 	/// <returns type="Integer">Returns the number of stored items.</returns>
-	this.Count = function()
+	function Count()
 	{
 		var count = 0;
 
@@ -46,13 +46,14 @@ JSTools.Util.Hashtable = function()
 		}
 		return count;
 	}
+	this.Count = Count;
 
 
 	/// <method>
 	/// Creates a new array which contains the stored keys.
 	/// </method>
 	/// <returns type="Array">Returns all keys stored in this hashtable.</param>
-	this.GetKeys = function()
+	function GetKeys()
 	{
 		var keys = new Array(_this.Count());
 		var i = 0;
@@ -63,13 +64,14 @@ JSTools.Util.Hashtable = function()
 		}
 		return keys;
 	}
+	this.GetKeys = GetKeys;
 
 
 	/// <method>
 	/// Creates a new array which contains the stored values.
 	/// </method>
 	/// <returns type="Array">Returns all values stored in this hashtable.</param>
-	this.GetValues = function()
+	function GetValues()
 	{
 		var values = new Array(_this.Count());
 		var i = 0;
@@ -80,6 +82,7 @@ JSTools.Util.Hashtable = function()
 		}
 		return values;
 	}
+	this.GetValues = GetValues;
 
 
 	/// <method>
@@ -95,10 +98,11 @@ JSTools.Util.Hashtable = function()
 	/// }
 	/// </example>
 	/// <returns type="Object">Returns an enumerator object with the internal data.</param>
-	this.GetElements = function()
+	function GetElements()
 	{
 		return _storage;
 	}
+	this.GetElements = GetElements;
 
 
 	/// <method>
@@ -107,13 +111,14 @@ JSTools.Util.Hashtable = function()
 	/// </method>
 	/// <param name="objKey" type="Object">The key whose value to add.</param>
 	/// <param name="objValue" type="Object">The value to store.</param>
-	this.Add = function(objKey, objValue)
+	function Add(objKey, objValue)
 	{
 		if (!_this.ContainsKey(objKey))
 		{
 			_storage[objKey] = objValue;
 		}
 	}
+	this.Add = Add;
 
 
 	/// <method>
@@ -122,10 +127,11 @@ JSTools.Util.Hashtable = function()
 	/// </method>
 	/// <param name="objKey" type="Object">The key whose value to set.</param>
 	/// <param name="objValue" type="Object">The value to store.</param>
-	this.Set = function(objKey, objValue)
+	function Set(objKey, objValue)
 	{
 		_storage[objKey] = objValue;
 	}
+	this.Set = Set;
 
 
 	/// <method>
@@ -134,19 +140,21 @@ JSTools.Util.Hashtable = function()
 	/// <param name="objKey" type="Object">The key whose value to get.</param>
 	/// <returns type="Object">The value of the associated key or a null reference
 	/// if the key does not exist.</returns>
-	this.Get = function(objKey)
+	function Get(objKey)
 	{
 		return (typeof(_storage[objKey]) != 'undefined') ? _storage[objKey] : null;
 	}
+	this.Get = Get;
 
 
 	/// <method>
 	/// Clears the Hashtable. This will remove the stored items and its values.
 	/// </method>
-	this.Clear = function()
+	function Clear()
 	{
 		_storage = CreateEmptyObject();
 	}
+	this.Clear = Clear;
 
 
 	/// <method>
@@ -154,10 +162,11 @@ JSTools.Util.Hashtable = function()
 	/// </method>
 	/// <param name="objKeyToCheck" type="Object">Key to search.</param>
 	/// <returns type="Boolean">Returns true if this hashtable contains the given key.</returns>
-	this.Contains = function(objKeyToCheck)
+	function Contains(objKeyToCheck)
 	{
 		return _this.ContainsKey(objKeyToCheck);
 	}
+	this.Contains = Contains;
 
 
 	/// <method>
@@ -165,10 +174,11 @@ JSTools.Util.Hashtable = function()
 	/// </method>
 	/// <param name="objKeyToCheck" type="Object">Key to search.</param>
 	/// <returns type="Boolean">Returns true if this hashtable contains the given key.</returns>
-	this.ContainsKey = function(objKeyToCheck)
+	function ContainsKey(objKeyToCheck)
 	{
 		return (typeof(_storage[objKeyToCheck]) != 'undefined');
 	}
+	this.ContainsKey = ContainsKey;
 
 
 	/// <method>
@@ -176,7 +186,7 @@ JSTools.Util.Hashtable = function()
 	/// </method>
 	/// <param name="objValueToCheck" type="Object">Value to search.</param>
 	/// <returns type="Boolean">Returns true if this hashtable contains the given value.</returns>
-	this.ContainsValue = function(objValueToCheck)
+	function ContainsValue(objValueToCheck)
 	{
 		for (var item in _storage)
 		{
@@ -185,6 +195,7 @@ JSTools.Util.Hashtable = function()
 		}
 		return false;
 	}
+	this.ContainsValue = ContainsValue;
 
 
 	/// <method>
@@ -192,7 +203,7 @@ JSTools.Util.Hashtable = function()
 	/// </method>
 	/// <param name="objKey" type="Object">Value to remove.</param>
 	/// <returns type="Boolean">Returns true if this hashtable contains the given value.</returns>
-	this.Remove = function(objKey)
+	function Remove(objKey)
 	{
 		if (_this.ContainsKey(objKey))
 		{
@@ -203,6 +214,7 @@ JSTools.Util.Hashtable = function()
 		}
 		return null;
 	}
+	this.Remove = Remove;
 
 
 	/// <method>

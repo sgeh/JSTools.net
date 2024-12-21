@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.IO;
 using System.Text;
@@ -42,16 +34,30 @@ namespace JSTools.Config.ScriptFileManagement
 		// Declarations
 		//--------------------------------------------------------------------
 
-		public	const	string					FILE_NODE_NAME		= "file";
+		/// <summary>
+		/// Gets the name of a JSScript xml node.
+		/// </summary>
+		public const string FILE_NODE_NAME = "file";
 
-		protected		string					_fileName			= string.Empty;
-		protected		string					_name				= string.Empty;
-		protected		string					_code				= string.Empty;
-		protected		string					_physicalPath		= string.Empty;
+		private const string SRC_ATTRIB = "src";
 
-		private	const	string					SRC_ATTRIB			= "src";
-		private			XmlNode					_fileNode			= null;
+		private string _fileName = string.Empty;
+		private string _name = string.Empty;
+		private string _code = string.Empty;
+		private string _physicalPath = string.Empty;
+		private XmlNode _fileNode = null;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
+
+		/// <summary>
+		/// Gets the unique id of this section.
+		/// </summary>
+		public override string Id
+		{
+			get { return Path; }
+		}
 
 		/// <summary>
 		/// Returns the physical path of this script file.
@@ -61,7 +67,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return _physicalPath; }
 		}
 
-
 		/// <summary>
 		/// Gets the script source code.
 		/// </summary>
@@ -69,7 +74,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _code; }
 		}
-
 
 		/// <summary>
 		/// Returns the name of the file with extension (e.g. ScriptLoader.js)
@@ -79,7 +83,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return _fileName; }
 		}
 
-
 		/// <summary>
 		/// Returns the name of the file without extension (e.g. ScriptLoader).
 		/// </summary>
@@ -87,7 +90,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _name; }
 		}
-
 
 		/// <summary>
 		/// Gets the name of the representing xml node.
@@ -97,7 +99,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return FILE_NODE_NAME; }
 		}
 
-
 		/// <summary>
 		/// Returns the path of the parent module.
 		/// </summary>
@@ -105,7 +106,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return (ParentModule != null) ? ParentModule.Path : string.Empty; }
 		}
-
 
 		/// <summary>
 		/// Gets the script path (folder + name).
@@ -115,7 +115,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return Folder + JSScriptFileHandler.PATH_SEPARATOR + _name; }
 		}
 
-
 		/// <summary>
 		/// Returns the absolute path for the current script file (e.g. /JSTools/Web/ScriptLoader.js).
 		/// </summary>
@@ -124,7 +123,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return JSScriptFileHandler.PATH_SEPARATOR + ChangeExtension(Path); }
 		}
 
-
 		/// <summary>
 		/// Returns the owner module.
 		/// </summary>
@@ -132,7 +130,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return (ParentSection as JSModule); }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -147,12 +144,15 @@ namespace JSTools.Config.ScriptFileManagement
 		internal JSScript(XmlNode scriptNode, AJSToolsScriptFileSection parent) : base(parent)
 		{
 			if (scriptNode == null)
-				throw new ArgumentNullException("scriptNode", "The file xml node contains a null reference!");
+				throw new ArgumentNullException("scriptNode", "The file xml node contains a null reference.");
 
 			_fileNode = scriptNode;
 			InitScript();
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -173,7 +173,6 @@ namespace JSTools.Config.ScriptFileManagement
 			InitPhysicalFilePath();
 		}
 
-
 		/// <summary>
 		/// Initializes the physical path of this script file.
 		/// </summary>
@@ -182,7 +181,6 @@ namespace JSTools.Config.ScriptFileManagement
 			string physPath = Folder + JSScriptFileHandler.PATH_SEPARATOR + _fileName;
 			_physicalPath = System.IO.Path.Combine(((JSScriptFileHandler)OwnerSection).Source, physPath);
 		}
-
 
 		/// <summary>
 		/// Changes the extension of the given path.

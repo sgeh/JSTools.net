@@ -1,10 +1,10 @@
 function BaseLayerSetter()
 {
 	// timeout used by initilizing the new layer content
-	this.ContentTimeout	= 50;
+	this.ContentTimeout = 50;
 
 	// contains the layer style object
-	this.Style			= null;
+	this.Style = null;
 
 	// sets a timeout before wirting the layer content
 	this.SetContent = function(strContent)
@@ -20,15 +20,15 @@ function BaseLayerSetter()
 	}
 
 	// abstract methods
-	this.SetVisibility		= function() { }
-	this.SetWidth			= function() { }
-	this.SetHeight			= function() { }
-	this.SetClip			= function() { }
-	this.SetTopMargin		= function() { }
-	this.SetLeftMargin		= function() { }
-	this.OnContentWrite		= function() { }
-	this.OnZIndexWrite		= function() { }
-	this.OnInitComponent	= function() { }
+	this.SetVisibility = function() { }
+	this.SetWidth = function() { }
+	this.SetHeight = function() { }
+	this.SetClip = function() { }
+	this.SetTopMargin = function() { }
+	this.SetLeftMargin = function() { }
+	this.OnContentWrite = function() { }
+	this.OnZIndexWrite = function() { }
+	this.OnInitComponent = function() { }
 }
 BaseLayerSetter.prototype.toString = function()
 {

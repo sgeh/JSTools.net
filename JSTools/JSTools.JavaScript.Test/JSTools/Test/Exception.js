@@ -1,18 +1,7 @@
 document.write("<h1>TEST EXCEPTION</h1>");
 
-var exceptionOccurences = 0;
 var logOccurences = 0;
 var warnOccurences = 0;
-
-var exceptionOk = false;
-var logOk = false;
-var warningOk = false;
-
-function checkException(objException)
-{
-	++exceptionOccurences;
-	exceptionOk = (objException.GetMessage() == "throw");
-}
 
 function checkLog(objException)
 {
@@ -28,21 +17,13 @@ function checkWarning(objException)
 
 function fireEvents()
 {
-	var status = (JSTools.Exception.ErrorHandling == JSTools.ExceptionHandling.ErrorHandling.Catch);
-
-	if (status != JSTools.Exception.Warn("warn", String.Empty, -1))
-		document.write("Warn() has returned an invalid boolean");
-
-	if (status != JSTools.Exception.Throw("throw", String.Empty, -1))
-		document.write("Throw() has returned an invalid boolean");
-
-	if (status != JSTools.Exception.Log("log", String.Empty, -1))
-		document.write("Log() has returned an invalid boolean");
+	JSTools.Exception.Warn("Fire event, this is the warn message.", String.Empty, -1);
+	JSTools.Exception.Log("Fire event, this is log the message.", String.Empty, -1);
 }
 
-function drawExceptionStatus(intStatus, intMaxOccurences, blnOk, strEvent)
+function drawExceptionStatus(intStatus, intMaxOccurences, strEvent)
 {
-	if (intStatus != intMaxOccurences || !blnOk)
+	if (intStatus != intMaxOccurences)
 	{
 		document.write("an error has occured while handling the exception event '"
 			+ strEvent
@@ -56,9 +37,24 @@ function drawExceptionStatus(intStatus, intMaxOccurences, blnOk, strEvent)
 	}
 }
 
-JSTools.Exception.AddOnLogEvent(checkLog);
-JSTools.Exception.AddOnErrorEvent(checkException);
-JSTools.Exception.AddOnWarnEvent(checkWarning);
+// attach on log event
+var index = JSTools.Exception.AddOnLogEvent(checkLog);
+
+if (index == -1)
+	document.write("AddOnLogEvent has not returned an index.");
+
+// attach on error event
+index = JSTools.Exception.AddOnErrorEvent(function() { } );
+
+if (index == -1)
+	document.write("AddOnErrorEvent has not returned an index.");
+
+// attach on warn event
+index = JSTools.Exception.AddOnWarnEvent(checkWarning);
+
+if (index == -1)
+	document.write("AddOnWarnEvent has not returned an index.");
+
 
 JSTools.Exception.EventHandling = JSTools.ExceptionHandling.ErrorEvent.All;
 
@@ -82,6 +78,11 @@ fireEvents();
 
 
 // check result
-drawExceptionStatus(logOccurences, 4, logOk, "log");
-drawExceptionStatus(exceptionOccurences, 3, exceptionOk, "error");
-drawExceptionStatus(warnOccurences, 2, warningOk, "warn");
+drawExceptionStatus(logOccurences, 4, "log");
+drawExceptionStatus(warnOccurences, 2, "warn");
+
+document.write("throw must be tested manually -> script execution will stop")
+
+//	JSTools.Exception.Throw("Throw exception, this is the error message.", String.Empty, -1);
+//	JSTools.Exception.Throw(new JSTools.ExceptionHandling.Exception("Throw exception, this is the error message."));
+

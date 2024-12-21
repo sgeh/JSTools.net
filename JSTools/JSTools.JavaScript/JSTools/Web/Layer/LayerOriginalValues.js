@@ -7,14 +7,14 @@ function LayerOriginalValues(objBaseLayerGetter)
 	}
 
 	// init values
-	var _content		= objBaseLayerGetter.GetContent();
-	var _leftMargin		= objBaseLayerGetter.GetLeftMargin();
-	var _topMargin		= objBaseLayerGetter.GetTopMargin();
-	var _visibility		= objBaseLayerGetter.GetVisibility();
-	var _zIndex			= objBaseLayerGetter.GetZIndex();
-	var _clip			= objBaseLayerGetter.GetClip().Clone();
-	var _width			= objBaseLayerGetter.GetWidth();
-	var _height			= objBaseLayerGetter.GetHeight();
+	var _content = objBaseLayerGetter.GetContent();
+	var _leftMargin = objBaseLayerGetter.GetLeftMargin();
+	var _topMargin = objBaseLayerGetter.GetTopMargin();
+	var _visibility = objBaseLayerGetter.GetVisibility();
+	var _zIndex = objBaseLayerGetter.GetZIndex();
+	var _clip = objBaseLayerGetter.GetClip().Clone();
+	var _width = objBaseLayerGetter.GetWidth();
+	var _height = objBaseLayerGetter.GetHeight();
 
 
 	// returns the content of the layer. the default
@@ -77,14 +77,14 @@ function LayerOriginalValues(objBaseLayerGetter)
 
 
 	//
-	this.GetBackgroundImage	= function()
+	this.GetBackgroundImage = function()
 	{
 		return _bgImage;
 	}
 
 
 	//
-	this.GetBackgroundColor	= function()
+	this.GetBackgroundColor = function()
 	{
 		return _bgColor;
 	}

@@ -93,7 +93,7 @@ class Parser
 	 * parse failure will result in a call to the current Context's
 	 * ErrorReporter.)
 	 */
-	public Object parse(TokenStream ts)
+	public Node parse(TokenStream ts)
 		throws IOException
 	{
 		this.ok = true;
@@ -105,7 +105,7 @@ class Parser
 
 		/* so we have something to add nodes to until
 		 * we've collected all the source */
-		Object tempBlock = nf.createLeaf(TokenStream.BLOCK);
+		Node tempBlock = nf.createLeaf(TokenStream.BLOCK);
 
 		// Add script indicator
 		sourceAdd((char)ts.SCRIPT);
@@ -146,21 +146,27 @@ class Parser
 			return null;
 		}
 
-		String source = sourceToString(0);
+		sourceAdd((char)ts.LAST_TOKEN);
+
+		Node pn = nf.createScript(
+			tempBlock,
+			ts.getSourceName(),
+			baseLineno,
+			ts.getLineno(),
+			sourceToCharArray() );
+
 		sourceBuffer = null; // To help GC
-		Object pn = nf.createScript(tempBlock, ts.getSourceName(),
-			baseLineno, ts.getLineno(),
-			source);
 		return pn;
 	}
 
+	
 	/*
 	 * The C version of this function takes an argument list,
 	 * which doesn't seem to be needed for tree generation...
 	 * it'd only be useful for checking argument hiding, which
 	 * I'm not doing anyway...
 	 */
-	private Object parseFunctionBody(TokenStream ts)
+	private Node parseFunctionBody(TokenStream ts)
 		throws IOException
 	{
 		int oldflags = ts.flags;
@@ -168,7 +174,7 @@ class Parser
 			| TokenStream.TSF_RETURN_VOID);
 		ts.flags |= TokenStream.TSF_FUNCTION;
 
-		Object pn = nf.createBlock(ts.getLineno());
+		Node pn = nf.createBlock(ts.getLineno());
 		try 
 		{
 			int tt;
@@ -200,13 +206,13 @@ class Parser
 		return pn;
 	}
 
-	private Object function(TokenStream ts, boolean isExpr)
+	private Node function(TokenStream ts, boolean isExpr)
 		throws IOException, JavaScriptException
 	{
 		int baseLineno = ts.getLineno();  // line number where source starts
 
 		String name;
-		Object memberExprNode = null;
+		Node memberExprNode = null;
 		if (ts.matchToken(ts.NAME)) 
 		{
 			name = ts.getString();
@@ -218,7 +224,7 @@ class Parser
 					// Extension to ECMA: if 'function <name>' does not follow
 					// by '(', assume <name> starts memberExpr
 					sourceAddString(ts.NAME, name);
-					Object memberExprHead = nf.createName(name);
+					Node memberExprHead = nf.createName(name);
 					name = null;
 					memberExprNode = memberExprTail(ts, false, memberExprHead);
 				}
@@ -261,8 +267,8 @@ class Parser
 		// function to parent source
 		int savedSourceTop = sourceTop;
 		int savedFunctionNumber = functionNumber;
-		Object args;
-		Object body;
+		Node args;
+		Node body;
 		String source;
 		try 
 		{
@@ -311,10 +317,10 @@ class Parser
 			functionNumber = savedFunctionNumber;
 		}
 
-		Object pn = nf.createFunction(name, args, body,
+		Node pn = nf.createFunction(name, args, body,
 			ts.getSourceName(),
 			baseLineno, ts.getLineno(),
-			source,
+			source.toCharArray(),
 			isExpr || memberExprNode != null);
 		if (memberExprNode != null) 
 		{
@@ -338,10 +344,10 @@ class Parser
 		return pn;
 	}
 
-	private Object statements(TokenStream ts)
+	private Node statements(TokenStream ts)
 		throws IOException
 	{
-		Object pn = nf.createBlock(ts.getLineno());
+		Node pn = nf.createBlock(ts.getLineno());
 
 		int tt;
 		while((tt = ts.peekToken()) > ts.EOF && tt != ts.RC) 
@@ -352,10 +358,10 @@ class Parser
 		return pn;
 	}
 
-	private Object condition(TokenStream ts)
+	private Node condition(TokenStream ts)
 		throws IOException, JavaScriptException
 	{
-		Object pn;
+		Node pn;
 		mustMatchToken(ts, ts.LP, "msg.no.paren.cond");
 		sourceAdd((char)ts.LP);
 		pn = expr(ts, false);
@@ -419,7 +425,7 @@ class Parser
 		return label;
 	}
 
-	private Object statement(TokenStream ts)
+	private Node statement(TokenStream ts)
 		throws IOException
 	{
 		try 
@@ -445,10 +451,10 @@ class Parser
 	 * is implemented.
 	 */
 
-	private Object statementHelper(TokenStream ts)
+	private Node statementHelper(TokenStream ts)
 		throws IOException, JavaScriptException
 	{
-		Object pn = null;
+		Node pn = null;
 
 		// If skipsemi == true, don't add SEMI + EOL to source at the
 		// end of this statment.  For compound statements, IF/FOR etc.
@@ -468,11 +474,11 @@ class Parser
 
 				sourceAdd((char)ts.IF);
 				int lineno = ts.getLineno();
-				Object cond = condition(ts);
+				Node cond = condition(ts);
 				sourceAdd((char)ts.LC);
 				sourceAdd((char)ts.EOL);
-				Object ifTrue = statement(ts);
-				Object ifFalse = null;
+				Node ifTrue = statement(ts);
+				Node ifFalse = null;
 				if (ts.matchToken(ts.ELSE)) 
 				{
 					sourceAdd((char)ts.RC);
@@ -494,8 +500,8 @@ class Parser
 				sourceAdd((char)ts.SWITCH);
 				pn = nf.createSwitch(ts.getLineno());
 
-				Object cur_case = null;  // to kill warning
-				Object case_statements;
+				Node cur_case = null;  // to kill warning
+				Node case_statements;
 
 				mustMatchToken(ts, ts.LP, "msg.no.paren.switch");
 				sourceAdd((char)ts.LP);
@@ -554,10 +560,10 @@ class Parser
 
 				sourceAdd((char)ts.WHILE);
 				int lineno = ts.getLineno();
-				Object cond = condition(ts);
+				Node cond = condition(ts);
 				sourceAdd((char)ts.LC);
 				sourceAdd((char)ts.EOL);
-				Object body = statement(ts);
+				Node body = statement(ts);
 				sourceAdd((char)ts.RC);
 				sourceAdd((char)ts.EOL);
 
@@ -574,12 +580,12 @@ class Parser
 
 				int lineno = ts.getLineno();
 
-				Object body = statement(ts);
+				Node body = statement(ts);
 
 				sourceAdd((char)ts.RC);
 				mustMatchToken(ts, ts.WHILE, "msg.no.while.do");
 				sourceAdd((char)ts.WHILE);
-				Object cond = condition(ts);
+				Node cond = condition(ts);
 
 				pn = nf.createDoWhile(body, cond, lineno);
 				break;
@@ -592,10 +598,10 @@ class Parser
 				sourceAdd((char)ts.FOR);
 				int lineno = ts.getLineno();
 
-				Object init;  // Node init is also foo in 'foo in Object'
-				Object cond;  // Node cond is also object in 'foo in Object'
-				Object incr = null; // to kill warning
-				Object body;
+				Node init;  // Node init is also foo in 'foo in Object'
+				Node cond;  // Node cond is also object in 'foo in Object'
+				Node incr = null; // to kill warning
+				Node body;
 
 				mustMatchToken(ts, ts.LP, "msg.no.paren.for");
 				sourceAdd((char)ts.LP);
@@ -676,9 +682,9 @@ class Parser
 				{
 				int lineno = ts.getLineno();
 
-				Object tryblock;
-				Object catchblocks = null;
-				Object finallyblock = null;
+				Node tryblock;
+				Node catchblocks = null;
+				Node finallyblock = null;
 
 				skipsemi = true;
 				sourceAdd((char)ts.TRY);
@@ -708,7 +714,7 @@ class Parser
 						String varName = ts.getString();
 						sourceAddString(ts.NAME, varName);
 
-						Object catchCond = null;
+						Node catchCond = null;
 						if (ts.matchToken(ts.IF)) 
 						{
 							sourceAdd((char)ts.IF);
@@ -803,13 +809,13 @@ class Parser
 				int lineno = ts.getLineno();
 				mustMatchToken(ts, ts.LP, "msg.no.paren.with");
 				sourceAdd((char)ts.LP);
-				Object obj = expr(ts, false);
+				Node obj = expr(ts, false);
 				mustMatchToken(ts, ts.RP, "msg.no.paren.after.with");
 				sourceAdd((char)ts.RP);
 				sourceAdd((char)ts.LC);
 				sourceAdd((char)ts.EOL);
 
-				Object body = statement(ts);
+				Node body = statement(ts);
 
 				sourceAdd((char)ts.RC);
 				sourceAdd((char)ts.EOL);
@@ -827,7 +833,7 @@ class Parser
 			}
 			case TokenStream.RETURN: 
 				{
-				Object retExpr = null;
+				Node retExpr = null;
 
 				sourceAdd((char)ts.RETURN);
 
@@ -947,18 +953,18 @@ class Parser
 		return pn;
 	}
 
-	private Object variables(TokenStream ts, boolean inForInit)
+	private Node variables(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = nf.createVariables(ts.getLineno());
+		Node pn = nf.createVariables(ts.getLineno());
 		boolean first = true;
 
 		sourceAdd((char)ts.VAR);
 
 		for (;;) 
 		{
-			Object name;
-			Object init;
+			Node name;
+			Node init;
 			mustMatchToken(ts, ts.NAME, "msg.bad.var");
 			String s = ts.getString();
 
@@ -989,10 +995,10 @@ class Parser
 		return pn;
 	}
 
-	private Object expr(TokenStream ts, boolean inForInit)
+	private Node expr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = assignExpr(ts, inForInit);
+		Node pn = assignExpr(ts, inForInit);
 		while (ts.matchToken(ts.COMMA)) 
 		{
 			sourceAdd((char)ts.COMMA);
@@ -1001,10 +1007,10 @@ class Parser
 		return pn;
 	}
 
-	private Object assignExpr(TokenStream ts, boolean inForInit)
+	private Node assignExpr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = condExpr(ts, inForInit);
+		Node pn = condExpr(ts, inForInit);
 
 		if (ts.matchToken(ts.ASSIGN)) 
 		{
@@ -1018,13 +1024,13 @@ class Parser
 		return pn;
 	}
 
-	private Object condExpr(TokenStream ts, boolean inForInit)
+	private Node condExpr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object ifTrue;
-		Object ifFalse;
+		Node ifTrue;
+		Node ifFalse;
 
-		Object pn = orExpr(ts, inForInit);
+		Node pn = orExpr(ts, inForInit);
 
 		if (ts.matchToken(ts.HOOK)) 
 		{
@@ -1039,10 +1045,10 @@ class Parser
 		return pn;
 	}
 
-	private Object orExpr(TokenStream ts, boolean inForInit)
+	private Node orExpr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = andExpr(ts, inForInit);
+		Node pn = andExpr(ts, inForInit);
 		if (ts.matchToken(ts.OR)) 
 		{
 			sourceAdd((char)ts.OR);
@@ -1052,10 +1058,10 @@ class Parser
 		return pn;
 	}
 
-	private Object andExpr(TokenStream ts, boolean inForInit)
+	private Node andExpr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = bitOrExpr(ts, inForInit);
+		Node pn = bitOrExpr(ts, inForInit);
 		if (ts.matchToken(ts.AND)) 
 		{
 			sourceAdd((char)ts.AND);
@@ -1065,10 +1071,10 @@ class Parser
 		return pn;
 	}
 
-	private Object bitOrExpr(TokenStream ts, boolean inForInit)
+	private Node bitOrExpr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = bitXorExpr(ts, inForInit);
+		Node pn = bitXorExpr(ts, inForInit);
 		while (ts.matchToken(ts.BITOR)) 
 		{
 			sourceAdd((char)ts.BITOR);
@@ -1077,10 +1083,10 @@ class Parser
 		return pn;
 	}
 
-	private Object bitXorExpr(TokenStream ts, boolean inForInit)
+	private Node bitXorExpr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = bitAndExpr(ts, inForInit);
+		Node pn = bitAndExpr(ts, inForInit);
 		while (ts.matchToken(ts.BITXOR)) 
 		{
 			sourceAdd((char)ts.BITXOR);
@@ -1089,10 +1095,10 @@ class Parser
 		return pn;
 	}
 
-	private Object bitAndExpr(TokenStream ts, boolean inForInit)
+	private Node bitAndExpr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = eqExpr(ts, inForInit);
+		Node pn = eqExpr(ts, inForInit);
 		while (ts.matchToken(ts.BITAND)) 
 		{
 			sourceAdd((char)ts.BITAND);
@@ -1101,10 +1107,10 @@ class Parser
 		return pn;
 	}
 
-	private Object eqExpr(TokenStream ts, boolean inForInit)
+	private Node eqExpr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = relExpr(ts, inForInit);
+		Node pn = relExpr(ts, inForInit);
 		while (ts.matchToken(ts.EQOP)) 
 		{
 			sourceAdd((char)ts.EQOP);
@@ -1115,10 +1121,10 @@ class Parser
 		return pn;
 	}
 
-	private Object relExpr(TokenStream ts, boolean inForInit)
+	private Node relExpr(TokenStream ts, boolean inForInit)
 		throws IOException, JavaScriptException
 	{
-		Object pn = shiftExpr(ts);
+		Node pn = shiftExpr(ts);
 		while (ts.matchToken(ts.RELOP)) 
 		{
 			int op = ts.getOp();
@@ -1134,10 +1140,10 @@ class Parser
 		return pn;
 	}
 
-	private Object shiftExpr(TokenStream ts)
+	private Node shiftExpr(TokenStream ts)
 		throws IOException, JavaScriptException
 	{
-		Object pn = addExpr(ts);
+		Node pn = addExpr(ts);
 		while (ts.matchToken(ts.SHOP)) 
 		{
 			sourceAdd((char)ts.SHOP);
@@ -1147,11 +1153,11 @@ class Parser
 		return pn;
 	}
 
-	private Object addExpr(TokenStream ts)
+	private Node addExpr(TokenStream ts)
 		throws IOException, JavaScriptException
 	{
 		int tt;
-		Object pn = mulExpr(ts);
+		Node pn = mulExpr(ts);
 
 		while ((tt = ts.getToken()) == ts.ADD || tt == ts.SUB) 
 		{
@@ -1164,12 +1170,12 @@ class Parser
 		return pn;
 	}
 
-	private Object mulExpr(TokenStream ts)
+	private Node mulExpr(TokenStream ts)
 		throws IOException, JavaScriptException
 	{
 		int tt;
 
-		Object pn = unaryExpr(ts);
+		Node pn = unaryExpr(ts);
 
 		while ((tt = ts.peekToken()) == ts.MUL ||
 			tt == ts.DIV ||
@@ -1184,7 +1190,7 @@ class Parser
 		return pn;
 	}
 
-	private Object unaryExpr(TokenStream ts)
+	private Node unaryExpr(TokenStream ts)
 		throws IOException, JavaScriptException
 	{
 		int tt;
@@ -1224,7 +1230,7 @@ class Parser
 
 				int lineno = ts.getLineno();
 
-				Object pn = memberExpr(ts, true);
+				Node pn = memberExpr(ts, true);
 
 				/* don't look across a newline boundary for a postfix incop.
 
@@ -1248,7 +1254,7 @@ class Parser
 
 	}
 
-	private Object argumentList(TokenStream ts, Object listNode)
+	private Node argumentList(TokenStream ts, Node listNode)
 		throws IOException, JavaScriptException
 	{
 		boolean matched;
@@ -1272,12 +1278,12 @@ class Parser
 		return listNode;
 	}
 
-	private Object memberExpr(TokenStream ts, boolean allowCallSyntax)
+	private Node memberExpr(TokenStream ts, boolean allowCallSyntax)
 		throws IOException, JavaScriptException
 	{
 		int tt;
 
-		Object pn;
+		Node pn;
 
 		/* Check for new expressions. */
 		ts.flags |= ts.TSF_REGEXP;
@@ -1323,8 +1329,8 @@ class Parser
 		return memberExprTail(ts, allowCallSyntax, pn);
 	}
 
-	private Object memberExprTail(TokenStream ts, boolean allowCallSyntax,
-		Object pn)
+	private Node memberExprTail(TokenStream ts, boolean allowCallSyntax,
+		Node pn)
 		throws IOException, JavaScriptException
 	{
 		lastExprEndLine = ts.getLineno();
@@ -1375,12 +1381,12 @@ class Parser
 		return pn;
 	}
 
-	private Object primaryExpr(TokenStream ts)
+	private Node primaryExpr(TokenStream ts)
 		throws IOException, JavaScriptException
 	{
 		int tt;
 
-		Object pn = null;
+		Node pn = null;
 
 		ts.flags |= ts.TSF_REGEXP;
 		tt = ts.getToken();
@@ -1449,7 +1455,7 @@ class Parser
 				commaloop:
 					do 
 					{
-						Object property = null;
+						Node property = null;
 
 						if (!first)
 							sourceAdd((char)ts.COMMA);
@@ -1467,8 +1473,8 @@ class Parser
 								property = nf.createString(ts.getString());
 								break;
 							case TokenStream.NUMBER:
-								double n = ts.getNumber();
-								sourceAddNumber(n);
+								String n = ts.getNumber();
+								sourceAddString(ts.NUMBER, n);
 								property = nf.createNumber(n);
 								break;
 							case TokenStream.RC:
@@ -1514,8 +1520,8 @@ class Parser
 				return nf.createName(name);
 
 			case TokenStream.NUMBER:
-				double n = ts.getNumber();
-				sourceAddNumber(n);
+				String n = ts.getNumber();
+				sourceAddString(ts.NUMBER, n);
 				return nf.createNumber(n);
 
 			case TokenStream.STRING:
@@ -1570,9 +1576,7 @@ class Parser
 	 * this wouldn't have saved any space in the resulting source
 	 * representation, and would have meant that I'd have to duplicate
 	 * parser logic in the decompiler to disambiguate situations where
-	 * newlines are important.)  NativeFunction.decompile expands the
-	 * tokens back into their string representations, using simple
-	 * lookahead to correct spacing and indentation.
+	 * newlines are important.)
 
 	 * Token types with associated ops (ASSIGN, SHOP, PRIMARY, etc.) are
 	 * saved as two-token pairs.  Number tokens are stored inline, as a
@@ -1636,63 +1640,6 @@ class Parser
 		sourceTop = nextTop;
 	}
 
-	private void sourceAddNumber(double n) 
-	{
-		sourceAdd((char)TokenStream.NUMBER);
-
-		/* encode the number in the source stream.
-		 * Save as NUMBER type (char | char char char char)
-		 * where type is
-		 * 'D' - double, 'S' - short, 'J' - long.
-
-		 * We need to retain float vs. integer type info to keep the
-		 * behavior of liveconnect type-guessing the same after
-		 * decompilation.  (Liveconnect tries to present 1.0 to Java
-		 * as a float/double)
-		 * OPT: This is no longer true. We could compress the format.
-
-		 * This may not be the most space-efficient encoding;
-		 * the chars created below may take up to 3 bytes in
-		 * constant pool UTF-8 encoding, so a Double could take
-		 * up to 12 bytes.
-		 */
-
-		long lbits = (long)n;
-		if (lbits != n) 
-		{
-			// if it's floating point, save as a Double bit pattern.
-			// (12/15/97 our scanner only returns Double for f.p.)
-			lbits = Double.doubleToLongBits(n);
-			sourceAdd('D');
-			sourceAdd((char)(lbits >> 48));
-			sourceAdd((char)(lbits >> 32));
-			sourceAdd((char)(lbits >> 16));
-			sourceAdd((char)lbits);
-		}
-		else 
-		{
-			// we can ignore negative values, bc they're already prefixed
-			// by UNARYOP SUB
-			if (Context.check && lbits < 0) Context.codeBug();
-
-			// will it fit in a char?
-			// this gives a short encoding for integer values up to 2^16.
-			if (lbits <= Character.MAX_VALUE) 
-			{
-				sourceAdd('S');
-				sourceAdd((char)lbits);
-			}
-			else 
-			{ // Integral, but won't fit in a char. Store as a long.
-				sourceAdd('J');
-				sourceAdd((char)(lbits >> 48));
-				sourceAdd((char)(lbits >> 32));
-				sourceAdd((char)(lbits >> 16));
-				sourceAdd((char)lbits);
-			}
-		}
-	}
-
 	private void increaseSourceCapacity(int minimalCapacity) 
 	{
 		// Call this only when capacity increase is must
@@ -1706,6 +1653,13 @@ class Parser
 		char[] tmp = new char[newCapacity];
 		System.arraycopy(sourceBuffer, 0, tmp, 0, sourceTop);
 		sourceBuffer = tmp;
+	}
+
+	private char[] sourceToCharArray() 
+	{
+		char[] sourceData = new char[sourceTop];
+		System.arraycopy(sourceBuffer, 0, sourceData, 0, sourceTop);
+		return sourceData;
 	}
 
 	private String sourceToString(int offset) 
@@ -1724,20 +1678,5 @@ class Parser
 	private char[] sourceBuffer = new char[128];
 	private int sourceTop;
 	private int functionNumber;
-
-	// how much to indent
-	private final static int OFFSET = 4;
-
-	// less how much for case labels
-	private final static int SETBACK = 2;
-
-	private static final int TOP_LEVEL_SCRIPT_OR_FUNCTION = 0;
-	private static final int CONSTRUCTED_FUNCTION = 1;
-	private static final int NESTED_FUNCTION = 2;
-
-	// whether to do a debug print of the source information, when
-	// decompiling.
-	private static final boolean printSource = false;
-
 }
 

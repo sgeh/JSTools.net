@@ -45,10 +45,10 @@ namespace JSTools.Test
 		// Declarations
 		//--------------------------------------------------------------------
 
-		public	static readonly	Settings		Instance			= new Settings();
+		public static readonly Settings Instance = new Settings();
 
-		private	const			string			RESOURCE_NAME		= "JSTools.Config.Test.Resources.Settings";
-		private					ResourceManager	_resources			= null;
+		private const string RESOURCE_NAME = "JSTools.Config.Test.Resources.Settings";
+		private ResourceManager	_resources = null;
 
 
 		//--------------------------------------------------------------------

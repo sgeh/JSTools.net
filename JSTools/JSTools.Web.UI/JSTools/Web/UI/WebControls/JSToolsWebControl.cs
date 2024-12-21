@@ -37,7 +37,6 @@ namespace JSTools.Web.UI.WebControls
 
 		private JSToolsPage		_jsToolsPage = null;
 
-
 		/// <summary>
 		/// Returns the parent JSToolsPage instance.
 		/// </summary>
@@ -50,7 +49,6 @@ namespace JSTools.Web.UI.WebControls
 			get { return _jsToolsPage; }
 		}
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -62,7 +60,6 @@ namespace JSTools.Web.UI.WebControls
 		{
 			Init += new EventHandler(OnInit);
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods

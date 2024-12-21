@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Collections;
 using System.Text;
@@ -43,9 +35,19 @@ namespace JSTools.Config.ScriptFileManagement
 		/// </summary>
 		internal event EventHandler CheckModuleRelations;
 
+		private AJSToolsScriptFileSection _parent = null;
 
-		private	AJSToolsScriptFileSection _parent = null;
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
+		/// <summary>
+		/// Gets the unique id of this section.
+		/// </summary>
+		public abstract string Id
+		{
+			get;
+		}
 
 		/// <summary>
 		/// Returns the configuration section handler, which contains this instance.
@@ -55,7 +57,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return (_parent != null) ? _parent.OwnerSection : this; }
 		}
 
-
 		/// <summary>
 		/// Returns the configuration section handler, which contains this instance.
 		/// </summary>
@@ -63,7 +64,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _parent; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -79,7 +79,6 @@ namespace JSTools.Config.ScriptFileManagement
 			_parent.CheckModuleRelations += new EventHandler(OnCheckModuleRelations);
 		}
 
-
 		/// <summary>
 		/// Creates a new AJSToolsEventHandler instance.
 		/// </summary>
@@ -89,9 +88,8 @@ namespace JSTools.Config.ScriptFileManagement
 			_parent = null;
 		}
 
-
 		//--------------------------------------------------------------------
-		// Methods
+		// Events
 		//--------------------------------------------------------------------
 
 		/// <summary>
@@ -103,9 +101,11 @@ namespace JSTools.Config.ScriptFileManagement
 		protected virtual void OnCheckModuleRelations(object sender, EventArgs e)
 		{
 			if (CheckModuleRelations != null)
-			{
 				CheckModuleRelations(this, e);
-			}
 		}
+
+		//--------------------------------------------------------------------
+		// Methods
+		//--------------------------------------------------------------------
 	}
 }

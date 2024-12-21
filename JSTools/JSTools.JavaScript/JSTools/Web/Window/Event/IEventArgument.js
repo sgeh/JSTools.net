@@ -1,10 +1,10 @@
 function IEventArgument()
 {
 	// returns the value which the event will return
-	this.GetReturnValue	= function() { };
+	this.GetReturnValue = function() { };
 
 	// sets the value which the event will return
-	this.SetReturnValue	= function() { };
+	this.SetReturnValue = function() { };
 
 	// returns the name of the event (e.g. onmouseover)
 	this.GetEventName = function() { }

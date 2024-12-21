@@ -25,18 +25,19 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 
-namespace JSTools
+namespace JSTools.JavaScript.Test
 {
 	/// <summary>
 	/// Summary description for frameSet_left.
 	/// </summary>
 	public class frameSet_left : JSTools.Web.UI.Controls.JSToolsPage
 	{
-		protected JSTools.Web.UI.Controls.Head Head1;
+		protected JSTools.Web.UI.Controls.Script Script1;
+		protected JSTools.Web.UI.Controls.Head _head;
 	
 		private void Page_Load(object sender, System.EventArgs e)
 		{
-			// Put user code to initialize the page here
+			DataBind();
 		}
 
 		#region Web Form Designer generated code

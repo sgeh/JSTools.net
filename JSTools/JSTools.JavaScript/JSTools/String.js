@@ -16,13 +16,17 @@ String.prototype.EndsWith = function(strToCheck)
 /// Checks, if this string starts with the given string to check.
 /// </method>
 /// <param name="strTrimChar" type="String">String to check.</param>
+/// <param name="blnUseRegExp" type="Boolean">True to specify that the given string to check contains a regexp pattern. Default value is false.</param>
 /// <returns type="Boolean">Returns true, if this string starts with the given string to check.</returns>
-String.prototype.StartsWith = function(strToCheck)
+String.prototype.StartsWith = function(strToCheck, blnUseRegExp)
 {
 	if (typeof(strToCheck) != 'string' || strToCheck == String.Empty)
 		return false;
 
-	return (this.indexOf(strToCheck) == 0);
+	if (!blnUseRegExp)
+		return (this.indexOf(strToCheck) == 0);
+	else
+		return (this.search(new RegExp(strToCheck)) == 0);
 }
 
 

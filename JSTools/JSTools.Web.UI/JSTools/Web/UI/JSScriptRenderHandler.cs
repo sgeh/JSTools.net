@@ -45,7 +45,6 @@ namespace JSTools.Web.UI
 		private	const string DEBUG_WARNING = " CAUTION: DEBUG MODE IS ACTIVE ";
 		private const string MODULE_COMMENT = " Module {0} ";
 
-
 		/// <summary>
 		/// Name of the section to render with this render handler.
 		/// </summary>
@@ -53,7 +52,6 @@ namespace JSTools.Web.UI
 		{
 			get { return JSScriptFileSectionHandlerFactory.SECTION_NAME; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -65,7 +63,6 @@ namespace JSTools.Web.UI
 		public JSScriptRenderHandler()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -110,7 +107,6 @@ namespace JSTools.Web.UI
 			RenderRequiredModulesRecursive(section, controls, appPath, section.ChildModules);
 		}
 
-
 		/// <summary>
 		/// Searches for modules with a default flag in a recursive loop.
 		/// </summary>
@@ -132,7 +128,6 @@ namespace JSTools.Web.UI
 				RenderRequiredModulesRecursive(section, controls, appPath, module.ChildModules);
 			}
 		}
-
 
 		/// <summary>
 		/// Renders a module, which has a default flag.

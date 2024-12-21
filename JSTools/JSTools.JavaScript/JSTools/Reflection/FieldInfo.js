@@ -16,10 +16,10 @@ JSTools.Reflection.FieldInfo = function(objToRepresent, strFieldName, enuMemberV
 	if (typeof(objToRepresent) != 'object' || !objToRepresent)
 		return;
 
-	var _this				= this;
-	var _object				= objToRepresent;
-	var _fieldName			= String(strFieldName);
-	var _memberVisiblity	= enuMemberVisibility;
+	var _this = this;
+	var _object = objToRepresent;
+	var _fieldName = String(strFieldName);
+	var _memberVisiblity = enuMemberVisibility;
 
 
 	//------------------------------------------------------------------------
@@ -42,20 +42,22 @@ JSTools.Reflection.FieldInfo = function(objToRepresent, strFieldName, enuMemberV
 	/// Returns the name of this member.
 	/// </method>
 	/// <returns type="String">Returns the name of this member.</returns>
-	this.GetName = function()
+	function GetName()
 	{
 		return _fieldName;
 	}
+	this.GetName = GetName;
 
 
 	/// <method>
 	/// Returns the member type.
 	/// </method>
 	/// <returns type="JSTools.Reflection.MemberType">Returns the type of this member.</returns>
-	this.GetMemberType = function()
+	function GetMemberType()
 	{
 		return JSTools.Reflection.MemberType.Field;
 	}
+	this.GetMemberType = GetMemberType;
 	
 
 	/// <method>
@@ -63,47 +65,51 @@ JSTools.Reflection.FieldInfo = function(objToRepresent, strFieldName, enuMemberV
 	/// Members should not be used from your code.
 	/// </method>
 	/// <returns type="Boolean">Returns true, if this member is used for internal purposes.</returns>
-	this.IsInternal = function()
+	function IsInternal()
 	{
 		return _this.GetName().StartsWith("__");
 	}
+	this.IsInternal = IsInternal;
 
 
 	/// <method>
 	/// Checks if this field is public.
 	/// </method>
 	/// <returns type="Boolean">Returns true if this field is public.</returns>
-	this.IsPublic = function()
+	function IsPublic()
 	{
 		return (_memberVisiblity == JSTools.Reflection.MemberVisibility.Public);
 	}
+	this.IsPublic = IsPublic;
 
 
 	/// <method>
 	/// Checks if this field is protected.
 	/// </method>
 	/// <returns type="Boolean">Returns true if this field is protected.</returns>
-	this.IsProtected = function()
+	function IsProtected()
 	{
 		return (_memberVisiblity == JSTools.Reflection.MemberVisibility.Protected);
 	}
+	this.IsProtected = IsProtected;
 
 
 	/// <method>
 	/// Checks if this field is private.
 	/// </method>
 	/// <returns type="Boolean">Returns true if this field is private.</returns>
-	this.IsPrivate = function()
+	function IsPrivate()
 	{
 		return (_memberVisiblity == JSTools.Reflection.MemberVisibility.Private);
 	}
+	this.IsPrivate = IsPrivate;
 
 
 	/// <method>
 	/// Returns the value of this field.
 	/// </method>
 	/// <returns type="Object">Returns the value of the given field.</returns>	
-	this.GetValue = function()
+	function GetValue()
 	{
 		if (_this.IsPublic())
 		{
@@ -123,13 +129,14 @@ JSTools.Reflection.FieldInfo = function(objToRepresent, strFieldName, enuMemberV
 		}
 		return undefined;
 	}
+	this.GetValue = GetValue;
 
 
 	/// <method>
 	/// Writes the value of this field.
 	/// </method>
 	/// <param name="objValue" type="Object">Value to write.</param>
-	this.SetValue = function(objValue)
+	function SetValue(objValue)
 	{
 		if (_this.IsPublic())
 		{
@@ -148,6 +155,8 @@ JSTools.Reflection.FieldInfo = function(objToRepresent, strFieldName, enuMemberV
 			}
 		}
 	}
+	this.SetValue = SetValue;
+
 	Init();
 }
 

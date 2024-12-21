@@ -251,8 +251,7 @@ public class TokenStream
 		USELOCAL    = 145,
 		SCRIPT      = 146,   // top-level node for entire script
 
-		LAST_TOKEN  = 146;
-
+		LAST_TOKEN  = 147;
 	// end enum
 
 
@@ -920,7 +919,6 @@ public class TokenStream
 		// is it a number?
 		if (isDigit(c) || (c == '.' && isDigit(in.peek()))) 
 		{
-
 			stringBufferTop = 0;
 			int base = 10;
 
@@ -1005,36 +1003,48 @@ public class TokenStream
 					} while (isDigit(c));
 				}
 			}
+			
 			in.unread();
-			String numString = getStringFromBuffer();
+			this.number = getStringFromBuffer();
 
-			double dval;
-			if (base == 10 && !isInteger) 
-			{
-				try 
-				{
-					// Use Java conversion to number from string...
-					dval = (Double.valueOf(numString)).doubleValue();
-				}
-				catch (NumberFormatException ex) 
-				{
-					Object[] errArgs = { ex.getMessage() };
-					reportSyntaxError("msg.caught.nfe", errArgs);
-					return ERROR;
-				}
-			} 
-			else 
-			{
-				dval = ScriptRuntime.stringToNumber(numString, 0, base);
-			}
-
-			this.number = dval;
 			return NUMBER;
 		}
 
 		// is it a string?
 		if (c == '"' || c == '\'') 
 		{
+			int quoteChar = c;
+			stringBufferTop = 0;
+
+			addToString(quoteChar);
+
+			do
+			{
+				c = in.read();
+
+				if (c == '\n' || c == EOF_CHAR) 
+				{
+					in.unread();
+					reportSyntaxError("msg.unterminated.string.lit", null);
+					return ERROR;
+				}
+
+				// We've hit an escaped character
+				if (c == '\\') 
+				{
+					addToString(c);
+					addToString(in.read());
+					continue;
+				}
+
+				addToString(c);
+			}
+			while (c != quoteChar);
+
+			this.string = getStringFromBuffer();
+			return STRING;
+			/*
+
 			// We attempt to accumulate a string the fast way, by
 			// building it directly out of the reader.  But if there
 			// are any escaped characters in the string, we revert to
@@ -1077,7 +1087,7 @@ public class TokenStream
 								  * Get 4 hex digits; if the u escape is not
 								  * followed by 4 hex digits, use 'u' + the literal
 								  * character sequence that follows.
-								  */
+	
 								 int escapeStart = stringBufferTop;
 								 addToString('u');
 								 int escapeVal = 0;
@@ -1101,7 +1111,7 @@ public class TokenStream
 								 {
 								 /* Get 2 hex digits, defaulting to 'x' + literal
 								  * sequence, as above.
-								  */
+
 								 c = in.read();
 								 int escapeVal = xDigitToInt(c);
 								 if (escapeVal < 0) 
@@ -1154,7 +1164,7 @@ public class TokenStream
 				 }
 
 			this.string = getStringFromBuffer();
-			return STRING;
+			return STRING;*/
 		}
 
 		switch (c)
@@ -1517,7 +1527,7 @@ public class TokenStream
 	public int getLineno() { return in.getLineno(); }
 	public int getOp() { return op; }
 	public String getString() { return string; }
-	public double getNumber() { return number; }
+	public String getNumber() { return number; }
 	public String getLine() { return in.getLine(); }
 	public int getOffset() { return in.getOffset(); }
 	public int getTokenno() { return tokenno; }
@@ -1547,7 +1557,7 @@ public class TokenStream
 	// string is found.  Fosters one class of error, but saves lots of
 	// code.
 	private String string = "";
-	private double number;
+	private String number;
 
 	private char[] stringBuffer = new char[128];
 	private int stringBufferTop;

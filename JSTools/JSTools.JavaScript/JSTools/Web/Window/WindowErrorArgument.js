@@ -1,20 +1,20 @@
 function WindowErrorArgument(strMessage, strUrl, strLine)
 {
-	var _message		= ToString(strMessage);
-	var _url			= ToString(strUrl);
-	var _line			= ToNumber(strLine);
-	var _returnValue	= false;
+	var _message = ToString(strMessage);
+	var _url = ToString(strUrl);
+	var _line = ToNumber(strLine);
+	var _returnValue = false;
 
 
 	// sets the value which the event will return
-	this.SetReturnValue	= function(varValue)
+	this.SetReturnValue = function(varValue)
 	{
 		_returnValue = varValue;
 	}
 
 
 	// returns the value which the event will return
-	this.GetReturnValue	= function()
+	this.GetReturnValue = function()
 	{
 		return _returnValue;
 	}

@@ -7,9 +7,9 @@ function IeLayerSetter(objDelegate)
 	arguments.Call(BaseLayerSetter);
 
 	// copies a reference of the protected members for using from outside the constructor
-	var _protected		= arguments.Protected;
-	var _delegateObject	= objDelegate;
-	var _this			= this;
+	var _protected = arguments.Protected;
+	var _delegateObject = objDelegate;
+	var _this = this;
 
 
 	// sets the visibility of the layer

@@ -58,7 +58,6 @@ namespace JSTools.Web.UI.Controls
 		private		ArrayList							_renderHandlers			= new ArrayList();
 		private		Head								_header					= null;
 
-
 		/// <summary>
 		/// Returns the JSToolsConfiguration settings.
 		/// </summary>
@@ -69,7 +68,6 @@ namespace JSTools.Web.UI.Controls
 		{
 			get { return JSToolsWebConfiguration.Instance.Configuration; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -82,7 +80,6 @@ namespace JSTools.Web.UI.Controls
 		{
 			Init += new System.EventHandler(OnPageInit);
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -115,7 +112,6 @@ namespace JSTools.Web.UI.Controls
 			_renderHandlers.Add(handler);
 		}
 
-
 		/// <summary>
 		/// Registers a new header script. The script tags will be rendered
 		/// automatically. The script version and language are specified in the 
@@ -130,7 +126,6 @@ namespace JSTools.Web.UI.Controls
 				code + 
 				Configuration.ScriptFileHandler.GetScriptEndTag());
 		}
-
 
 		/// <summary>
 		/// Registers a new header script. The script tags will be rendered
@@ -149,19 +144,17 @@ namespace JSTools.Web.UI.Controls
 				Configuration.ScriptFileHandler.GetScriptEndTag());
 		}
 
-
 		/// <summary>
 		/// Registers a new header script. The script tags will be rendered
 		/// automatically. The script version and language are specified in the 
 		/// JSToolsConfiguration (web.config).
 		/// </summary>
 		/// <param name="key">Key to identify the code.</param>
-		/// <param name="path">Path to the script to register. This url will be written into the "src" attribute.</param>
+		/// <param name="path">Path of the script to register. This url will be written into the "src" attribute.</param>
 		public void RegisterHeaderScript(string key, Uri path)
 		{
 			_header.AddHeaderScript(key, Configuration.ScriptFileHandler.GetScriptFileTag(path.ToString()));
 		}
-
 
 		/// <summary>
 		/// Registers a new header script. The script tags will be rendered
@@ -169,14 +162,13 @@ namespace JSTools.Web.UI.Controls
 		/// the parameters.
 		/// </summary>
 		/// <param name="key">Key to identify the code.</param>
-		/// <param name="path">Path to the script to register. This url will be written into the "src" attribute.</param>
+		/// <param name="path">Path of the script to register. This url will be written into the "src" attribute.</param>
 		/// <param name="scriptType">Script type (e.g. JavaScript / VBScript)</param>
 		/// <param name="scriptVersion">Script version (e.g. 1.2 / 1.5)</param>
 		public void RegisterHeaderScript(string key, Uri path, string scriptType, float scriptVersion)
 		{
 			_header.AddHeaderScript(key, Configuration.ScriptFileHandler.GetScriptFileTag(path.ToString(), scriptType, scriptVersion));
 		}
-
 
 		/// <summary>
 		/// Checks for a script with the given key.
@@ -188,7 +180,6 @@ namespace JSTools.Web.UI.Controls
 			return (_header.GetHeaderScript(key) != null);
 		}
 
-
 		/// <summary>
 		/// <see cref="System.Web.UI.Page.Render()"/>
 		/// </summary>
@@ -198,7 +189,6 @@ namespace JSTools.Web.UI.Controls
 			RenderConfigurationSections();
 			base.Render(output);
 		}
-
 
 		/// <summary>
 		/// Creates a new RenderProcessTicket and renders the configuration sections.
@@ -232,7 +222,6 @@ namespace JSTools.Web.UI.Controls
 			}
 		}
 
-
 		/// <summary>
 		/// Initializes this page instance and the representing form object.
 		/// </summary>
@@ -254,7 +243,6 @@ namespace JSTools.Web.UI.Controls
 				throw new ControlNotFoundException("Could not find a header control. Each JSToolsPage has to contain a head control!");
 			}
 		}
-
 
 		/// <summary>
 		/// Searches in the ChildControlCollection for a Header object.

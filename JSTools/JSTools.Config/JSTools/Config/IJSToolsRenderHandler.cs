@@ -14,27 +14,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
-using System.Collections;
-using System.Configuration;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security;
-using System.Security.Permissions;
-using System.Text;
-using System.Web;
-using System.Web.UI;
-using System.Xml;
 
 using JSTools.Config.ExceptionHandling;
 using JSTools.Config.ScriptFileManagement;
@@ -48,7 +28,7 @@ namespace JSTools.Config
 	public interface IJSToolsRenderHandler
 	{
 		//--------------------------------------------------------------------
-		// Declarations
+		// Properties
 		//--------------------------------------------------------------------
 
 		/// <summary>
@@ -58,7 +38,6 @@ namespace JSTools.Config
 		{
 			get;
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods

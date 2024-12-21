@@ -58,7 +58,6 @@ namespace JSTools.Web.UI.Controls
 		Inline
 	}
 
-
 	/// <summary>
 	/// Crunches or removes the comments of the current script. This settings are not
 	/// used if you specify a script source (with src tag). If you'd like to crunch the
@@ -87,7 +86,6 @@ namespace JSTools.Web.UI.Controls
 		SyntaxCheck
 	}
 
-
 	/// <summary>
 	/// Defines the properties for a &gt;script&lt; html tag. The default values of the properties
 	/// are recieved from the JSTools configuration.
@@ -96,10 +94,10 @@ namespace JSTools.Web.UI.Controls
 	/// is used.</remarks>
 	[type: DefaultProperty("Type")]
 	[type: ParseChildren(false)]
-	[type: ControlBuilder(typeof(LiteralControlBuilder))]
 	[type: ToolboxData("<{0}:Script runat=\"server\"></{0}:Script>")]
 	[type: DesignerCategory("Code")]
 	[type: ToolboxItemFilter("JSTools.Web.Controls", ToolboxItemFilterType.Require)]
+	[type: ControlBuilder(typeof(ScriptControlBuilder))]
 	public class Script : JSToolsControl
 	{
 		//--------------------------------------------------------------------
@@ -122,7 +120,6 @@ namespace JSTools.Web.UI.Controls
 
 		private	bool				_isRendered			= false;
 
-
 		/// <summary>
 		/// Returns the script code chache instance.
 		/// </summary>
@@ -137,7 +134,6 @@ namespace JSTools.Web.UI.Controls
 				return (Page.Cache[SCRIPT_CACHE_ID] as ScriptCodeCache);
 			}
 		}
-
 
 		/// <summary>
 		/// Gets/sets the section, where this script should be rendered. This property
@@ -156,7 +152,6 @@ namespace JSTools.Web.UI.Controls
 			set { _section = value; }
 		}
 
-
 		/// <summary>
 		/// Gets/sets the script optimization. This optimizations are only available with the 
 		/// script type "javascript".
@@ -173,7 +168,6 @@ namespace JSTools.Web.UI.Controls
 			get { return _optimization; }
 			set { _optimization = value; }
 		}
-
 
 		/// <summary>
 		/// Sets or gets the script version (e.g. 1.3). If the specified value is
@@ -201,7 +195,6 @@ namespace JSTools.Web.UI.Controls
 			set { _version = value; }
 		}
 
-
 		/// <summary>
 		/// Sets or gets the script type (e.g. JavaScript). If the specified value is
 		/// empty or contains a null reference, this property will return the default
@@ -227,7 +220,6 @@ namespace JSTools.Web.UI.Controls
 			set { _type = value; }
 		}
 
-
 		/// <summary>
 		/// Sets or gets the script source file (e.g. /JSTools/Web.js). Optimizations are not
 		/// available for source files.
@@ -245,7 +237,6 @@ namespace JSTools.Web.UI.Controls
 			set { _src = value; }
 		}
 
-
 		/// <summary>
 		/// Returns the node value of this script control.
 		/// </summary>
@@ -261,7 +252,6 @@ namespace JSTools.Web.UI.Controls
 			get { return _code; }
 			set { _code = value; }
 		}
-
 
 		/// <summary>
 		/// Gets/sets the cache id of the current instance. If the cache id is not empty and
@@ -280,18 +270,16 @@ namespace JSTools.Web.UI.Controls
 			set { _scriptCacheEnabled = value; }
 		}
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		/// Creates a new instance of the ClientScript class
+		/// Creates a new Script instance.
 		/// </summary>
 		public Script()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -309,7 +297,6 @@ namespace JSTools.Web.UI.Controls
 			}
 		}
 
-
 		/// <summary>
 		/// If the script is visible and the RenderOnTop flag is set to true, this function will
 		/// render the script to the client with the RegisterClientScriptBlock method.
@@ -323,7 +310,7 @@ namespace JSTools.Web.UI.Controls
 			{
 				if (Section == ScriptSection.Head)
 				{
-					Page.RegisterStartupScript(UniqueID, GetScriptTag());
+					Page.RegisterHeaderScript(UniqueID, GetCodeScriptWithoutTag(), Type, Version);
 					_isRendered = true;
 				}
 				else if (Section == ScriptSection.Top)
@@ -339,7 +326,6 @@ namespace JSTools.Web.UI.Controls
 			}
 		}
 
-
 		/// <summary>
 		/// Renders the script into the output, if it was not rendered yet and
 		/// the section was marked as inline.
@@ -351,7 +337,6 @@ namespace JSTools.Web.UI.Controls
 				output.Write(GetScriptTag());
 			}
 		}
-
 
 		/// <summary>
 		/// Returns the script tag with the specified tag attributes.
@@ -368,7 +353,6 @@ namespace JSTools.Web.UI.Controls
 			}
 		}
 
-
 		/// <summary>
 		/// Returns the script tag with a source attribute.
 		/// </summary>
@@ -384,6 +368,16 @@ namespace JSTools.Web.UI.Controls
 			}
 		}
 
+		/// <summary>
+		/// Retruns a script tag without a source attribute and the script code
+		/// as node value.
+		/// </summary>
+		private string GetCodeScriptWithoutTag()
+		{
+			StringBuilder builder = new StringBuilder();
+			AppendScriptCode(builder);
+			return builder.ToString();
+		}
 
 		/// <summary>
 		/// Retruns a script tag without a source attribute and the script code
@@ -399,7 +393,6 @@ namespace JSTools.Web.UI.Controls
 			builder.Append(Page.Configuration.ScriptFileHandler.GetScriptEndTag());
 			return builder.ToString();
 		}
-
 
 		/// <summary>
 		/// Append script requested code to the StringBuilder instance.
@@ -425,15 +418,14 @@ namespace JSTools.Web.UI.Controls
 			toAppend.Append(scriptCode);
 		}
 
-
 		/// <summary>
 		/// Retruns the script code from the cache, if caching was enabled.
 		/// </summary>
 		/// <returns>Returns the optimized script code.</returns>
 		private string GetScriptFromCache()
 		{
-			// cache is not required without optimization
-			if (_optimization != ScriptOptimization.None)
+			// cache is not required, optimization disabled
+			if (_optimization == ScriptOptimization.None)
 				return _code;
 
 			// is cache enabled
@@ -447,7 +439,6 @@ namespace JSTools.Web.UI.Controls
 			}
 			return OptimizeScript();
 		}
-
 
 		/// <summary>
 		/// Optimizes the given script source code, if that is required.
@@ -472,7 +463,6 @@ namespace JSTools.Web.UI.Controls
 			return _code;
 		}
 
-
 		/// <summary>
 		/// Removes all comments from the script.
 		/// </summary>
@@ -482,7 +472,6 @@ namespace JSTools.Web.UI.Controls
 			return JSScriptCruncher.Instance.RemoveComments(_code, Version, true);
 		}
 
-
 		/// <summary>
 		/// Crunches the script.
 		/// </summary>
@@ -491,7 +480,6 @@ namespace JSTools.Web.UI.Controls
 		{
 			return JSScriptCruncher.Instance.Crunch(_code, Version);
 		}
-
 
 		/// <summary>
 		/// Checks the script for syntax errors.

@@ -15,11 +15,11 @@ JSTools.Web.Browser.BrowserType = function(strBrowserPattern, strBrowserName, st
 
 	this.InitType(arguments, "JSTools.Web.Browser.BrowserType");
 
-	var _this				= this;
-	var _idPattern			= new RegExp(String(strBrowserPattern));
-	var _browserName		= String(strBrowserName);
-	var _shortName			= String(strShortName);
-	var _match				= [ ];
+	var _this = this;
+	var _idPattern = new RegExp(String(strBrowserPattern));
+	var _browserName = String(strBrowserName);
+	var _shortName = String(strShortName);
+	var _match = [ ];
 
 
 	//------------------------------------------------------------------------
@@ -35,7 +35,7 @@ JSTools.Web.Browser.BrowserType = function(strBrowserPattern, strBrowserName, st
 	/// Checks, if the current browser matches this browser type item.
 	/// </method>
 	/// <returns type="Boolean">Returns true, if this item is appropriated for the current browser.</returns>
-	this.MatchBrowser = function()
+	function MatchBrowser()
 	{
 		var match = navigator.userAgent.match(_idPattern);
 
@@ -45,62 +45,68 @@ JSTools.Web.Browser.BrowserType = function(strBrowserPattern, strBrowserName, st
 		_match = match;
 		return true;
 	}
+	this.MatchBrowser = MatchBrowser;
 
 
 	/// <method>
 	/// Gets the browser name. (e.g. Netscape/Opera/Internet Explorer)
 	/// </method>
 	/// <returns type="String">Returns the name of the browser.</returns>
-	this.GetName = function()
+	function GetName()
 	{
 		return _browserName;
 	}
+	this.GetName = GetName;
 
 
 	/// <method>
 	/// Gets the short name of the browser. (e.g. NS/OP/IE)
 	/// </method>
 	/// <returns type="String">Returns the short name of the browser.</returns>
-	this.GetShortName = function()
+	function GetShortName()
 	{
 		return _shortName;
 	}
+	this.GetShortName = GetShortName;
 
 
 	/// <method>
 	/// Gets the browser version (e.g. 7.01, 6.2, 4.78, 4.06).
 	/// </method>
 	/// <returns type="Number">Returns the browser version.</returns>
-	this.GetVersion = function()
+	function GetVersion()
 	{
 		return Number(_match[1]);
 	}
+	this.GetVersion = GetVersion;
 
 
 	/// <method>
 	/// Gets the major version of the browser (e.g. 7, 6, 4).
 	/// </method>
 	/// <returns type="Number">Returns the major version of the browser.</returns>
-	this.GetMajor = function()
+	function GetMajor()
 	{
 		return Number(_match[2]);
 	}
+	this.GetMajor = GetMajor;
 
 
 	/// <method>
 	/// Gets the minor version of the browser (e.g. 0.01, 0.2, 0.78, 0.06).
 	/// </method>
 	/// <returns type="Number">Returns the minor version of the browser.</returns>
-	this.GetMinor = function()
+	function GetMinor()
 	{
 		return Number(_match[3]);
 	}
+	this.GetMinor = GetMinor;
 }
 
 
-/// <property type="JSTools.Web.Browser.BrowserType">
+/// <method type="JSTools.Web.Browser.BrowserType">
 /// Gets the active JSTools.Web.Browser.BrowserType instance.
-/// </property>
+/// </method>
 JSTools.Web.Browser.BrowserType.GetActiveBrowserType = function()
 {
 	var browserTypes = JSTools.Web.Browser.BrowserType.Types;

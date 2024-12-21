@@ -49,7 +49,6 @@ namespace JSTools.Web.UI.Controls
 
 		private string _text;
 
-
 		/// <summary>
 		/// Gets/sets the comment code, which will be rendered to the client.
 		/// </summary>
@@ -61,7 +60,6 @@ namespace JSTools.Web.UI.Controls
 			set { _text = value; }
 		}
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -72,7 +70,6 @@ namespace JSTools.Web.UI.Controls
 		public Comment()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods

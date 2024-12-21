@@ -29,14 +29,17 @@ namespace JSTools.Parser
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private const string	PARSER_ERROR	= "Parser Error";
+		private const string PARSER_ERROR = "Parser Error";
 
-		private int				_lineNumber		= -1;
-		private int				_columnNumber	= -1;
-		private	string			_code			= String.Empty;
-		private	string			_errorMessage	= String.Empty;
-		private	string			_errorName		= String.Empty;
+		private int _lineNumber = -1;
+		private int _columnNumber = -1;
+		private string _code = string.Empty;
+		private string _errorMessage = string.Empty;
+		private string _errorName = string.Empty;
 		
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Returns the line number, which contains the error.
@@ -46,7 +49,6 @@ namespace JSTools.Parser
 			get { return _lineNumber; }
 		}
 
-
 		/// <summary>
 		/// Returns the column number, which has occured the error.
 		/// </summary>
@@ -54,7 +56,6 @@ namespace JSTools.Parser
 		{
 			get { return _columnNumber; }
 		}
-
 
 		/// <summary>
 		/// Returns the error code.
@@ -64,7 +65,6 @@ namespace JSTools.Parser
 			get { return _code; }
 		}
 
-
 		/// <summary>
 		/// Returns the error message.
 		/// </summary>
@@ -73,7 +73,6 @@ namespace JSTools.Parser
 			get { return _errorMessage; }
 		}
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -81,21 +80,19 @@ namespace JSTools.Parser
 		/// <summary>
 		/// Create new ParseItemException instance.
 		/// </summary>
-		/// <param name="Message">Message to throw.</param>
+		/// <param name="message">Message to throw.</param>
 		/// <param name="inner">Inner exception.</param>
 		public ParseItemException(string message, Exception inner) : base(message, inner)
 		{
 		}
 
-
 		/// <summary>
 		/// Create new ParseItemException instance.
 		/// </summary>
-		/// <param name="Message">Message to throw.</param>
+		/// <param name="message">Message to throw.</param>
 		public ParseItemException(string message) : base(message)
 		{
 		}
-
 
 		/// <summary>
 		/// Create new ParseItemException instance.
@@ -107,13 +104,12 @@ namespace JSTools.Parser
 		/// <param name="errorCode">Code, in which this error has occured.</param>
 		public ParseItemException(string message, string errorName, int lineNumber, int lineOffset, string errorCode) : base(PARSER_ERROR)
 		{
-			_lineNumber		= lineNumber;
-			_columnNumber	= lineOffset;
-			_code			= errorCode;
-			_errorMessage	= message;
-			_errorName		= errorName;
+			_lineNumber = lineNumber;
+			_columnNumber = lineOffset;
+			_code = errorCode;
+			_errorMessage = message;
+			_errorName = errorName;
 		}
-
 
 		/// <summary>
 		/// Create new ParseItemException instance.
@@ -126,13 +122,16 @@ namespace JSTools.Parser
 		/// <param name="errorCode">Code, in which this error has occured.</param>
 		public ParseItemException(string message, Exception inner, string errorName, int lineNumber, int lineOffset, string errorCode) : base(message, inner)
 		{
-			_lineNumber		= lineNumber;
-			_columnNumber	= lineOffset;
-			_code			= errorCode;
-			_errorMessage	= message;
-			_errorName		= errorName;
+			_lineNumber = lineNumber;
+			_columnNumber = lineOffset;
+			_code = errorCode;
+			_errorMessage = message;
+			_errorName = errorName;
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -143,7 +142,8 @@ namespace JSTools.Parser
 		/// </summary>
 		public override string ToString()
 		{
-			if (_errorName == String.Empty || _errorMessage == String.Empty)
+			if (_errorName == null || _errorName.Length == 0
+				|| _errorMessage == null || _errorMessage.Length == 0)
 				return base.ToString();
 
 			StringBuilder builder = new StringBuilder();

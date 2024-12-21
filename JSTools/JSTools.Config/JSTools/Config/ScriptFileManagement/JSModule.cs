@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Collections.Specialized;
 using System.IO;
@@ -41,22 +33,36 @@ namespace JSTools.Config.ScriptFileManagement
 		// Declarations
 		//--------------------------------------------------------------------
 
-		public	const	string						MODULE_NODE_NAME	= "module";
+		/// <summary>
+		/// Gets the name of a JSModule xml node.
+		/// </summary>
+		public const string MODULE_NODE_NAME = "module";
 
-		protected		string						_name				= "";
-		protected		bool						_default			= false;
-		protected		StringCollection			_relations			= new StringCollection();
+		private const string NAME_ATTRIB = "name";
+		private const string DEFAULT_ATTRIB = "default";
+		private const string MODULE_REL_ATTRIB = "module";
+		private const string REQUIRES_NODE_NAME = "requires";
 
-		protected		JSModuleContainer			_childModules		= null;
-		protected		JSScriptContainer			_childScripts		= null;
+		private string _name = "";
+		private bool _default = false;
+		private StringCollection _relations = new StringCollection();
 
-		private	const	string						NAME_ATTRIB			= "name";
-		private	const	string						DEFAULT_ATTRIB		= "default";
-		private	const	string						MODULE_REL_ATTRIB	= "module";
-		private	const	string						REQUIRES_NODE_NAME	= "requires";
+		private JSModuleContainer _childModules = null;
+		private JSScriptContainer _childScripts = null;
 
-		private			XmlNode						_moduleNode			= null;
+		private XmlNode _moduleNode = null;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
+
+		/// <summary>
+		/// Gets the unique id of this section.
+		/// </summary>
+		public override string Id
+		{
+			get { return Path; }
+		}
 
 		/// <summary>
 		/// Returns an absolute module request path. (e.g. /src/JSTools/Web.js)
@@ -65,11 +71,11 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get
 			{
-				JSScriptFileHandler handler = (JSScriptFileHandler)OwnerSection;
-				return System.IO.Path.ChangeExtension(JSScriptFileHandler.PATH_SEPARATOR + Path, handler.ScriptExtension);
+				return System.IO.Path.ChangeExtension(
+					JSScriptFileHandler.PATH_SEPARATOR + Path,
+					((JSScriptFileHandler)OwnerSection).ScriptExtension );
 			}
 		}
-
 
 		/// <summary>
 		/// Returns true, if the default flag is set.
@@ -79,7 +85,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return _default; }
 		}
 
-
 		/// <summary>
 		/// Gets the name of the representing xml node.
 		/// </summary>
@@ -88,7 +93,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return MODULE_NODE_NAME; }
 		}
 
-
 		/// <summary>
 		/// Returns all child modules.
 		/// </summary>
@@ -96,7 +100,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _childModules; }
 		}
-
 
 		/// <summary>
 		/// Returns the parent module instance. If the parent is not a valid Module instance,
@@ -107,7 +110,6 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return (ParentSection as JSModule); }
 		}
 
-
 		/// <summary>
 		/// Returns the full name of this module. The modules are separated by ".".
 		/// </summary>
@@ -116,13 +118,11 @@ namespace JSTools.Config.ScriptFileManagement
 			get
 			{
 				if (ParentModule != null)
-				{
 					return ParentModule.FullName + JSScriptFileHandler.NAME_SEPARATOR + _name;
-				}
+
 				return _name;
 			}
 		}
-
 
 		/// <summary>
 		/// Returns the module path.
@@ -132,13 +132,11 @@ namespace JSTools.Config.ScriptFileManagement
 			get
 			{
 				if (ParentModule != null)
-				{
 					return ParentModule.Path + JSScriptFileHandler.PATH_SEPARATOR + _name;
-				}
+
 				return _name;
 			}
 		}
-
 
 		/// <summary>
 		/// Returns the name of this module.
@@ -147,7 +145,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _name; }
 		}
-
 
 		/// <summary>
 		/// Returns the module relations.
@@ -162,7 +159,6 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 		}
 
-
 		/// <summary>
 		/// Returns all files, which are registered in this module.
 		/// </summary>
@@ -170,7 +166,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			get { return _childScripts; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -186,9 +181,9 @@ namespace JSTools.Config.ScriptFileManagement
 		internal JSModule(XmlNode moduleNode, AJSToolsScriptFileSection parentSection) : base(parentSection)
 		{
 			if (moduleNode == null)
-				throw new ArgumentNullException("moduleNode", "The given XmlNode contains a null reference!");
+				throw new ArgumentNullException("moduleNode", "The given XmlNode contains a null reference.");
 
-			_moduleNode		= moduleNode;
+			_moduleNode = moduleNode;
 
 			InitModule();
 
@@ -196,6 +191,26 @@ namespace JSTools.Config.ScriptFileManagement
 			InitChildModules();
 			InitFileSources();
 			InitRelations();
+		}
+
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
+
+		/// <summary>
+		/// Bubbles the CheckRelations event.
+		/// </summary>
+		/// <param name="sender">Sender object.</param>
+		/// <param name="e">Event argument object.</param>
+		/// <exception cref="InvalidOperationException">A required module could not be found.</exception>
+		protected override void OnCheckModuleRelations(object sender, EventArgs e)
+		{
+			foreach (string relation in _relations)
+			{
+				if (!(OwnerSection as JSScriptFileHandler).IsModuleRegistered(relation))
+					throw new InvalidOperationException("Error in module definition '" + FullName + "': The required module '" + relation + "' could not be found.");
+			}
+			base.OnCheckModuleRelations(sender, e);
 		}
 
 		//--------------------------------------------------------------------
@@ -219,7 +234,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return false;
 		}
 
-
 		/// <summary>
 		/// Returns true, if this module contains the specified module as relation.
 		/// </summary>
@@ -228,7 +242,6 @@ namespace JSTools.Config.ScriptFileManagement
 		{
 			return HasRelation(relationModule.FullName);
 		}
-
 
 		/// <summary>
 		/// Searches for the given file path and returns true, if it is stored in this
@@ -248,26 +261,6 @@ namespace JSTools.Config.ScriptFileManagement
 			return false;
 		}
 
-
-		/// <summary>
-		/// Bubbles the CheckRelations event.
-		/// </summary>
-		/// <param name="sender">Sender object.</param>
-		/// <param name="e">Event argument object.</param>
-		/// <exception cref="InvalidOperationException">A required module could not be found.</exception>
-		protected override void OnCheckModuleRelations(object sender, EventArgs e)
-		{
-			foreach (string relation in _relations)
-			{
-				if (!(OwnerSection as JSScriptFileHandler).IsModuleRegistered(relation))
-				{
-					throw new InvalidOperationException("Error in module definition '" + FullName + "': The required module '" + relation + "' could not be found!");
-				}
-			}
-			base.OnCheckModuleRelations(sender, e);
-		}
-
-
 		/// <summary>
 		/// Initializes the values of the XmlNode.
 		/// </summary>
@@ -276,7 +269,6 @@ namespace JSTools.Config.ScriptFileManagement
 			_name = JSToolsXmlFunctions.GetValueFromNode(_moduleNode.Attributes[NAME_ATTRIB]);
 			_default = JSToolsXmlFunctions.GetBoolFromNodeValue(_moduleNode.Attributes[DEFAULT_ATTRIB]);
 		}
-
 
 		/// <summary>
 		/// Initializes the xml required nodes.
@@ -288,7 +280,6 @@ namespace JSTools.Config.ScriptFileManagement
 				_relations.Add(JSToolsXmlFunctions.GetAttributeFromNode(childModule, MODULE_REL_ATTRIB));
 			}
 		}
-
 
 		/// <summary>
 		/// Initializes the child modules of this module.
@@ -305,7 +296,6 @@ namespace JSTools.Config.ScriptFileManagement
 			}
 			_childModules = new JSModuleContainer(modules);
 		}
-
 
 		/// <summary>
 		/// Initilializes the file tags.

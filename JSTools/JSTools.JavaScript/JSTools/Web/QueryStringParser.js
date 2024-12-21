@@ -16,16 +16,16 @@ JSTools.Web.QueryStringParser = function(strQueryStringData, blnEscapeFileUrl)
 
 	this.InitType(arguments, "JSTools.Web.QueryStringParser");
 
-	var DEFAULT_VALUE_SEPARATOR	= "?";
-	var VALUE_SEPARATOR			= "=";
-	var NAME_VALUE_SEPARATOR	= "&";
-	var PARSE_REGEXP			= /^(([^?]+)\?)?(.+)$/;
+	var DEFAULT_VALUE_SEPARATOR = "?";
+	var VALUE_SEPARATOR = "=";
+	var NAME_VALUE_SEPARATOR = "&";
+	var PARSE_REGEXP = /^(([^?]+)\?)?(.+)$/;
 
-	var _this			= this;
-	var _rawData		= (strQueryStringData) ? String(strQueryStringData) : String.Empty;
-	var _fileUrl		= String.Empty;
-	var _escapeFileUrl	= Boolean(blnEscapeFileUrl);
-	var _storage		= new JSTools.Util.Hashtable();
+	var _this = this;
+	var _rawData = (strQueryStringData) ? String(strQueryStringData) : String.Empty;
+	var _fileUrl = String.Empty;
+	var _escapeFileUrl = Boolean(blnEscapeFileUrl);
+	var _storage = new JSTools.Util.Hashtable();
 
 
 	//------------------------------------------------------------------------
@@ -69,30 +69,33 @@ JSTools.Web.QueryStringParser = function(strQueryStringData, blnEscapeFileUrl)
 	/// and should be escaped when serializing.
 	/// </method>
 	/// <returns type="Boolean">Returns true if the url escaping mechanism is enabled.</returns>
-	this.IsFileUrlEscaped = function()
+	function IsFileUrlEscaped()
 	{
 		return _escapeFileUrl;
 	}
+	this.IsFileUrlEscaped = IsFileUrlEscaped;
 
 
 	/// <method>
 	/// Gets the file url. 
 	/// </method>
 	/// <returns type="String">Returns the file url path of the given query string.</returns>
-	this.GetFileUrl = function()
+	function GetFileUrl()
 	{
 		return _fileUrl;
 	}
+	this.GetFileUrl = GetFileUrl;
 
 
 	/// <method>
 	/// Sets the file url.
 	/// </method>
 	/// <param name="strFileUrl" type="String">New file url path.</param>
-	this.SetFileUrl = function(strFileUrl)
+	function SetFileUrl(strFileUrl)
 	{
 		_fileUrl = String(strFileUrl);
 	}
+	this.SetFileUrl = SetFileUrl;
 
 
 	/// <method>
@@ -101,10 +104,11 @@ JSTools.Web.QueryStringParser = function(strQueryStringData, blnEscapeFileUrl)
 	/// </method>
 	/// <param name="strValueName" type="String">Name of the value to add.</param>
 	/// <param name="strValue" type="String">Value to add.</param>
-	this.SetValue = function(strValueName, strValue)
+	function SetValue(strValueName, strValue)
 	{
 		_storage.Set(String(strValueName), String(strValue));
 	}
+	this.SetValue = SetValue;
 
 
 	/// <method>
@@ -113,10 +117,11 @@ JSTools.Web.QueryStringParser = function(strQueryStringData, blnEscapeFileUrl)
 	/// <param name="strValueName" type="String">Name of the value to get.</param>
 	/// <returns type="String">Returns the expected value or a null reference if there
 	/// is no value associated with the given name.</returns>
-	this.GetValue = function(strValueName)
+	function GetValue(strValueName)
 	{
 		return (typeof(_storage.Get(strValueName)) != 'undefined') ? _storage[strValueName] : null;
 	}
+	this.GetValue = GetValue;
 
 
 	/// <method>
@@ -125,7 +130,7 @@ JSTools.Web.QueryStringParser = function(strQueryStringData, blnEscapeFileUrl)
 	/// <param name="strValueName" type="String">Name of the value to remove.</param>
 	/// <returns type="String">Returns the removed value or a null reference, if the given
 	/// name could not be found.</returns>
-	this.RemoveValue = function(strValueName)
+	function RemoveValue(strValueName)
 	{
 		var valueToRemove = _storage.Get(strValueName);
 
@@ -136,16 +141,18 @@ JSTools.Web.QueryStringParser = function(strQueryStringData, blnEscapeFileUrl)
 		}
 		return null;
 	}
+	this.RemoveValue = RemoveValue;
 
 
 	/// <method>
 	/// Returns a copy of all registered value names.
 	/// </method>
 	/// <returns type="Array"></returns>
-	this.GetValueNames = function()
+	function GetValueNames()
 	{
 		return _storage.GetKeys();
 	}
+	this.GetValueNames = GetValueNames;
 
 
 	/// <method>
@@ -153,10 +160,11 @@ JSTools.Web.QueryStringParser = function(strQueryStringData, blnEscapeFileUrl)
 	/// into the new QueryStringParser object.
 	/// </method>
 	/// <returns type="JSTools.Web.QueryStringParser">Returns a clone of this object.</returns>
-	this.Clone = function()
+	function Clone()
 	{
 		return new JSTools.Web.QueryStringParser(_this.toString(), _escapeFileUrl);
 	}
+	this.Clone = Clone;
 
 
 	/// <method>
@@ -164,7 +172,7 @@ JSTools.Web.QueryStringParser = function(strQueryStringData, blnEscapeFileUrl)
 	/// string, you have to create a new QueryStringParser instance and pass the
 	/// string representation of this object to the first constructor argument.
 	/// </method>
-	this.toString = function()
+	function ToString()
 	{
 		var serializedString = GetEscapedFileUrl();
 		var count = 0;
@@ -187,6 +195,7 @@ JSTools.Web.QueryStringParser = function(strQueryStringData, blnEscapeFileUrl)
 		}
 		return serializedString;
 	}
+	this.toString = ToString;
 
 
 	/// <method>

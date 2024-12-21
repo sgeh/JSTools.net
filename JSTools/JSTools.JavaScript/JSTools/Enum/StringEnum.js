@@ -13,10 +13,10 @@ JSTools.Enum.StringEnum = function()
 	// Declarations
 	//------------------------------------------------------------------------
 
-	var _this				= this;
-	var _arguments			= arguments;
-	var _registeredValues	= new Array();
-	var _registeredNames	= new Array();
+	var _this = this;
+	var _arguments = arguments;
+	var _registeredValues = new Array();
+	var _registeredNames = new Array();
 
 
 	//------------------------------------------------------------------------
@@ -49,20 +49,22 @@ JSTools.Enum.StringEnum = function()
 	/// Creates a new array and copies the enum values.
 	/// </method>
 	/// <returns type="Array">Returns all values, which are stored in this enum.</returns>
-	this.GetValues = function()
+	function GetValues()
 	{
 		return _registeredValues.Copy();
 	}
+	this.GetValues = GetValues;
 
 
 	/// <method>
 	/// Creates a new array and copies the given enum names.
 	/// </method>
 	/// <returns type="Array">Returns all names, which are stored in this enum.</returns>
-	this.GetNames = function()
+	function GetNames()
 	{
 		return _registeredNames.Copy();
 	}
+	this.GetNames = GetNames;
 
 
 	/// <method>
@@ -71,7 +73,7 @@ JSTools.Enum.StringEnum = function()
 	/// <param type="Integer" name="intValue">Value of the expected name.</param>
 	/// <returns type="String">Returns the name of the requested value. If the value does not
 	/// exist, you will obtain a null reference.</returns>
-	this.GetName = function(intValue)
+	function GetName(intValue)
 	{
 		var valueIndex = _registeredValues.IndexOf(intValue);
 		
@@ -89,6 +91,7 @@ JSTools.Enum.StringEnum = function()
 			return name;
 		}
 	}
+	this.GetName = GetName;
 
 
 	/// <method>
@@ -96,7 +99,7 @@ JSTools.Enum.StringEnum = function()
 	/// </method>
 	/// <param type="Integer" name="intValue">Value of the expected name.</param>
 	/// <returns type="String">Returns the name of the requested value.</returns>
-	this.toString = function()
+	function ToString()
 	{
 		var enumString = "[enum";
 
@@ -106,5 +109,7 @@ JSTools.Enum.StringEnum = function()
 		}
 		return enumString + "]";
 	}
+	this.toString = ToString;
+
 	Init();
 }

@@ -28,30 +28,31 @@ namespace JSTools.Parser
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private ArrayList	_children			= new ArrayList();
-		private int			_lineNumberBegin	= -1;
-		private int			_lineNumberEnd		= -1;
-		private int			_offsetBegin		= -1;
-		private int			_offsetEnd			= -1;
-		private int			_lineOffsetBegin	= -1;
-		private int			_lineOffsetEnd		= -1;
-		private	int			_codeLength			= 0;
+		private ArrayList _children = new ArrayList();
+		private int _lineNumberBegin = -1;
+		private int _lineNumberEnd = -1;
+		private int _offsetBegin = -1;
+		private int _offsetEnd = -1;
+		private int _lineOffsetBegin = -1;
+		private int _lineOffsetEnd = -1;
+		private int _codeLength = 0;
 
-		private	string		_globalCode			= null;
-		private	string		_parseItemName		= String.Empty;
+		private string _globalCode = null;
+		private string _parseItemName = string.Empty;
 
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Fired if a node begins.
 		/// </summary>
 		public event EventHandler OnBegin;
 
-
 		/// <summary>
 		/// Fired if a node ends.
 		/// </summary>
 		public event EventHandler OnEnd;
-
 
 		/// <summary>
 		/// Returns the children of the current node instance.
@@ -60,7 +61,6 @@ namespace JSTools.Parser
 		{
 			get { return (INode[])_children.ToArray(typeof(INode)); }
 		}
-
 
 		/// <summary>
 		/// Returns the line number on which this item begins.
@@ -71,7 +71,6 @@ namespace JSTools.Parser
 			set { _lineNumberBegin = value; }
 		}
 
-
 		/// <summary>
 		/// Returns the line number on which this item ends.
 		/// </summary>
@@ -80,7 +79,6 @@ namespace JSTools.Parser
 			get { return _lineNumberEnd; }
 			set { _lineNumberEnd = value; }
 		}
-
 
 		/// <summary>
 		/// Gets/sets the absolute start offset.
@@ -91,7 +89,6 @@ namespace JSTools.Parser
 			set { _offsetEnd = value; }
 		}
 
-
 		/// <summary>
 		/// Gets/sets the absolute end offset.
 		/// </summary>
@@ -100,7 +97,6 @@ namespace JSTools.Parser
 			get { return _offsetBegin; }
 			set { _offsetBegin = value; }
 		}
-
 
 		/// <summary>
 		/// Gets/sets the start offset of the start line.
@@ -111,7 +107,6 @@ namespace JSTools.Parser
 			set { _lineOffsetBegin = value; }
 		}
 
-
 		/// <summary>
 		/// Gets/sets the end offset of the start end.
 		/// </summary>
@@ -120,7 +115,6 @@ namespace JSTools.Parser
 			get { return _lineOffsetEnd; }
 			set { _lineOffsetEnd = value; }
 		}
-
 
 		/// <summary>
 		/// Gets/sets the whole code.
@@ -131,7 +125,6 @@ namespace JSTools.Parser
 			set { _globalCode = value; }
 		}
 
-
 		/// <summary>
 		/// Returns the name of the representing parse item.
 		/// </summary>
@@ -139,7 +132,6 @@ namespace JSTools.Parser
 		{
 			get { return _parseItemName; }
 		}
-
 
 		/// <summary>
 		/// Gets the code, which represents this object.
@@ -178,7 +170,6 @@ namespace JSTools.Parser
 			}
 		}
 
-
 		/// <summary>
 		/// Gets/sets the length of the code.
 		/// </summary>
@@ -187,7 +178,6 @@ namespace JSTools.Parser
 			get { return _codeLength; }
 			set { _codeLength = value; }
 		}
-
 
 		/// <summary>
 		/// Gets/sets the first child. Returns null, if no child exists.
@@ -200,7 +190,6 @@ namespace JSTools.Parser
 			}
 		}
 
-
 		/// <summary>
 		/// Gets/sets the last child. Returns null, if no child exists.
 		/// </summary>
@@ -212,7 +201,6 @@ namespace JSTools.Parser
 			}		
 		}
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -223,7 +211,6 @@ namespace JSTools.Parser
 		public GlobalNode()
 		{
 		}
-
 
 		/// <summary>
 		/// Creates a new GlobalNode object.
@@ -237,13 +224,17 @@ namespace JSTools.Parser
 			}
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		/// Initilizes this node instance. Informations will be given by this method.
+		/// Initilizes this node instance. Informations about the line number and line offset
+		/// are specified with the arguments of this method.
 		/// </summary>
 		/// <param name="globalCode">Whole code to parse.</param>
 		/// <param name="offsetBegin">Absolute start offset.</param>
@@ -251,10 +242,10 @@ namespace JSTools.Parser
 		/// <param name="lineNumberBegin">Line number, at which this instance begins.</param>
 		public void SetUpBegin(string globalCode, int offsetBegin, int lineOffsetBegin, int lineNumberBegin)
 		{
-			_lineNumberBegin	= lineNumberBegin;
-			_offsetBegin		= offsetBegin;
-			_lineOffsetBegin	= lineOffsetBegin;
-			_globalCode			= globalCode;
+			_lineNumberBegin = lineNumberBegin;
+			_offsetBegin = offsetBegin;
+			_lineOffsetBegin = lineOffsetBegin;
+			_globalCode = globalCode;
 
 			if (OnBegin != null)
 			{
@@ -269,16 +260,15 @@ namespace JSTools.Parser
 		/// <param name="lineNumberEnd">Line number, at which this instance ends.</param>
 		public void SetUpEnd(int lineOffsetEnd, int lineNumberEnd)
 		{
-			_lineNumberEnd		= lineNumberEnd;
-			_lineOffsetEnd		= lineOffsetEnd;
-			_offsetEnd			= _offsetBegin + CodeLength;
+			_lineNumberEnd = lineNumberEnd;
+			_lineOffsetEnd = lineOffsetEnd;
+			_offsetEnd = _offsetBegin + CodeLength;
 
 			if (OnEnd != null)
 			{
 				OnEnd(this, new EventArgs());
 			}
 		}
-
 
 		/// <summary>
 		/// Adds a new child to the current node.
@@ -292,7 +282,6 @@ namespace JSTools.Parser
 
 			_children.Add(child);
 		}
-
 
 		/// <summary>
 		/// Returns the index of the specified child. 
@@ -313,7 +302,6 @@ namespace JSTools.Parser
 			return i;
 		}
 
-
 		/// <summary>
 		/// Returns the child node, which is stored at the specified index.
 		/// </summary>
@@ -326,7 +314,6 @@ namespace JSTools.Parser
 
 			return (INode)_children[index];
 		}
-
 
 		/// <summary>
 		/// Inserts the given child at the specified index.
@@ -346,7 +333,6 @@ namespace JSTools.Parser
 			_children.Insert(index, child);
 		}
 
-
 		/// <summary>
 		/// Removes the specified child at the specified index.
 		/// </summary>
@@ -364,7 +350,6 @@ namespace JSTools.Parser
 			}
 			return null;
 		}
-
 
 		/// <summary>
 		/// Replaces the specified child with the given node to insert.

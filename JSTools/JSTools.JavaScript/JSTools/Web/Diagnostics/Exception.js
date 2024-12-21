@@ -1,8 +1,8 @@
 function Exception(strMessage, objSender)
 {
-	var _exceptionMessage	= ToString(strMessage);
-	var _logFunction		= window.Console.WriteWarning;
-	var _debugObject		= objSender;
+	var _exceptionMessage = ToString(strMessage);
+	var _logFunction = window.Console.WriteWarning;
+	var _debugObject = objSender;
 
 	if (typeof(objDebug) != 'object')
 	{
@@ -61,10 +61,10 @@ Exception.CanAlert = function()
 }
 
 
-Exception.Handling			= new FlagsEnum(
+Exception.Handling = new FlagsEnum(
 	"None",					// no error handling
 	"AlertError",			// visualizes the error in a alert window
 	"CatchError",			// all errors will be catched
 	"LogError" );			// log all errors
 
-Exception.DebugMode			= Exception.Handling.None;
+Exception.DebugMode = Exception.Handling.None;

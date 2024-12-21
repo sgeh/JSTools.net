@@ -44,7 +44,6 @@ namespace JSTools.Web.UI
 		
 		private const string SCRIPT_SECTION = "// Section {0}";
 
-
 		/// <summary>
 		/// Name of the section to render with this render handler.
 		/// </summary>
@@ -52,7 +51,6 @@ namespace JSTools.Web.UI
 		{
 			get { return JSExceptionHandlerFactory.SECTION_NAME; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -64,7 +62,6 @@ namespace JSTools.Web.UI
 		public JSExceptionRenderHandler()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -105,7 +102,6 @@ namespace JSTools.Web.UI
 			controls.Add(new LiteralControl("\n"));
 		}
 
-
 		/// <summary>
 		/// Renders the error event handling client script.
 		/// </summary>
@@ -133,7 +129,6 @@ namespace JSTools.Web.UI
 					toWrite.Append("\nJSTools.Exception.EventHandling |= JSTools.ExceptionHandling.ErrorEvent.Warn;");
 			}
 		}
-
 
 		/// <summary>
 		/// Renders the error handling client script.

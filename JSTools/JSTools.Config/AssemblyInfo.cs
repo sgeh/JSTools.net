@@ -15,7 +15,6 @@
  */
 
 using System.Reflection;
-using System.Web.UI;
 using System.Runtime.CompilerServices;
 
 //
@@ -24,14 +23,13 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("JSTools.Config.net dll")]
-[assembly: AssemblyDescription("Contains .NET modules for the JSTools.net JavaScript FrameWork.")]
+[assembly: AssemblyDescription("Contains a set of configuration modules for the JSTools.net JavaScript FrameWork.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: TagPrefix("JSTools", "JS")]
 
 //
 // Version information for an assembly consists of the following four values:

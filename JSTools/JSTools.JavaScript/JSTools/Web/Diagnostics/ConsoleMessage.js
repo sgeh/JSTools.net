@@ -4,9 +4,9 @@ function ConsoleMessage(strMessageType, strMessage)
 	this.InitTypeManager(arguments);
 
 	// copies a reference of the protected members for using from outside the constructor
-	var _protected		= arguments.Protected;
-	var _message		= ToString(strMessage);
-	var _messageType	= strMessageType;
+	var _protected = arguments.Protected;
+	var _message = ToString(strMessage);
+	var _messageType = strMessageType;
 
 
 	// returns the message, which is given by the constructor or appended by the AppendMessage method

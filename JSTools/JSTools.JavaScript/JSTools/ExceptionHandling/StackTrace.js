@@ -18,10 +18,10 @@ JSTools.ExceptionHandling.StackTrace = function()
 
 	this.InitType(arguments, "JSTools.ExceptionHandling.StackTrace");
 
-	var _this			= this;
-	var _methods		= [ ];
-	var _callee			= arguments.callee;
-	var _isAvailable	= true;
+	var _this = this;
+	var _methods = [ ];
+	var _callee = arguments.callee;
+	var _isAvailable = true;
 
 
 	//------------------------------------------------------------------------
@@ -57,20 +57,22 @@ JSTools.ExceptionHandling.StackTrace = function()
 	/// Checks whether the current browser supports reflection of the call stack.
 	/// </method>
 	/// <returns type="Boolean">Returns true if the current browser supports reflection of the call stack.</returns>
-	this.IsAvailable = function()
+	function IsAvailable()
 	{
 		return _isAvailable;
 	}
+	this.IsAvailable = IsAvailable;
 
 
 	/// <method>
 	/// Gets the count of methods in the call stack.
 	/// </method>
 	/// <returns type="Integer">Returns the count of methods in the call stack.</returns>
-	this.GetMethodCount = function()
+	function GetMethodCount()
 	{
 		return _methods.length;
 	}
+	this.GetMethodCount = GetMethodCount;
 
 
 	/// <method>
@@ -78,7 +80,7 @@ JSTools.ExceptionHandling.StackTrace = function()
 	/// </method>
 	/// <returns type="Function">Returns a function object if a function at the given index exist.
 	/// Ohterwise you will obtian a null reference.</returns>
-	this.GetMethod = function(intIndex)
+	function GetMethod(intIndex)
 	{
 		if (typeof(intIndex) != 'number' || isNaN(intIndex))
 			return null;
@@ -89,27 +91,26 @@ JSTools.ExceptionHandling.StackTrace = function()
 		}
 		return null;
 	}
+	this.GetMethod = GetMethod;
 
 
 	/// <method>
 	/// Returns a string representation of this call stack.
 	/// </method>
-	this.toString = function()
+	function ToString()
 	{
 		var stackTrace = String.Empty;
 
 		for (var i = 0; i < _methods.length; ++i)
 		{
 			if (_methods[i].GetName() == String.Empty)
-			{
-				stackTrace += "[ function ]\n";
-			}
+				stackTrace += "[ function(...) ]\n";
 			else
-			{
-				stackTrace += _methods[i].GetName() + "\n";
-			}
+				stackTrace += _methods[i].GetName() + "(...)\n";
 		}
 		return stackTrace;
 	}
+	this.toString = ToString;
+
 	Init();
 }

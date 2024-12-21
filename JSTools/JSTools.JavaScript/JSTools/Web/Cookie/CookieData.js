@@ -24,14 +24,14 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 
 	this.InitType(arguments, "JSTools.Web.Cookie.CookieData");
 
-	var _this			= this;
-	var _domain			= null;
-	var _path			= null;
-	var _expires		= null;
-	var _secure			= false;
-	var _name			= unescape(String(strCookieName));
-	var _defaultValue	= null;
-	var _stringParser	= null;
+	var _this = this;
+	var _domain = null;
+	var _path = null;
+	var _expires = null;
+	var _secure = false;
+	var _name = unescape(String(strCookieName));
+	var _defaultValue = null;
+	var _stringParser = null;
 
 
 	//------------------------------------------------------------------------
@@ -63,20 +63,22 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// </method>
 	/// <returns type="String">Returns the associated domain or a null reference if
 	/// there is no domain specified</returns>
-	this.GetDomain = function()
+	function GetDomain()
 	{
 		return _domain;
 	}
+	this.GetDomain = GetDomain;
 
 
 	/// <method>
 	/// Sets the domain to associate the cookie with. 
 	/// </method>
 	/// <param name="strDomain" type="String">Domain to associat the cookie with.</param>
-	this.SetDomain = function(strDomain)
+	function SetDomain(strDomain)
 	{
 		_domain = String(strDomain);
 	}
+	this.SetDomain = SetDomain;
 
 
 	/// <method>
@@ -84,10 +86,11 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// </method>
 	/// <returns type="Date">Returns the expiration date or a null reference if
 	/// there is no expiration date specified.</returns>
-	this.GetExpirationDate = function()
+	function GetExpirationDate()
 	{
 		return _expires;
 	}
+	this.GetExpirationDate = GetExpirationDate;
 
 
 	/// <method>
@@ -95,27 +98,25 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// </method>
 	/// <param name="objExpirationDate" type="Date">Expiration date of the cookie.</param>
 	/// <param name="objExpirationDate" type="Integer">Expiration date (in milliseconds) of the cookie.</param>
-	this.SetExpirationDate = function(objExpirationDate)
+	function SetExpirationDate(objExpirationDate)
 	{
 		if (objExpirationDate && objExpirationDate.constructor == Date)
-		{
 			_expires = objExpirationDate;
-		}
 		else if (typeof(objExpirationDate) == 'number')
-		{
 			_expires = new Date(objExpirationDate);
-		}
 	}
+	this.SetExpirationDate = SetExpirationDate;
 
 
 	/// <method>
 	/// Gets the name of a cookie.
 	/// </method>
 	/// <returns type="String">Returns the name of this cookie.</returns>
-	this.GetName = function()
+	function GetName()
 	{
 		return _name;
 	}
+	this.GetName = GetName;
 
 
 	/// <method>
@@ -124,20 +125,22 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// <param name="objExpirationDate" type="Date">Domain to associate the cookie with.</param>
 	/// <returns type="String">Returns the path of the cookie or a null reference if
 	/// there is no path specified.</returns>
-	this.GetPath = function()
+	function GetPath()
 	{
 		return _path;
 	}
+	this.GetPath = GetPath;
 
 
 	/// <method>
 	/// Sets the virtual path of this cookie.
 	/// </method>
 	/// <param name="strPath" type="String">Path of the cookie.</param>
-	this.SetPath = function(strPath)
+	function SetPath(strPath)
 	{
 		_path = String(strPath);
 	}
+	this.SetPath = SetPath;
 
 
 	/// <method>
@@ -145,20 +148,22 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// Default value is false.
 	/// </method>
 	/// <returns type="Boolean"></returns>
-	this.GetSecure = function(blnSecure)
+	function GetSecure(blnSecure)
 	{
 		return _secure;
 	}
+	this.GetSecure = GetSecure;
 
 
 	/// <method>
 	/// Sets a boolean whether to transmit the cookie securely (that is, over HTTPS only).
 	/// </method>
 	/// <param name="blnSecure" type="Boolean">Boolean whether to tramsmit the cookie securely.</param>
-	this.SetSecure = function(blnSecure)
+	function SetSecure(blnSecure)
 	{
 		_secure = Boolean(blnSecure);
 	}
+	this.SetSecure = SetSecure;
 
 
 	/// <method>
@@ -166,20 +171,22 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// not store data larger than 4kBytes.
 	/// </method>
 	/// <param name="strValue" type="String">Value to add.</param>
-	this.SetDefaultValue = function(strValue)
+	function SetDefaultValue(strValue)
 	{
 		_stringParser.SetFileUrl(String(strValue));
 	}
+	this.SetDefaultValue = SetDefaultValue;
 
 
 	/// <method>
 	/// Gets the default value.
 	/// </method>
 	/// <returns type="String">Returns the default value.</returns>
-	this.GetDefaultValue = function()
+	function GetDefaultValue()
 	{
 		return _stringParser.GetFileUrl();
 	}
+	this.GetDefaultValue = GetDefaultValue;
 
 
 	/// <method>
@@ -189,10 +196,11 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// </method>
 	/// <param name="strValueName" type="String">Name of the value to add.</param>
 	/// <param name="strValue" type="String">Value to add.</param>
-	this.SetValue = function(strValueName, strValue)
+	function SetValue(strValueName, strValue)
 	{
 		_stringParser.SetValue(strValueName, strValue);
 	}
+	this.SetValue = SetValue;
 
 
 	/// <method>
@@ -201,10 +209,11 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// <param name="strValueName" type="String">Name of the value to get.</param>
 	/// <returns type="String">Returns the expected value or a null reference if there
 	/// is no value associated with the given name.</returns>
-	this.GetValue = function(strValueName)
+	function GetValue(strValueName)
 	{
 		_stringParser.GetValue(strValueName);
 	}
+	this.GetValue = GetValue;
 
 
 	/// <method>
@@ -213,20 +222,22 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// <param name="strValueName" type="String">Name of the value to remove.</param>
 	/// <returns type="String">Returns the removed value or a null reference, if the given
 	/// name could not be found.</returns>
-	this.RemoveValue = function(strValueName)
+	function RemoveValue(strValueName)
 	{
 		_stringParser.RemoveValue(strValueName);
 	}
+	this.RemoveValue = RemoveValue;
 
 
 	/// <method>
 	/// Returns a copy of all registered value names.
 	/// </method>
 	/// <returns type="Array"></returns>
-	this.GetValueNames = function()
+	function GetValueNames()
 	{
 		return _stringParser.GetValueNames();
 	}
+	this.GetValueNames = GetValueNames;
 
 
 	/// <method>
@@ -236,7 +247,7 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// <param name="strNewCookieName" type="String">Name of the cookie to create.
 	/// Default value is the name of this cookie.</param>
 	/// <returns type="JSTools.Web.Cookie.CookieData">Returns a clone of this object.</returns>
-	this.Clone = function(strNewCookieName)
+	function Clone(strNewCookieName)
 	{
 		var newCookieName = (typeof(strNewCookieName) != 'undefined') ? String(strNewCookieName) : _name;
 		var newCookieData = new JSTools.Web.Cookie.CookieData(newCookieName, _stringParser.toString());
@@ -247,6 +258,7 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 		newCookieData.SetSecure(_secure);
 		return newCookieData;
 	}
+	this.Clone = Clone;
 
 
 	/// <method>
@@ -254,7 +266,7 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 	/// </method>
 	/// <returns type="String">Returns the javascript cookie string representation
 	/// of this object.</returns>
-	this.toString = function()
+	function ToString()
 	{
 		return _stringParser.toString() + ";"
 			+ (_expires ? "expires=" + _expires.toGMTString() + ";" : "")
@@ -262,5 +274,7 @@ JSTools.Web.Cookie.CookieData = function(strCookieName, strCookieData)
 			+ (_domain ? "domain=" + _domain + ";" : "")
 			+ (_secure ? "secure" : "");
 	}
+	this.toString = ToString;
+
 	Init();
 }

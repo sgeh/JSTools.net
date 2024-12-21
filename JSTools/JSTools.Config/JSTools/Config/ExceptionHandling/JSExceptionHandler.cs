@@ -14,14 +14,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// <file>
-///     <copyright see="prj:///doc/copyright.txt"/>
-///     <license see="prj:///doc/license.txt"/>
-///     <owner name="Silvan Gehrig" email="silvan.gehrig@mcdark.ch"/>
-///     <version value="$version"/>
-///     <since>JSTools.dll 0.1.0</since>
-/// </file>
-
 using System;
 using System.Configuration;
 using System.Text;
@@ -33,23 +25,28 @@ using JSTools.Xml;
 namespace JSTools.Config.ExceptionHandling
 {
 	/// <summary>
-	/// Used to determine the return value of the client side JSTools.Exception.Log,
-	/// JSTools.Exception.Thorw and JSTools.Exception.Warn method.
+	/// Used to determine the error handling mode on client side.
 	/// </summary>
 	public enum ErrorHandling : byte
 	{
 		/// <summary>
-		/// The public Log, Thorw and Warn methods will return true.
+		/// Native client side error handling is disabled. This is usefull in
+		/// conjunction with client side debuggers. Script internal exceptions
+		/// will be thrown.
 		/// </summary>
-		Catch	= 0x01,
-
+		None = 0x00,
 
 		/// <summary>
-		/// The public Log, Thorw and Warn methods will return false.
+		/// All client side error messages are suppressed. This mode may be used
+		/// in conjuction with the release mode.
 		/// </summary>
-		Throw	= 0x02,
-	}
+		Catch = 0x01,
 
+		/// <summary>
+		/// Client side error messages are displayed and error handling is enabled.
+		/// </summary>
+		Throw = 0x02,
+	}
 
 	/// <summary>
 	/// Represents a bit mask used to filter client side events.
@@ -60,29 +57,28 @@ namespace JSTools.Config.ExceptionHandling
 		/// <summary>
 		/// The error is stored on client side but no event will be fired.
 		/// </summary>
-		None	= 0x00,
+		None = 0x00,
 
 		/// <summary>
 		/// The error is stored on client side and all events will be fired.
 		/// </summary>
-		All		= 0x01,
+		All = 0x01,
 
 		/// <summary>
 		/// The log message is stored on client side and an OnLog event will be fired.
 		/// </summary>
-		Log		= 0x02,
+		Log = 0x02,
 
 		/// <summary>
 		/// The error message is stored on client side and an OnError event will be fired.
 		/// </summary>
-		Error	= 0x04,
+		Error = 0x04,
 
 		/// <summary>
 		/// The warning message is stored on client side and an OnWarn event will be fired.
 		/// </summary>
-		Warn	= 0x08
+		Warn = 0x08
 	}
-
 
 	/// <summary>
 	/// Represents an &lt;exception&gt; configuration node instance.
@@ -93,23 +89,25 @@ namespace JSTools.Config.ExceptionHandling
 		// Declarations
 		//--------------------------------------------------------------------
 
-		public	readonly	string							SECTION_NAME;
+		private const string TYPE_ATTRIB = "type";
+		private const string REQUIRES_ATTIRB = "requires";
+		private const string ERROR_PROVIDER_ATTIRB = "errorProvider";
+		private const string ERROR_HANDLING_ATTIRB = "errorHandling";
 
-		protected			ErrorHandling					_errorHandling			= ErrorHandling.Throw;
-		protected			ErrorEvent						_errorEvent				= ErrorEvent.None;
-		protected			string							_requiredModule			= String.Empty;
-		protected			string							_errorProvider			= String.Empty;
+		private const string EVENT_NODE_NAME = "event";
+		private const string LOG_ATTIRB = "log";
+		private const string ERROR_ATTIRB = "error";
+		private const string WARN_ATTIRB = "warn";
 
-		private	const		string							TYPE_ATTRIB				= "type";
-		private	const		string							REQUIRES_ATTIRB			= "requires";
-		private	const		string							ERROR_PROVIDER_ATTIRB	= "errorProvider";
-		private	const		string							CATCH_ERRORS_ATTIRB		= "catchErrors";
+		private ErrorHandling _errorHandling = ErrorHandling.None;
+		private ErrorEvent _errorEvent = ErrorEvent.None;
+		private string _requiredModule = string.Empty;
+		private string _errorProvider = string.Empty;
+		private string _sectionName = string.Empty;
 
-		private	const		string							EVENT_NODE_NAME			= "event";
-		private	const		string							LOG_ATTIRB				= "log";
-		private	const		string							ERROR_ATTIRB			= "error";
-		private	const		string							WARN_ATTIRB				= "warn";
-		
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Returns the error provider on client side. This is normally window.onerror.
@@ -119,15 +117,13 @@ namespace JSTools.Config.ExceptionHandling
 			get { return _errorProvider; }
 		}
 
-
 		/// <summary>
 		/// Returns the name of the representing element.
 		/// </summary>
 		public string SectionName
 		{
-			get { return SECTION_NAME; }
+			get { return _sectionName; }
 		}
-
 
 		/// <summary>
 		/// Gets the type of error handling on the client side.
@@ -137,7 +133,6 @@ namespace JSTools.Config.ExceptionHandling
 			get { return _errorHandling; }
 		}
 
-
 		/// <summary>
 		/// Gets the error event handling on the client side.
 		/// </summary>
@@ -146,7 +141,6 @@ namespace JSTools.Config.ExceptionHandling
 			get { return _errorEvent; }
 		}
 
-
 		/// <summary>
 		/// Gets the name of the required module.
 		/// </summary>
@@ -154,7 +148,6 @@ namespace JSTools.Config.ExceptionHandling
 		{
 			get { return _requiredModule; }
 		}
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -170,12 +163,12 @@ namespace JSTools.Config.ExceptionHandling
 		public JSExceptionHandler(XmlNode exceptionNode, IJSToolsConfiguration ownerConfig, string nodeName) : base(ownerConfig)
 		{
 			if (exceptionNode == null)
-				throw new ArgumentNullException("exceptionNode", "The given xml section contains a null reference!");
+				throw new ArgumentNullException("exceptionNode", "The given xml section contains a null reference.");
 
 			if (nodeName == null)
-				throw new ArgumentNullException("nodeName", "The given node name contains a null reference!");
+				throw new ArgumentNullException("nodeName", "The given node name contains a null reference.");
 
-			SECTION_NAME = nodeName;
+			_sectionName = nodeName;
 			_requiredModule = JSToolsXmlFunctions.GetAttributeFromNode(exceptionNode, REQUIRES_ATTIRB);
 			_errorProvider = JSToolsXmlFunctions.GetAttributeFromNode(exceptionNode, ERROR_PROVIDER_ATTIRB);
 
@@ -183,6 +176,9 @@ namespace JSTools.Config.ExceptionHandling
 			InitErrorHandlingEnum(exceptionNode);
 		}
 
+		//--------------------------------------------------------------------
+		// Events
+		//--------------------------------------------------------------------
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -197,12 +193,11 @@ namespace JSTools.Config.ExceptionHandling
 		public override void CheckRelations()
 		{
 			if (OwnerConfiguration.ScriptFileHandler == null)
-				throw new ConfigurationException("The script file handling section was not initialized!");
+				throw new ConfigurationException("The script file handling section was not initialized.");
 
 			if (OwnerConfiguration.ScriptFileHandler.GetModuleByName(_requiredModule) == null)
-				throw new InvalidOperationException("Could not find a module with the name '" + _requiredModule + "'!");
+				throw new InvalidOperationException("Could not find a module with the name '" + _requiredModule + "'.");
 		}
-
 
 		/// <summary>
 		/// Initializes the catchErrors attribute of the given exception node. The recieved value is filled
@@ -211,16 +206,18 @@ namespace JSTools.Config.ExceptionHandling
 		/// <param name="exceptionNode">Exception node to initialize.</param>
 		private void InitErrorHandlingEnum(XmlNode exceptionNode)
 		{
-			if (JSToolsXmlFunctions.GetBoolFromNodeValue(exceptionNode.Attributes[CATCH_ERRORS_ATTIRB]))
+			try
 			{
-				_errorHandling = ErrorHandling.Catch;
+				_errorHandling = (ErrorHandling)Enum.Parse(
+					typeof(ErrorHandling),
+					JSToolsXmlFunctions.GetAttributeFromNode(exceptionNode, ERROR_HANDLING_ATTIRB),
+					true );
 			}
-			else
+			catch
 			{
-				_errorHandling = ErrorHandling.Throw;
+				_errorHandling = ErrorHandling.None;
 			}
 		}
-
 
 		/// <summary>
 		/// Initializes the event node of the given exception node. The recieved value is filled

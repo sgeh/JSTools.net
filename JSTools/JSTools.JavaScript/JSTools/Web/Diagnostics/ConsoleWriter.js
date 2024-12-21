@@ -1,12 +1,12 @@
 function ConsoleWriter()
 {
-	var _this			= this;
-	var _windowContent	= "";
-	var _window			= null;
+	var _this = this;
+	var _windowContent = "";
+	var _window = null;
 
-	var _selectedType	= null;
-	var _entries		= new Array();
-	var _entryTypes		= ConsoleWriter.MessageTypes.GetValues();
+	var _selectedType = null;
+	var _entries = new Array();
+	var _entryTypes = ConsoleWriter.MessageTypes.GetValues();
 
 	for (var i = 0; i < _entryTypes.length; ++i)
 	{
@@ -15,12 +15,12 @@ function ConsoleWriter()
 
 
 	//style definition
-	var _styles							= new ConsoleStyle();
-	_styles.WindowTitle					= "JavaScript Console Window";
-	_styles.WindowOptions				= new WindowOptions();
-	_styles.WindowOptions.IsDependent	= true;
-	_styles.WindowOptions.Width			= 600;
-	_styles.WindowOptions.Height		= 430;
+	var _styles = new ConsoleStyle();
+	_styles.WindowTitle = "JavaScript Console Window";
+	_styles.WindowOptions = new WindowOptions();
+	_styles.WindowOptions.IsDependent = true;
+	_styles.WindowOptions.Width = 600;
+	_styles.WindowOptions.Height = 430;
 
 
 	// prints a new message to the console and refreshes the console
@@ -176,7 +176,7 @@ function ConsoleWriter()
 	// calls the ToLineString method of all entries and fills it into the global window content variable
 	function RefreshAll()
 	{
-		_windowContent	= "";
+		_windowContent = "";
 
 		for (var i = 0; i < _entries.length; ++i)
 		{
@@ -203,7 +203,7 @@ function ConsoleWriter()
 	// calls the ToLineString method of the specific message type entries and fills it into the global window content variable
 	function RefreshType(strMessageType)
 	{
-		_windowContent	= "";
+		_windowContent = "";
 
 		for (var i = 0; i < _entries[strMessageType].length; ++i)
 		{
@@ -279,7 +279,7 @@ ConsoleWriter.prototype.toString = function()
 {
 	return "[object ConsoleWriter]";
 }
-ConsoleWriter.MessageTypes		= new StringEnum(
+ConsoleWriter.MessageTypes = new StringEnum(
 	"Error",				// specifies error messages; the parser can throw it
 	"Warning",				// specifies warning messages; the JSTools.net throws exceptions which are logged as warnings
 	"Message" );			// specifies normal console messages; the user can write and append messages

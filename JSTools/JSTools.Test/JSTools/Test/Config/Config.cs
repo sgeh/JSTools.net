@@ -135,30 +135,6 @@ namespace JSTools.Test.Config
 
 
 		[csUnit.Test()]
-		public void Render()
-		{
-			System.Console.Out.WriteLine("IJSToolsConfiguration.Render(ticket)");
-
-			RenderProcessTicket ticket = new RenderProcessTicket();
-			ticket.AddRenderHandler(new JSScriptRenderHandler());
-			ticket.AddRenderHandler(new JSExceptionRenderHandler());
-			ticket.AddRenderHandler(new JSScriptLoaderRenderHandler());
-
-			JSControlCollection collection = new JSControlCollection();
-
-			ticket.Items[JSToolsPage.RENDER_HANDLER_APP_ATTRIBUTE] = string.Empty;
-			ticket.Items[JSToolsPage.RENDER_HANDLER_CTRL_ATTRIBUTE] = collection;
-
-			_configuration.Render(ticket);
-
-			if (collection.Count == 0)
-				throw new TestFailed("The render handlers have not rendered the controls!");
-
-			System.Console.Out.WriteLine(" done");
-		}
-
-
-		[csUnit.Test()]
 		public void ScriptFileHandler()
 		{
 			System.Console.Out.WriteLine("IJSToolsConfiguration.ScriptFileHandler");

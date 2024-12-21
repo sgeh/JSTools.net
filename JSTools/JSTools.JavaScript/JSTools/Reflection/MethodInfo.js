@@ -17,10 +17,10 @@ JSTools.Reflection.MethodInfo = function(objToRepresent, strMethodName, enuMembe
 	if (typeof(objToRepresent) != 'object' || !objToRepresent)
 		return;
 
-	var _this				= this;
-	var _object				= objToRepresent;
-	var _methodName			= String(strMethodName);
-	var _memberVisiblity	= enuMemberVisibility;
+	var _this = this;
+	var _object = objToRepresent;
+	var _methodName = String(strMethodName);
+	var _memberVisiblity = enuMemberVisibility;
 
 
 	//------------------------------------------------------------------------
@@ -43,20 +43,22 @@ JSTools.Reflection.MethodInfo = function(objToRepresent, strMethodName, enuMembe
 	/// Returns the name of this member.
 	/// </method>
 	/// <returns type="String">Returns the name of this member.</returns>
-	this.GetName = function()
+	function GetName()
 	{
 		return _methodName;
 	}
+	this.GetName = GetName;
 
 
 	/// <method>
 	/// Returns the member type.
 	/// </method>
 	/// <returns type="JSTools.Reflection.MemberType">Returns the type of this member.</returns>
-	this.GetMemberType = function()
+	function GetMemberType()
 	{
 		return JSTools.Reflection.MemberType.Method;
 	}
+	this.GetMemberType = GetMemberType;
 
 
 	/// <method>
@@ -64,27 +66,27 @@ JSTools.Reflection.MethodInfo = function(objToRepresent, strMethodName, enuMembe
 	/// Members should not be used from your code.
 	/// </method>
 	/// <returns type="Boolean">Returns true, if this member is used for internal purposes.</returns>
-	this.IsInternal = function()
+	function IsInternal()
 	{
 		return _this.GetName().StartsWith("__");
 	}
+	this.IsInternal = IsInternal;
 
 
 	/// <method>
-	/// Invokes the representing method with the specified arguments.
+	/// Invokes the representing method with the specified arguments. The type of the
+	/// object to call must be initialized, otherwise the protected members will not
+	/// be called.
 	/// </method>
 	/// <param name="param">Arguments which should be passed to the function to invoke.</param>
 	/// <returns type="Object">Returns the result of the called function.</returns>
-	this.Invoke = function()
+	function Invoke()
 	{
 		var resultValue;
 
 		if (_this.IsPublic())
 		{
-			if (typeof(_object[_methodName]) == 'function')
-			{
-				eval("resultValue = _object." + _methodName + "(" + String.CreateArgumentString(arguments.length) + ");");
-			}
+			resultValue = Function.CallContext(_methodName, _object, arguments);
 		}
 		else if (_this.IsProtected())
 		{
@@ -94,46 +96,48 @@ JSTools.Reflection.MethodInfo = function(objToRepresent, strMethodName, enuMembe
 			if (objectConstructor)
 			{
 				// get protected members from MemberProtector
-				var protectedItems = objectConstructor.GetMemberProtector().GetProtectedItems(_object, arguments);
-
-				if (typeof(protectedItems[_methodName]) == 'function')
-				{
-					eval("resultValue = protectedItems." + _methodName + "(" + String.CreateArgumentString(arguments.length) + ");");
-				}
+				resultValue = Function.CallContext(
+					_methodName,
+					objectConstructor.GetMemberProtector().GetProtectedItems(_object, arguments),
+					arguments );
 			}
 		}
 		return resultValue;
 	}
+	this.Invoke = Invoke;
 
 
 	/// <method>
 	/// Checks if this field is public.
 	/// </method>
 	/// <returns type="Boolean">Returns true if this field is public.</returns>
-	this.IsPublic = function()
+	function IsPublic()
 	{
 		return (_memberVisiblity == JSTools.Reflection.MemberVisibility.Public);
 	}
+	this.IsPublic = IsPublic;
 
 
 	/// <method>
 	/// Checks if this field is protected.
 	/// </method>
 	/// <returns type="Boolean">Returns true if this field is protected.</returns>
-	this.IsProtected = function()
+	function IsProtected()
 	{
 		return (_memberVisiblity == JSTools.Reflection.MemberVisibility.Protected);
 	}
+	this.IsProtected = IsProtected;
 
 
 	/// <method>
 	/// Checks if this field is private.
 	/// </method>
 	/// <returns type="Boolean">Returns true if this field is private.</returns>
-	this.IsPrivate = function()
+	function IsPrivate()
 	{
 		return (_memberVisiblity == JSTools.Reflection.MemberVisibility.Private);
 	}
+	this.IsPrivate = IsPrivate;
 }
 
 

@@ -32,7 +32,6 @@ namespace JSTools.Web.UI.Controls
 		private Hashtable _commentCacheItems = new Hashtable();
 		private Hashtable _defaultCacheItems = new Hashtable();
 
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -45,7 +44,6 @@ namespace JSTools.Web.UI.Controls
 		public ScriptCodeCache()
 		{
 		}
-
 
 		//--------------------------------------------------------------------
 		// Methods
@@ -63,7 +61,6 @@ namespace JSTools.Web.UI.Controls
 			return (GetScriptCode(type, key) != null);
 		}
 
-
 		/// <summary>
 		/// Clears all containers.
 		/// </summary>
@@ -73,7 +70,6 @@ namespace JSTools.Web.UI.Controls
 			_crunchCacheItems.Clear();
 			_defaultCacheItems.Clear();
 		}
-
 
 		/// <summary>
 		/// Adds a new script item.
@@ -100,7 +96,6 @@ namespace JSTools.Web.UI.Controls
 				_defaultCacheItems[key] = code;
 			}
 		}
-
 
 		/// <summary>
 		/// Searches for a script with the given key.

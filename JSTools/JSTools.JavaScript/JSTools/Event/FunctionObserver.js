@@ -14,8 +14,8 @@ JSTools.Event.FunctionObserver = function(objFunction)
 	this.InitType(arguments, "JSTools.Event.FunctionObserver");
 	this.Inherit(JSTools.Event.IObserver);
 	
-	var _this				= this;
-	var _functionToNotify	= objFunction;
+	var _this = this;
+	var _functionToNotify = objFunction;
 
 
 	//------------------------------------------------------------------------
@@ -26,11 +26,9 @@ JSTools.Event.FunctionObserver = function(objFunction)
 	/// Notifies the observer about an update.
 	/// </method>
 	/// <param name="objEvent" type="Object">An object instance, which represents the event argument.</param>
-	this.Update = function(objEvent)
+	function Update(objEvent)
 	{
-		if (typeof(_functionToNotify) == 'function')
-		{
-			_functionToNotify(objEvent);
-		}
+		Function.Call(_functionToNotify, objEvent);
 	}
+	this.Update = Update;
 }

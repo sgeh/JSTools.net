@@ -7,10 +7,10 @@ function ConsoleErrorMessage(strMessage, strUrl, strLine, objErrorLogFunctionPtr
 	arguments.Call(ConsoleMessage, ConsoleWriter.MessageTypes.Error, ToString(strMessage) + "\n");
 
 	// copies a reference of the protected members for using from outside the constructor
-	var _protected		= arguments.Protected;
-	var _message		= ToString(strMessage) + "\n";
-	var _url			= ToString(strUrl);
-	var _line			= ToString(strLine);
+	var _protected = arguments.Protected;
+	var _message = ToString(strMessage) + "\n";
+	var _url = ToString(strUrl);
+	var _line = ToString(strLine);
 
 
 	// retruns the url, on which has an error occured

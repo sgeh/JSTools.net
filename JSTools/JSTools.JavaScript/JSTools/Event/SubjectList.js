@@ -25,8 +25,8 @@ JSTools.Event.SubjectList = function()
 
 	this.InitType(arguments, "JSTools.Event.SubjectList");
 
-	var _this		= this;
-	var _subjects	= null;
+	var _this = this;
+	var _subjects = null;
 
 
 	//------------------------------------------------------------------------
@@ -49,7 +49,7 @@ JSTools.Event.SubjectList = function()
 	/// <method>
 	/// Removes all registered observer objects.
 	/// </method>
-	this.Clear = function()
+	function Clear()
 	{
 		if (_subjects != null)
 		{
@@ -60,6 +60,7 @@ JSTools.Event.SubjectList = function()
 		}
 		_subjects = [ ];
 	}
+	this.Clear = Clear;
 
 
 	/// <method>
@@ -71,7 +72,7 @@ JSTools.Event.SubjectList = function()
 	/// <param name="varEventHandler" type="JSTools.Event.IObserver">Adds the given IObserver object to the subject.</param>
 	/// <returns type="Integer">Returns the index, at which the observer object has been added.
 	/// Returns -1 if the given observer object is invalid and not added.</returns>
-	this.Attach = function(strSubjectName, varEventHandler)
+	function Attach(strSubjectName, varEventHandler)
 	{
 		if (!varEventHandler)
 			return -1;
@@ -89,6 +90,7 @@ JSTools.Event.SubjectList = function()
 			return _this.AttachMethodInfo(strSubjectName, varEventHandler);
 		}
 	}
+	this.Attach = Attach;
 
 
 	/// <method>
@@ -98,7 +100,7 @@ JSTools.Event.SubjectList = function()
 	/// <param name="objFunction" type="Function">Function to add.</param>
 	/// <returns type="Integer">Returns the index, at which the observer object has been added.
 	/// Returns -1 if the given observer object is invalid and not added.</returns>
-	this.AttachFunction = function(strSubjectName, objFunction)
+	function AttachFunction(strSubjectName, objFunction)
 	{
 		var subjectName = String(strSubjectName);
 
@@ -108,6 +110,7 @@ JSTools.Event.SubjectList = function()
 		}
 		return -1;
 	}
+	this.AttachFunction = AttachFunction;
 
 
 	/// <method>
@@ -117,7 +120,7 @@ JSTools.Event.SubjectList = function()
 	/// <param name="objMethodInfo" type="JSTools.Reflection.MethodInfo">Function info object to call.</param>
 	/// <returns type="Integer">Returns the index, at which the observer object has been added.
 	/// Returns -1 if the given observer object is invalid and not added.</returns>
-	this.AttachMethodInfo = function(strSubjectName, objMethodInfo)
+	function AttachMethodInfo(strSubjectName, objMethodInfo)
 	{
 		var subjectName = String(strSubjectName);
 
@@ -130,6 +133,7 @@ JSTools.Event.SubjectList = function()
 		}
 		return -1;
 	}
+	this.AttachMethodInfo = AttachMethodInfo;
 
 
 	/// <method>
@@ -139,7 +143,7 @@ JSTools.Event.SubjectList = function()
 	/// <param name="objIObserver" type="JSTools.Event.IObserver">Observer to attach.</param>
 	/// <returns type="Integer">Returns the index, at which the observer object has been added.
 	/// Returns -1 if the given observer object is invalid and not added.</returns>
-	this.AttachObserver = function(strSubjectName, objIObserver)
+	function AttachObserver(strSubjectName, objIObserver)
 	{
 		var subjectName = String(strSubjectName);
 
@@ -152,6 +156,7 @@ JSTools.Event.SubjectList = function()
 		}
 		return -1;
 	}
+	this.AttachObserver = AttachObserver;
 
 
 	/// <method>
@@ -160,7 +165,7 @@ JSTools.Event.SubjectList = function()
 	/// <param name="strSubjectName" type="String">Subject container name.</param>
 	/// <param name="varObserverToDetach" type="JSTools.Event.IObserver">Observer to detach.</param>
 	/// <param name="varObserverToDetach" type="Integer">Index to detach.</param>
-	this.Detach = function(strSubjectName, varObserverToDetach)
+	function Detach(strSubjectName, varObserverToDetach)
 	{
 		if (typeof(varObserverToDetach) == 'number')
 		{
@@ -171,6 +176,7 @@ JSTools.Event.SubjectList = function()
 			_this.DetachObserver(strSubjectName, varObserverToDetach);
 		}
 	}
+	this.Detach = Detach;
 
 
 	/// <method>
@@ -178,7 +184,7 @@ JSTools.Event.SubjectList = function()
 	/// </method>
 	/// <param name="strSubjectName" type="String">Subject container name.</param>
 	/// <param name="objIObserverToDetach" type="JSTools.Event.IObserver">Observer to detach.</param>
-	this.DetachObserver = function(strSubjectName, objIObserverToDetach)
+	function DetachObserver(strSubjectName, objIObserverToDetach)
 	{
 		var subjectName = String(strSubjectName);
 
@@ -187,6 +193,19 @@ JSTools.Event.SubjectList = function()
 			_subjects[subjectName].Detach(objIObserverToDetach);
 		}
 	}
+	this.DetachObserver = DetachObserver;
+
+
+	/// <method>
+	/// Indicates whether the given subject name was registered.
+	/// </method>
+	/// <param name="strSubjectName" type="String">Subject name to check.</param>
+	/// <returns type="Boolean">Retruns true, if the given subject name is registered.</returns>
+	function Contains(strSubjectName)
+	{
+		return IsSubject(String(strSubjectName));
+	}
+	this.Contains = Contains;
 
 
 	/// <method>
@@ -194,7 +213,7 @@ JSTools.Event.SubjectList = function()
 	/// </method>
 	/// <param name="strSubjectName" type="String">Subject container name.</param>
 	/// <param name="intIndex" type="Integer">Index to detach.</param>
-	this.DetachByIndex = function(strSubjectName, intIndex)
+	function DetachByIndex(strSubjectName, intIndex)
 	{
 		var subjectName = String(strSubjectName);
 
@@ -203,19 +222,21 @@ JSTools.Event.SubjectList = function()
 			_subjects[subjectName].DetachByIndex(intIndex);
 		}
 	}
+	this.DetachByIndex = DetachByIndex;
 
 
 	/// <method>
 	/// Notifies the observers of all subjects about an update.
 	/// </method>
 	/// <param name="objEvent" type="Object">An object instance, which represents the subject argument.</param>
-	this.NotifyAll = function(objEvent)
+	function NotifyAll(objEvent)
 	{
 		for (var i = 0; i < _subjects.length; ++i)
 		{
 			_this.Notify(_subjects[i], objEvent);
 		}
 	}
+	this.NotifyAll = NotifyAll;
 
 
 	/// <method>
@@ -223,7 +244,7 @@ JSTools.Event.SubjectList = function()
 	/// </method>
 	/// <param name="strSubjectName" type="String">Subject container name.</param>
 	/// <param name="objEvent" type="Object">An object instance, which represents the Subject argument.</param>
-	this.Notify = function(strSubjectName, objEvent)
+	function Notify(strSubjectName, objEvent)
 	{
 		var subjectName = String(strSubjectName);
 
@@ -232,6 +253,7 @@ JSTools.Event.SubjectList = function()
 			_subjects[subjectName].Notify(objEvent);
 		}
 	}
+	this.Notify = Notify;
 
 
 	/// <method>

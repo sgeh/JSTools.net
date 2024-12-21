@@ -89,8 +89,8 @@ function LayerHandler(layerName,strLayerStyleClass)
 	{
 		if(LayerObjectIsReady("SetClip", strClipSide, intClipValue))
 		{
-			var editClip		= strClipSide.toLowerCase()
-			var thisClipString	= "rect(";
+			var editClip = strClipSide.toLowerCase()
+			var thisClipString = "rect(";
 			var thisSplitChars;
 
 			for(var clipCount = 0; clipCount < _clipSides.length; ++clipCount)
@@ -403,10 +403,10 @@ function LayerHandler(layerName,strLayerStyleClass)
 		{
 			var myClip = String(_layerObject.style.clip).toLowerCase();
 
-			_clip.top		= 0;
-			_clip.left		= 0;
-			_clip.right		= parseInt(_layerObject.offsetWidth);
-			_clip.bottom	= parseInt(_layerObject.offsetHeight);
+			_clip.top = 0;
+			_clip.left = 0;
+			_clip.right = parseInt(_layerObject.offsetWidth);
+			_clip.bottom = parseInt(_layerObject.offsetHeight);
 
 			if(!IsVoid(myClip) && myClip != "auto" && myClip != "rect()")
 			{
@@ -791,34 +791,34 @@ function LayerHandler(layerName,strLayerStyleClass)
 
 
 
-	var _height				= 0;
-	var _width				= 0;
-	var _visibility			= "hidden";
-	var _zIndex				= 0;
-	var _topMargin			= 0;
-	var _leftMargin			= 0;
+	var _height = 0;
+	var _width = 0;
+	var _visibility = "hidden";
+	var _zIndex = 0;
+	var _topMargin = 0;
+	var _leftMargin = 0;
 
-	var _delegateMoveEvent	= true;
+	var _delegateMoveEvent = true;
 
-	var _clip				= new Array();
-	var _clipSides			= new Array("top", "right", "bottom", "left");
+	var _clip = new Array();
+	var _clipSides = new Array("top", "right", "bottom", "left");
 
-	var _id					= layerName;
-	var _content			= "";
+	var _id = layerName;
+	var _content = "";
 
-	var _images				= new Array();
-	var _forms				= new Array();
-	var _links				= new Array();
+	var _images = new Array();
+	var _forms = new Array();
+	var _links = new Array();
 
-	var _layerObject		= "undefined";
-	var _checkThread		= "undefined";
+	var _layerObject = "undefined";
+	var _checkThread = "undefined";
 
-	var _isOP				= Browser.GetTyp().isOP;
-	var _isNC				= Browser.GetTyp().isNC;
-	var _isDOMorIE			= (Browser.GetTyp().isDOM || Browser.GetTyp().isIE);
-	var _isValidBrowser		= (Browser.GetVersion() >= 4 || Browser.GetTyp().isDOM);
-	var _layerObjectDelay	= new Array();
-	var _event				= null;
+	var _isOP = Browser.GetTyp().isOP;
+	var _isNC = Browser.GetTyp().isNC;
+	var _isDOMorIE = (Browser.GetTyp().isDOM || Browser.GetTyp().isIE);
+	var _isValidBrowser = (Browser.GetVersion() >= 4 || Browser.GetTyp().isDOM);
+	var _layerObjectDelay = new Array();
+	var _event = null;
 
 
 	if(_isValidBrowser)
@@ -844,6 +844,6 @@ function CreateLayer(strLayerId,strStyleClass)
 // initialize basic arrays
 with(window)
 {
-	document.Layer			= new Array();
-	document.CreateLayer	= CreateLayer;
+	document.Layer = new Array();
+	document.CreateLayer = CreateLayer;
 }

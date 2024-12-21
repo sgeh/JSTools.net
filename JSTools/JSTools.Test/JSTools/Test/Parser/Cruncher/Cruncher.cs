@@ -34,9 +34,9 @@ namespace JSTools.Test.Parser.Cruncher
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private JSTools.Parser.Cruncher.Cruncher	_cruncher		= null;
-		private string								_fileContent	= String.Empty;
-		private bool								_onWarnOccured	= false;
+		private JSTools.Parser.Cruncher.Cruncher _cruncher = null;
+		private string _fileContent = string.Empty;
+		private bool _onWarnOccured = false;
 
 
 		//--------------------------------------------------------------------
@@ -109,7 +109,7 @@ namespace JSTools.Test.Parser.Cruncher
 			System.Console.Out.WriteLine(" is " + crunchOutput + "...");
 			System.Console.Out.WriteLine(" should [not empty]");
 
-			if (crunchedString == String.Empty)
+			if (crunchedString == null || crunchedString.Length == 0)
 				throw new TestFailed("Crunch() has returned an empty string!");
 
 			WriteFile(crunchedString);
@@ -183,7 +183,7 @@ namespace JSTools.Test.Parser.Cruncher
 			System.Console.Out.WriteLine(" is " + removedComment + "...");
 			System.Console.Out.WriteLine(" should [not empty]");
 
-			if (removedComment == string.Empty)
+			if (removedComment == null || removedComment.Length == 0)
 				throw new TestFailed("The returned string is an empty string!");
 
 			System.Console.Out.WriteLine(" done");
@@ -196,7 +196,7 @@ namespace JSTools.Test.Parser.Cruncher
 			System.Console.Out.WriteLine("AJSExceptionHandler.OnWarn");
 
 			_cruncher.EnableWarnings = true;
-			_cruncher.OnWarn += new JSTools.Parser.Cruncher.CrunchWarningHandler(OnWarn);
+			_cruncher.Warn += new JSTools.Parser.Cruncher.CrunchWarningHandler(OnWarn);
 			_cruncher.Crunch(LoadFile());
 
 			if (!_onWarnOccured)
@@ -228,7 +228,7 @@ namespace JSTools.Test.Parser.Cruncher
 
 		private string LoadFile()
 		{
-			if (_fileContent != String.Empty)
+			if (_fileContent != null && _fileContent.Length != 0)
 				return _fileContent;
 
 			StreamReader reader = null;

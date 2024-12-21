@@ -54,11 +54,11 @@ public class IRFactory
 	/**
 	 * Script (for associating file/url names with toplevel scripts.)
 	 */
-	public Object createScript(Object body, String sourceName,
-		int baseLineno, int endLineno, Object source)
+	public Node createScript(Node body, String sourceName,
+		int baseLineno, int endLineno, char[] source)
 	{
 		Node result = Node.newString(TokenStream.SCRIPT, sourceName);
-		Node children = ((Node) body).getFirstChild();
+		Node children = body.getFirstChild();
 		if (children != null)
 			result.addChildrenToBack(children);
 		result.putProp(Node.SOURCENAME_PROP, sourceName);
@@ -72,45 +72,44 @@ public class IRFactory
 	/**
 	 * Leaf
 	 */
-	public Object createLeaf(int nodeType) 
+	public Node createLeaf(int nodeType) 
 	{
 		return new Node(nodeType);
 	}
 
-	public Object createLeaf(int nodeType, int nodeOp) 
+	public Node createLeaf(int nodeType, int nodeOp) 
 	{
 		return new Node(nodeType, nodeOp);
 	}
 
-	public int getLeafType(Object leaf) 
+	public int getLeafType(Node leaf) 
 	{
-		Node n = (Node) leaf;
-		return n.getType();
+		return leaf.getType();
 	}
 
 	/**
 	 * Statement leaf nodes.
 	 */
 
-	public Object createSwitch(int lineno) 
+	public Node createSwitch(int lineno) 
 	{
 		return new Node(TokenStream.SWITCH, lineno);
 	}
 
-	public Object createVariables(int lineno) 
+	public Node createVariables(int lineno) 
 	{
 		return new Node(TokenStream.VAR, lineno);
 	}
 
-	public Object createExprStatement(Object expr, int lineno) 
+	public Node createExprStatement(Node expr, int lineno) 
 	{
-		return new Node(TokenStream.EXPRSTMT, (Node) expr, lineno);
+		return new Node(TokenStream.EXPRSTMT, expr, lineno);
 	}
 
 	/**
 	 * Name
 	 */
-	public Object createName(String name) 
+	public Node createName(String name) 
 	{
 		return Node.newString(TokenStream.NAME, name);
 	}
@@ -118,7 +117,7 @@ public class IRFactory
 	/**
 	 * String (for literals)
 	 */
-	public Object createString(String string) 
+	public Node createString(String string) 
 	{
 		return Node.newString(string);
 	}
@@ -126,7 +125,7 @@ public class IRFactory
 	/**
 	 * Number (for literals)
 	 */
-	public Object createNumber(double number) 
+	public Node createNumber(String number) 
 	{
 		return Node.newNumber(number);
 	}
@@ -139,39 +138,39 @@ public class IRFactory
 	 * @param stmts the statements in the catch clause
 	 * @param lineno the starting line number of the catch clause
 	 */
-	public Object createCatch(String varName, Object catchCond, Object stmts,
+	public Node createCatch(String varName, Node catchCond, Node stmts,
 		int lineno)
 	{
 		if (catchCond == null) 
 		{
 			catchCond = new Node(TokenStream.PRIMARY, TokenStream.TRUE);
 		}
-		return new Node(TokenStream.CATCH, (Node)createName(varName),
-			(Node)catchCond, (Node)stmts, lineno);
+		return new Node(TokenStream.CATCH, createName(varName),
+			catchCond, stmts, lineno);
 	}
 
 	/**
 	 * Throw
 	 */
-	public Object createThrow(Object expr, int lineno) 
+	public Node createThrow(Node expr, int lineno) 
 	{
-		return new Node(TokenStream.THROW, (Node)expr, lineno);
+		return new Node(TokenStream.THROW, expr, lineno);
 	}
 
 	/**
 	 * Return
 	 */
-	public Object createReturn(Object expr, int lineno) 
+	public Node createReturn(Node expr, int lineno) 
 	{
 		return expr == null
 			? new Node(TokenStream.RETURN, lineno)
-			: new Node(TokenStream.RETURN, (Node)expr, lineno);
+			: new Node(TokenStream.RETURN, expr, lineno);
 	}
 
 	/**
 	 * Label
 	 */
-	public Object createLabel(String label, int lineno) 
+	public Node createLabel(String label, int lineno) 
 	{
 		Node result = new Node(TokenStream.LABEL, lineno);
 		Node name = Node.newString(TokenStream.NAME, label);
@@ -182,7 +181,7 @@ public class IRFactory
 	/**
 	 * Break (possibly labeled)
 	 */
-	public Object createBreak(String label, int lineno) 
+	public Node createBreak(String label, int lineno) 
 	{
 		Node result = new Node(TokenStream.BREAK, lineno);
 		if (label == null) 
@@ -200,7 +199,7 @@ public class IRFactory
 	/**
 	 * Continue (possibly labeled)
 	 */
-	public Object createContinue(String label, int lineno) 
+	public Node createContinue(String label, int lineno) 
 	{
 		Node result = new Node(TokenStream.CONTINUE, lineno);
 		if (label == null) 
@@ -220,22 +219,22 @@ public class IRFactory
 	 * Creates the empty statement block
 	 * Must make subsequent calls to add statements to the node
 	 */
-	public Object createBlock(int lineno) 
+	public Node createBlock(int lineno) 
 	{
 		return new Node(TokenStream.BLOCK, lineno);
 	}
 
-	public Object createFunctionNode(String name, Object args,
-		Object statements)
+	private Node createFunctionNode(String name, Node args,
+		Node statements)
 	{
 		if (name == null)
 			name = "";
-		return new FunctionNode(name, (Node) args, (Node) statements);
+		return new FunctionNode(name, args, statements);
 	}
 
-	public Object createFunction(String name, Object args, Object statements,
+	public Node createFunction(String name, Node args, Node statements,
 		String sourceName, int baseLineno,
-		int endLineno, Object source,
+		int endLineno, char[] source,
 		boolean isExpr)
 	{
 		FunctionNode f = (FunctionNode) createFunctionNode(name, args,
@@ -252,9 +251,8 @@ public class IRFactory
 		return result;
 	}
 
-	public void setFunctionExpressionStatement(Object o) 
+	public void setFunctionExpressionStatement(Node n) 
 	{
-		Node n = (Node) o;
 		FunctionNode f = (FunctionNode) n.getProp(Node.FUNCTION_PROP);
 		f.setFunctionType(FunctionNode.FUNCTION_EXPRESSION_STATEMENT);
 	}
@@ -264,37 +262,37 @@ public class IRFactory
 	 * breaks the Factory abstraction, but it removes a requirement
 	 * from implementors of Node.
 	 */
-	public void addChildToBack(Object parent, Object child) 
+	public void addChildToBack(Node parent, Node child) 
 	{
-		((Node)parent).addChildToBack((Node)child);
+		parent.addChildToBack(child);
 	}
 
 	/**
 	 * While
 	 */
-	public Object createWhile(Object cond, Object body, int lineno) 
+	public Node createWhile(Node cond, Node body, int lineno) 
 	{
-		return createLoop(LOOP_WHILE, (Node)body, (Node)cond, null, null,
+		return createLoop(LOOP_WHILE, body, cond, null, null,
 			lineno);
 	}
 
 	/**
 	 * DoWhile
 	 */
-	public Object createDoWhile(Object body, Object cond, int lineno) 
+	public Node createDoWhile(Node body, Node cond, int lineno) 
 	{
-		return createLoop(LOOP_DO_WHILE, (Node)body, (Node)cond, null, null,
+		return createLoop(LOOP_DO_WHILE, body, cond, null, null,
 			lineno);
 	}
 
 	/**
 	 * For
 	 */
-	public Object createFor(Object init, Object test, Object incr,
-		Object body, int lineno)
+	public Node createFor(Node init, Node test, Node incr,
+		Node body, int lineno)
 	{
-		return createLoop(LOOP_FOR, (Node)body, (Node)test,
-			(Node)init, (Node)incr, lineno);
+		return createLoop(LOOP_FOR, body, test,
+			init, incr, lineno);
 	}
 
 	private Node createLoop(int loopType, Node body, Node cond,
@@ -357,10 +355,8 @@ public class IRFactory
 	 * For .. In
 	 *
 	 */
-	public Object createForIn(Object lhs, Object obj, Object body, int lineno) 
+	public Node createForIn(Node lhsNode, Node objNode, Node body, int lineno) 
 	{
-		Node lhsNode = (Node) lhs;
-		Node objNode = (Node) obj;
 		int type = lhsNode.getType();
 
 		Node lvalue = lhsNode;
@@ -436,24 +432,20 @@ public class IRFactory
 
 	 * ... and a goto to GOTO around these handlers.
 	 */
-	public Object createTryCatchFinally(Object tryblock, Object catchblocks,
-		Object finallyblock, int lineno)
+	public Node createTryCatchFinally(Node trynode, Node catchNodes,
+		Node finallyNode, int lineno)
 	{
-		Node trynode = (Node)tryblock;
-
 		// short circuit
 		if (trynode.getType() == TokenStream.BLOCK && !trynode.hasChildren())
 			return trynode;
 
 		Node pn = new Node(TokenStream.TRY, trynode, lineno);
-		Node catchNodes = (Node)catchblocks;
 		boolean hasCatch = catchNodes.hasChildren();
 		boolean hasFinally = false;
-		Node finallyNode = null;
 		Node finallyTarget = null;
-		if (finallyblock != null) 
+
+		if (finallyNode != null) 
 		{
-			finallyNode = (Node)finallyblock;
 			hasFinally = (finallyNode.getType() != TokenStream.BLOCK
 				|| finallyNode.hasChildren());
 			if (hasFinally) 
@@ -609,11 +601,11 @@ public class IRFactory
 	/**
 	 * With
 	 */
-	public Object createWith(Object obj, Object body, int lineno) 
+	public Node createWith(Node obj, Node body, int lineno) 
 	{
 		Node result = new Node(TokenStream.BLOCK, lineno);
-		result.addChildToBack(new Node(TokenStream.ENTERWITH, (Node)obj));
-		Node bodyNode = new Node(TokenStream.WITH, (Node) body, lineno);
+		result.addChildToBack(new Node(TokenStream.ENTERWITH, obj));
+		Node bodyNode = new Node(TokenStream.WITH, body, lineno);
 		result.addChildrenToBack(bodyNode);
 		result.addChildToBack(new Node(TokenStream.LEAVEWITH));
 		return result;
@@ -625,7 +617,7 @@ public class IRFactory
 	 * plus a series of array element entries, so later compiler
 	 * stages don't need to know about array literals.
 	 */
-	public Object createArrayLiteral(Object obj) 
+	public Node createArrayLiteral(Node obj) 
 	{
 		Node array;
 		array = new Node(TokenStream.NEW,
@@ -635,7 +627,7 @@ public class IRFactory
 		Node elem = null;
 		int i = 0;
 		Node comma = new Node(TokenStream.COMMA, temp);
-		for (Node cursor = ((Node) obj).getFirstChild(); cursor != null;) 
+		for (Node cursor = obj.getFirstChild(); cursor != null;) 
 		{
 			// Move cursor to cursor.next before elem.next can be
 			// altered in new Node constructor
@@ -648,7 +640,7 @@ public class IRFactory
 				continue;
 			}
 			Node addelem = new Node(TokenStream.SETELEM, createUseTemp(temp),
-				Node.newNumber(i), elem);
+				Node.newNumber(new Integer(i).toString()), elem);
 			i++;
 			comma.addChildToBack(addelem);
 		}
@@ -676,13 +668,13 @@ public class IRFactory
 				Node setlength = new Node(TokenStream.SETPROP,
 					createUseTemp(temp),
 					Node.newString("length"),
-					Node.newNumber(i));
+					Node.newNumber(new Integer(i).toString()));
 				comma.addChildToBack(setlength);
 			}
 		} 
 		else 
 		{
-			array.addChildToBack(Node.newNumber(i));
+			array.addChildToBack(Node.newNumber(new Integer(i).toString()));
 		}
 		comma.addChildToBack(createUseTemp(temp));
 		return comma;
@@ -694,14 +686,14 @@ public class IRFactory
 	 * creation plus object property entries, so later compiler
 	 * stages don't need to know about object literals.
 	 */
-	public Object createObjectLiteral(Object obj) 
+	public Node createObjectLiteral(Node obj) 
 	{
 		Node result = new Node(TokenStream.NEW, Node.newString(TokenStream.NAME,
 			"Object"));
 		Node temp = createNewTemp(result);
 
 		Node comma = new Node(TokenStream.COMMA, temp);
-		for (Node cursor = ((Node) obj).getFirstChild(); cursor != null;) 
+		for (Node cursor = obj.getFirstChild(); cursor != null;) 
 		{
 			Node n = cursor;
 			cursor = cursor.getNext();
@@ -721,7 +713,7 @@ public class IRFactory
 	/**
 	 * Regular expressions
 	 */
-	public Object createRegExp(String string, String flags) 
+	public Node createRegExp(String string, String flags) 
 	{
 		return flags.length() == 0
 			? new Node(TokenStream.REGEXP,
@@ -734,16 +726,16 @@ public class IRFactory
 	/**
 	 * If statement
 	 */
-	public Object createIf(Object cond, Object ifTrue, Object ifFalse,
+	public Node createIf(Node cond, Node ifTrue, Node ifFalse,
 		int lineno)
 	{
 		Node result = new Node(TokenStream.BLOCK, lineno);
 		Node ifNotTarget = new Node(TokenStream.TARGET);
-		Node IFNE = new Node(TokenStream.IFNE, (Node) cond);
+		Node IFNE = new Node(TokenStream.IFNE, cond);
 		IFNE.putProp(Node.TARGET_PROP, ifNotTarget);
 
 		result.addChildToBack(IFNE);
-		result.addChildrenToBack((Node)ifTrue);
+		result.addChildrenToBack(ifTrue);
 
 		if (ifFalse != null) 
 		{
@@ -752,7 +744,7 @@ public class IRFactory
 			GOTOToEnd.putProp(Node.TARGET_PROP, endTarget);
 			result.addChildToBack(GOTOToEnd);
 			result.addChildToBack(ifNotTarget);
-			result.addChildrenToBack((Node)ifFalse);
+			result.addChildrenToBack(ifFalse);
 			result.addChildToBack(endTarget);
 		} 
 		else 
@@ -763,7 +755,7 @@ public class IRFactory
 		return result;
 	}
 
-	public Object createTernary(Object cond, Object ifTrue, Object ifFalse) 
+	public Node createTernary(Node cond, Node ifTrue, Node ifFalse) 
 	{
 		return createIf(cond, ifTrue, ifFalse, -1);
 	}
@@ -771,9 +763,8 @@ public class IRFactory
 	/**
 	 * Unary
 	 */
-	public Object createUnary(int nodeType, Object child) 
+	public Node createUnary(int nodeType, Node childNode) 
 	{
-		Node childNode = (Node) child;
 		if (nodeType == TokenStream.DELPROP) 
 		{
 			int childType = childNode.getType();
@@ -805,9 +796,8 @@ public class IRFactory
 		return new Node(nodeType, childNode);
 	}
 
-	public Object createUnary(int nodeType, int nodeOp, Object child) 
+	public Node createUnary(int nodeType, int nodeOp, Node childNode) 
 	{
-		Node childNode = (Node) child;
 		int childType = childNode.getType();
 		if (nodeOp == TokenStream.TYPEOF &&
 			childType == TokenStream.NAME)
@@ -837,7 +827,7 @@ public class IRFactory
 			// we have to use Double for now, because
 			// 0.0 and 1.0 are stored as dconst_[01],
 			// and using a Float creates a stack mismatch.
-			Node rhs = (Node) createNumber(1.0);
+			Node rhs = (Node) createNumber("1");
 
 			return createAssignment(nodeType == TokenStream.INC
 				? TokenStream.ADD
@@ -849,21 +839,21 @@ public class IRFactory
 		}
 
 		Node result = new Node(nodeType, nodeOp);
-		result.addChildToBack((Node)child);
+		result.addChildToBack(childNode);
 		return result;
 	}
 
 	/**
 	 * Binary
 	 */
-	public Object createBinary(int nodeType, Object left, Object right) 
+	public Node createBinary(int nodeType, Node left, Node right) 
 	{
 		switch (nodeType) 
 		{
 
 			case TokenStream.DOT:
 				nodeType = TokenStream.GETPROP;
-				Node idNode = (Node) right;
+				Node idNode = right;
 				idNode.setType(TokenStream.STRING);
 				String id = idNode.getString();
 				if (id.equals("__proto__") || id.equals("__parent__")) 
@@ -879,21 +869,21 @@ public class IRFactory
 				nodeType = TokenStream.GETELEM;
 				break;
 		}
-		return new Node(nodeType, (Node)left, (Node)right);
+		return new Node(nodeType, left, right);
 	}
 
-	public Object createBinary(int nodeType, int nodeOp, Object left,
-		Object right)
+	public Node createBinary(int nodeType, int nodeOp, Node left,
+		Node right)
 	{
 		if (nodeType == TokenStream.ASSIGN) 
 		{
-			return createAssignment(nodeOp, (Node) left, (Node) right,
+			return createAssignment(nodeOp, left, right,
 				null, false);
 		}
-		return new Node(nodeType, (Node) left, (Node) right, nodeOp);
+		return new Node(nodeType, left, right, nodeOp);
 	}
 
-	public Object createAssignment(int nodeOp, Node left, Node right,
+	public Node createAssignment(int nodeOp, Node left, Node right,
 		Class convert, boolean postfix)
 	{
 		int nodeType = left.getType();
@@ -931,7 +921,7 @@ public class IRFactory
 		return result;
 	}
 
-	private Object createSetName(int nodeOp, Node left, Node right,
+	private Node createSetName(int nodeOp, Node left, Node right,
 		Class convert, boolean postfix)
 	{
 		if (nodeOp == TokenStream.NOP) 

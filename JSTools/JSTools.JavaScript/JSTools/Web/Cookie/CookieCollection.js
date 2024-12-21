@@ -37,12 +37,12 @@ JSTools.Web.Cookie.CookieCollection = function()
 
 	this.InitType(arguments, "JSTools.Web.Cookie.CookieCollection");
 
-	var COOKIE_SEPARATOR		= "; ";
-	var COOKIE_VALUE_SEPARATOR	= "=";
+	var COOKIE_SEPARATOR = "; ";
+	var COOKIE_VALUE_SEPARATOR = "=";
 
-	var _protected	= this.Inherit();
-	var _this		= this;
-	var _cookies	= [ ];
+	var _protected = this.Inherit();
+	var _this = this;
+	var _cookies = [ ];
 
 
 	//------------------------------------------------------------------------
@@ -78,7 +78,7 @@ JSTools.Web.Cookie.CookieCollection = function()
 	/// <param name="strCookieName" type="String">Name of the cookie.</param>
 	/// <returns type="String">Returns the associated domain or a null reference if
 	/// there is no domain specified</returns>
-	this.Remove = function(strCookieName)
+	function Remove(strCookieName)
 	{
 		var cookieIndex = IndexOfCookie(strCookieName);
 
@@ -87,6 +87,7 @@ JSTools.Web.Cookie.CookieCollection = function()
 			DeleteCookie(cookieIndex);
 		}
 	}
+	this.Remove = Remove;
 
 
 	/// <method>
@@ -96,10 +97,11 @@ JSTools.Web.Cookie.CookieCollection = function()
 	/// <param name="strCookieName" type="String">Name of the cookie.</param>
 	/// <returns type="Boolean">Returns true if the value is stored in this container,
 	/// otherwise false.</returns>
-	this.Contains = function(strCookieName)
+	function Contains(strCookieName)
 	{
 		return (IndexOfCookie(strCookieName) != -1);
 	}
+	this.Contains = Contains;
 
 
 	/// <method>
@@ -108,7 +110,7 @@ JSTools.Web.Cookie.CookieCollection = function()
 	/// <param name="strCookieName" type="String">Name of the cookie.</param>
 	/// <returns type="JSTools.Web.Cookie.CookieData">Returns the cookie associated
 	/// with the given name.</returns>
-	this.GetCookie = function(strCookieName)
+	function GetCookie(strCookieName)
 	{
 		var cookieIndex = IndexOfCookie(strCookieName);
 		
@@ -118,6 +120,7 @@ JSTools.Web.Cookie.CookieCollection = function()
 		}
 		return null;
 	}
+	this.GetCookie = GetCookie;
 
 
 	/// <method>
@@ -125,7 +128,7 @@ JSTools.Web.Cookie.CookieCollection = function()
 	/// </method>
 	/// <returns type="Array">Returns a string array which contains the names
 	/// of all stored cookies.</returns>
-	this.GetCookieNames = function()
+	function GetCookieNames()
 	{
 		var names = new Array(_cookies.length);
 
@@ -135,13 +138,14 @@ JSTools.Web.Cookie.CookieCollection = function()
 		}
 		return names;
 	}
+	this.GetCookieNames = GetCookieNames;
 
 
 	/// <method>
 	/// Adds a new cookie instance to this collection object.
 	/// </method>
 	/// <param name="objCookieData" type="JSTools.Web.Cookie.CookieData">Cookie instance to set.</param>
-	this.AddCookie = function(objCookieData)
+	function AddCookie(objCookieData)
 	{
 		if (objCookieData
 			&& typeof(objCookieData) == 'object'
@@ -150,13 +154,14 @@ JSTools.Web.Cookie.CookieCollection = function()
 			_cookies.Add(objCookieData);
 		}
 	}
+	this.AddCookie = AddCookie;
 
 
 	/// <method>
 	/// Stores the cookie with the associated name.
 	/// </method>
 	/// <param name="strCookieName" type="String">Name of the cookie.</param>
-	this.StoreCookie = function(strCookieName)
+	function StoreCookie(strCookieName)
 	{
 		var cookie = _this.GetCookie(strCookieName);
 
@@ -165,59 +170,55 @@ JSTools.Web.Cookie.CookieCollection = function()
 			_protected.WriteCookieData(cookie.toString());
 		}
 	}
+	this.StoreCookie = StoreCookie;
 
 
 	/// <method>
 	/// Stores all cookies.
 	/// </method>
-	this.Store = function()
+	function Store()
 	{
 		for (var i = 0; i < _cookies.length; ++i)
 		{
 			_protected.WriteCookieData(_cookies[i]);
 		}
 	}
-
-
-	/// <method>
-	/// 
-	/// </method>
-	this.Refresh = function()
-	{
-		_this.Store();
-	}
+	this.Store = Store;
 
 
 	/// <method>
 	/// Deletes all cookies of this page.
 	/// </method>
-	this.Clear = function()
+	function Clear()
 	{
 		for (var i = _cookies.length - 1; i > -1; --i)
 		{
 			DeleteCookie(i);
 		}
 	}
+	this.Clear = Clear;
 	
 
 	/// <method>
 	/// Retrieves the cookie data.
 	/// </method>
 	/// <returns type="String">Returns the retrieved data.</returns>
-	_protected.RetrieveCookieData = function()
+	function RetrieveCookieData()
 	{
 		return String(document.cookie);
 	}
+	_protected.RetrieveCookieData = RetrieveCookieData;
 
 
 	/// <method>
 	/// Stores the cookie data.
 	/// </method>
 	/// <param name="objCookie" type="JSTools.Web.Cookie.CookieData"></param>
-	_protected.WriteCookieData = function(objCookie)
+	function WriteCookieData(objCookie)
 	{
 		document.cookie = objCookie + COOKIE_VALUE_SEPARATOR + objCookie.toString();
 	}
+	_protected.WriteCookieData = WriteCookieData;
 
 
 	/// <method>

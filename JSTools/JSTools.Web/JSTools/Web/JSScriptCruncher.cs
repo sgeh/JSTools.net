@@ -32,11 +32,8 @@ namespace JSTools.Web
 		// Declarations
 		//--------------------------------------------------------------------
 
-		public static readonly	JSScriptCruncher	Instance	= new JSScriptCruncher();
-
 		private	const	string			ENUM_PATTERN			= "Version_{0}_{1}";
 		private			Cruncher		_cruncher				= new Cruncher();
-
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -45,12 +42,11 @@ namespace JSTools.Web
 		/// <summary>
 		/// Creates a new JSScriptCruncher instance.
 		/// </summary>
-		private JSScriptCruncher()
+		internal JSScriptCruncher()
 		{
 			// optimize cruncher
 			_cruncher.EnableWarnings = false;
 		}
-
 		
 		//--------------------------------------------------------------------
 		// Methods
@@ -65,13 +61,12 @@ namespace JSTools.Web
 		/// <exception cref="CruncherException">An error has occured during parsing the given string.</exception>
 		public string Crunch(string scriptCode, float scriptVersion)
 		{
-			lock (_cruncher)
+			lock (this)
 			{
 				_cruncher.Version = GetScriptVersion(scriptVersion);
 				return _cruncher.Crunch(scriptCode);
 			}
 		}
-
 
 		/// <summary>
 		/// Crunches the given script code and returns the crunched string. The default
@@ -81,13 +76,12 @@ namespace JSTools.Web
 		/// <exception cref="CruncherException">An error has occured during parsing the given string.</exception>
 		public string Crunch(string scriptCode)
 		{
-			lock (_cruncher)
+			lock (this)
 			{
 				_cruncher.Version = ScriptVersion.Default;
 				return _cruncher.Crunch(scriptCode);
 			}
 		}
-
 
 		/// <summary>
 		/// Removes all the comments from the given script code. The default
@@ -100,18 +94,18 @@ namespace JSTools.Web
 		/// <exception cref="CruncherException">An error has occured during parsing the given string.</exception>
 		public string RemoveComments(string scriptCode, bool checkSyntax)
 		{
-			lock (_cruncher)
+			lock (this)
 			{
 				_cruncher.Version = ScriptVersion.Default;
 				return _cruncher.RemoveComments(scriptCode, checkSyntax);
 			}
 		}
 
-
 		/// <summary>
 		/// Removes all the comments from the given script code.
 		/// </summary>
 		/// <param name="scriptCode">Script code to remove the comments.</param>
+		/// <param name="scriptVersion">Script version, used by the compiler (e.g. 1.3).</param>
 		/// <param name="checkSyntax">True, to check for javascript syntax errors.</param>
 		/// <returns>Returns the script without comments.</returns>
 		/// <exception cref="ArgumentNullException">The given string contains a null reference.</exception>
@@ -119,13 +113,12 @@ namespace JSTools.Web
 		/// <exception cref="CruncherException">An error has occured during parsing the given string.</exception>
 		public string RemoveComments(string scriptCode, float scriptVersion, bool checkSyntax)
 		{
-			lock (_cruncher)
+			lock (this)
 			{
 				_cruncher.Version = GetScriptVersion(scriptVersion);
 				return _cruncher.RemoveComments(scriptCode, checkSyntax);
 			}
 		}
-
 
 		/// <summary>
 		/// Removes all the comments from the given script code. The default
@@ -137,13 +130,12 @@ namespace JSTools.Web
 		/// <exception cref="CruncherException">An error has occured during parsing the given string.</exception>
 		public string RemoveComments(string scriptCode)
 		{
-			lock (_cruncher)
+			lock (this)
 			{
 				_cruncher.Version = ScriptVersion.Default;
 				return _cruncher.RemoveComments(scriptCode);
 			}
 		}
-
 
 		/// <summary>
 		/// Checks for syntax errors and returns true, if there are no errors.
@@ -154,13 +146,12 @@ namespace JSTools.Web
 		/// <exception cref="NotSupportedException">The given script version is not supported.</exception>
 		public bool CheckSyntax(string scriptCode, float scriptVersion)
 		{
-			lock (_cruncher)
+			lock (this)
 			{
 				_cruncher.Version = GetScriptVersion(scriptVersion);
 				return _cruncher.CheckSyntax(scriptCode);
 			}
 		}
-
 
 		/// <summary>
 		/// Checks for syntax errors and throws an error, if there are errors.
@@ -172,13 +163,12 @@ namespace JSTools.Web
 		/// <exception cref="ArgumentNullException">The given string contains a null reference.</exception>
 		public void Check(string scriptCode, float scriptVersion)
 		{
-			lock (_cruncher)
+			lock (this)
 			{
 				_cruncher.Version = GetScriptVersion(scriptVersion);
 				_cruncher.Check(scriptCode);
 			}
 		}
-
 
 		/// <summary>
 		/// Checks for syntax errors and throws an error, if there are errors. The default
@@ -190,13 +180,12 @@ namespace JSTools.Web
 		/// <exception cref="ArgumentNullException">The given string contains a null reference.</exception>
 		public void Check(string scriptCode)
 		{
-			lock (_cruncher)
+			lock (this)
 			{
 				_cruncher.Version = ScriptVersion.Default;
 				_cruncher.Check(scriptCode);
 			}
 		}
-
 
 		/// <summary>
 		/// Converts the given script version into a representing ScriptVersion enum.
