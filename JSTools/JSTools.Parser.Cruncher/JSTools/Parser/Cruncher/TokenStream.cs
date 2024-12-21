@@ -28,7 +28,7 @@ namespace JSTools.Parser.Cruncher
 	public enum TokenType
 	{
 		// start enum
-		Error       = -1, // well-known as the only code < TokenType.EOF
+		Error       = -1, // well-known as the only code < TokenType.EOF -> not written into the string buffer
 		EOF         = 0,  // end of file token - (not EOF_CHAR)
 		EOL         = 1,  // end of line
 		// Beginning here are interpreter bytecodes. Their values

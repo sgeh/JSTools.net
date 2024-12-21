@@ -17,14 +17,11 @@
 using System;
 using System.Collections;
 using System.Configuration;
-using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Xml;
 
 using JSTools.Config.ExceptionHandling;
 using JSTools.Config.ScriptFileManagement;
-using JSTools.Xml;
 
 namespace JSTools.Config
 {
@@ -58,9 +55,6 @@ namespace JSTools.Config
 		private JSScriptFileHandler _scriptFileHandler = null;
 		private Hashtable _configSections = new Hashtable();
 
-		private XmlDocument _configDocument = new XmlDocument();
-		private bool _configInitialized = false;
-
 		//--------------------------------------------------------------------
 		// Properties
 		//--------------------------------------------------------------------
@@ -71,14 +65,6 @@ namespace JSTools.Config
 		public string SectionName
 		{
 			get { return CONFIG_NODE_NAME; }
-		}
-
-		/// <summary>
-		/// Returns true, if the internal XmlDocument is initialized.
-		/// </summary>
-		public bool IsXmlDocumentInitialized
-		{
-			get { return _configInitialized; }
 		}
 
 		/// <summary>
@@ -96,23 +82,26 @@ namespace JSTools.Config
 		/// <summary>
 		/// Initializes a new JavaScript configuration handler instance.
 		/// </summary>
-		public JSToolsConfiguration()
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new JavaScript configuration handler instance.
-		/// </summary>
 		/// <param name="configDocument">Loads the configuration from the specified xml document.</param>
 		/// <exception cref="ArgumentNullException">The given XmlDocument contains a null reference.</exception>
-		/// <exception cref="ArgumentException">Could not load the given configuration file.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
+		/// <exception cref="ConfigurationException">Error while initializing the configuration.</exception>
 		public JSToolsConfiguration(XmlDocument configDocument)
 		{
 			if (configDocument == null)
 				throw new ArgumentNullException("configDocument", "The given XmlDocument contains a null reference.");
 
-			LoadXml(configDocument);
+			try
+			{
+				InitConfiguration((XmlDocument)configDocument.Clone());
+			}
+			catch (ConfigurationException)
+			{
+				throw;
+			}
+			catch (Exception e)
+			{
+				throw new ConfigurationException("Error while initializing the configuration.", e);
+			}
 		}
 
 		/// <summary>
@@ -120,8 +109,7 @@ namespace JSTools.Config
 		/// </summary>
 		/// <param name="configFilePath">Loads the configuration from the specified path.</param>
 		/// <exception cref="ArgumentNullException">The given configuration path contains a null reference.</exception>
-		/// <exception cref="ArgumentException">Could not load the given configuration file.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
+		/// <exception cref="ConfigurationException">Error while initializing the configuration.</exception>
 		public JSToolsConfiguration(string configFilePath)
 		{
 			if (configFilePath == null)
@@ -129,13 +117,18 @@ namespace JSTools.Config
 
 			try
 			{
-				_configDocument.Load(configFilePath);
+				XmlDocument document = new XmlDocument();
+				document.Load(configFilePath);
+				InitConfiguration(document);
+			}
+			catch (ConfigurationException)
+			{
+				throw;
 			}
 			catch (Exception e)
 			{
-				throw new ArgumentException("Could not load the given configuration file '" + configFilePath + "'! Error description: " + e.Message, "configFilePath", e);
+				throw new ConfigurationException("Error while initializing the configuration.", e);
 			}
-			InitConfiguration();
 		}
 
 		//--------------------------------------------------------------------
@@ -152,13 +145,9 @@ namespace JSTools.Config
 		/// <param name="renderContext">The RenderProcessTicket object.</param>
 		/// <exception cref="ConfigurationException">Could not render a configuration section.</exception>
 		/// <exception cref="ConfigurationException">A section with the specified name does not exist.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument is not specified.</exception>
 		/// <exception cref="ArgumentNullException">The given RenderProcessTicket object contains a null reference</exception>
 		public void Render(RenderProcessTicket renderContext)
 		{
-			if (!IsXmlDocumentInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument is not specified.");
-
 			if (renderContext == null)
 				throw new ArgumentNullException("renderContext", "The given RenderProcessTicket object contains a null reference.");
 
@@ -175,7 +164,12 @@ namespace JSTools.Config
 				}
 				catch (Exception e)
 				{
-					throw new ConfigurationException("Could not render configuration section '" + renderHandler.SectionName + "'. Error description: " + e.Message, e);
+					throw new ConfigurationException(
+						string.Format(
+							"Could not render configuration section '{0}'. Error description: {1}",
+							renderHandler.SectionName,
+							e.Message ),
+						e );
 				}
 			}
 		}
@@ -193,141 +187,75 @@ namespace JSTools.Config
 				throw new ArgumentNullException("configNodeName", "The specified name contains a null reference.");
 
 			if (_configSections.Contains(configNodeName))
-			{
 				return (_configSections[configNodeName] as AJSToolsSection);
-			}
+
 			return null;
 		}
 
 		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
+		/// This method is called if a section is initialized.
 		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified xml document.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		public void LoadXml(XmlDocument configDocument)
+		/// <param name="sectionToLoad">Section which should be loaded.</param>
+		/// <returns>Returns the initilized section.</returns>
+		protected virtual AJSToolsSection InitSection(XmlNode sectionToLoad)
 		{
-			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
+			if (sectionToLoad == null)
+				throw new ArgumentNullException("sectionToLoad", "Sections which should be loaded must not contain null references.");
 
-			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
-
-			// import nodes
-			foreach (XmlNode node in configDocument.ChildNodes)
+			try
 			{
-				XmlNode importedNode = _configDocument.ImportNode(node, true);
-				_configDocument.AppendChild(importedNode);
+				return InitNodeType(sectionToLoad);
 			}
-			InitConfiguration();
-		}
-
-		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
-		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified string.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
-		public void LoadXml(string configDocument)
-		{
-			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
-
-			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
-
-			_configDocument.Load(configDocument);
-			InitConfiguration();
-		}
-
-		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
-		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified Stream.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
-		public void LoadXml(Stream configDocument)
-		{
-			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
-
-			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
-
-			_configDocument.Load(configDocument);
-			InitConfiguration();
-		}
-
-		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
-		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified XmlReader.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
-		public void LoadXml(XmlReader configDocument)
-		{
-			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
-
-			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
-
-			_configDocument.Load(configDocument);
-			InitConfiguration();
-		}
-
-		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
-		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified TextReader.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
-		public void LoadXml(TextReader configDocument)
-		{
-			if (configDocument == null)
-				throw new ArgumentNullException("configDocument", "The given xml document contains a null reference.");
-
-			if (_configInitialized)
-				throw new InvalidOperationException("The configuration XmlDocument was already specified.");
-
-			_configDocument.Load(configDocument);
-			InitConfiguration();
-		}
-
-		/// <summary>
-		/// Initializes the values of this configuration object.
-		/// </summary>
-		/// <remarks>This method can throw a ConfigurationException.</remarks>
-		private void InitConfiguration()
-		{
-			InitScriptConfiguration();
-
-			foreach (XmlNode configNode in _configDocument.DocumentElement.SelectNodes("*[name(.)!='" + SCRIPTS_NODE + "']"))
+			catch (Exception e)
 			{
-				if (configNode.Attributes[TYPE_ATTRIB] == null)
-				{
-					throw new ConfigurationException("Could not identify the 'type' attribute of the configuration node '" + configNode.Name + "'.", configNode);
-				}
-				InitNodeAndCheckForExceptions(configNode);
+				throw new ConfigurationException(
+					string.Format("Could not initialize the type '{0}' specified in the '{1}' node.",
+						sectionToLoad.Attributes[TYPE_ATTRIB].Value,
+						sectionToLoad.Name ),
+					e,
+					sectionToLoad );
 			}
+		}
 
-			InitDefaultSections();
+		/// <summary>
+		/// This method is called before the sections are initilialized. You
+		/// can initilialize default sections here.
+		/// </summary>
+		/// <param name="configDocument">Configuration document to initialize.</param>
+		protected virtual void BeforeInitConfiguration(XmlDocument configDocument)
+		{
+			XmlNamespaceManager manager = new XmlNamespaceManager(configDocument.NameTable);
+			manager.AddNamespace(
+				JSScriptFileHandlerFactory.NAMESPACE_ABBR,
+				JSScriptFileHandlerFactory.NAMESPACE );
+
+			XmlNode scriptFileHandler = configDocument.DocumentElement.SelectSingleNode(
+				JSScriptFileHandlerFactory.NAMESPACE_XPATH,
+				manager );
+
+			_scriptFileHandler = (InitSection(scriptFileHandler) as JSScriptFileHandler);
+		}
+
+		/// <summary>
+		/// This method is called after the configuration has been initialized.
+		/// </summary>
+		protected virtual void AfterInitConfiguration()
+		{
 			InitRelations();
-			_configInitialized = true;
 		}
 
-		/// <summary>
-		/// Call CheckRelations procedure to initialize relations between the sections.
-		/// </summary>
+		private void InitConfiguration(XmlDocument configDocument)
+		{
+			BeforeInitConfiguration(configDocument);
+
+			foreach (XmlNode configNode in configDocument.DocumentElement.ChildNodes)
+			{
+				if (configNode.NodeType == XmlNodeType.Element)
+					InitSection(configNode);
+			}
+			AfterInitConfiguration();
+		}
+
 		private void InitRelations()
 		{
 			foreach (DictionaryEntry entry in _configSections)
@@ -336,74 +264,26 @@ namespace JSTools.Config
 			}
 		}
 
-		/// <summary>
-		/// Initializes the script handler configuration section as first.
-		/// </summary>
-		private void InitScriptConfiguration()
+		private AJSToolsSection InitNodeType(XmlNode configNode)
 		{
-			XmlNode scriptNode = _configDocument.DocumentElement.SelectSingleNode("./" + SCRIPTS_NODE);
+			AJSToolsSection loadedSection = null;
 
-			if (scriptNode != null)
+			if (!_configSections.Contains(configNode.Name))
 			{
-				InitNodeAndCheckForExceptions(scriptNode);
+				AJSToolsConfigSectionHandlerFactory handlerInstance = GetInstanceOfType(configNode.Attributes[TYPE_ATTRIB].Value);
+
+				if (handlerInstance == null)
+					throw new InvalidOperationException("The specified type is not derived from AJSToolsConfigSectionHandler.");
+
+				if (configNode.Name != handlerInstance.SectionName)
+					throw new InvalidOperationException("The given node has not the same section name as specified in the configuration section handler.");
+
+				loadedSection = handlerInstance.CreateInstance(configNode, this);
+				_configSections.Add(configNode.Name, loadedSection);
 			}
+			return loadedSection;
 		}
 
-		/// <summary>
-		/// Creates a new section instance and casts all exceptions into a ConfigurationException.
-		/// </summary>
-		/// <param name="configNode">The XmlNode that describes the type.</param>
-		private void InitNodeAndCheckForExceptions(XmlNode configNode)
-		{
-			try
-			{
-				InitNodeType(configNode);
-			}
-			catch (Exception e)
-			{
-				throw new ConfigurationException("Could not initialize the type '" + configNode.Attributes[TYPE_ATTRIB].Value + "' specified in the '" + configNode.Name + "' node! Error description: " + e.Message, e, configNode);
-			}
-		}
-
-		/// <summary>
-		/// Initilizes the type specified in the "type" attribute of the given node and adds it to the
-		/// _configSections Hashtable.
-		/// </summary>
-		/// <param name="configNode">The XmlNode that describes the type.</param>
-		private void InitNodeType(XmlNode configNode)
-		{
-			if (_configSections.Contains(configNode.Name))
-				throw new InvalidOperationException("A configuration section with the name '" + configNode.Name + "' already exists.");
-
-			AJSToolsConfigSectionHandlerFactory handlerInstance = GetInstanceOfType(configNode.Attributes[TYPE_ATTRIB].Value);
-
-			if (handlerInstance == null)
-				throw new InvalidOperationException("The specified type is not derived from AJSToolsConfigSectionHandler.");
-
-			if (configNode.Name != handlerInstance.SectionName)
-				throw new InvalidOperationException("The given node has not the same section name as specified in the configuration section handler.");
-
-			_configSections.Add(configNode.Name, handlerInstance.CreateInstance(configNode, this));
-		}
-
-		/// <summary>
-		/// Initilizes the default configuration sections.
-		/// </summary>
-		private void InitDefaultSections()
-		{
-			_scriptFileHandler = (GetConfig(SCRIPTS_NODE) as JSScriptFileHandler);
-
-			if (_scriptFileHandler == null)
-			{
-				throw new ConfigurationException("The configuration file does not contain a '" + SCRIPTS_NODE + "' section.");
-			}
-		}
-
-		/// <summary>
-		/// Creates an instance from the given type and assembly name.
-		/// </summary>
-		/// <param name="typeAttributeValue">String of the type attribute.</param>
-		/// <returns>Returns the created instance or null, if no instance was created.</returns>
 		private AJSToolsConfigSectionHandlerFactory GetInstanceOfType(string typeAttributeValue)
 		{
 			string[] typeDefinition = typeAttributeValue.Split(',');
@@ -418,12 +298,6 @@ namespace JSTools.Config
 			return CreateInstanceOfType(assembly, type);
 		}
 
-		/// <summary>
-		/// Creates an instance of the specified type.
-		/// </summary>
-		/// <param name="assembly">Name of the assembly.</param>
-		/// <param name="type">Name of the type.</param>
-		/// <returns>Returns the created type.</returns>
 		private AJSToolsConfigSectionHandlerFactory CreateInstanceOfType(string assembly, string type)
 		{
 			if (assembly != null)
@@ -436,13 +310,6 @@ namespace JSTools.Config
 			}
 		}
 
-		/// <summary>
-		/// Returns the value of the given index form the specified array. If an error occurs
-		/// (IndexOutOfRangeException, NullReferenceException, ...) you will get a null reference.
-		/// </summary>
-		/// <param name="array">The array, which contains the given index.</param>
-		/// <param name="index">The position of the Array element to get.</param>
-		/// <returns>Returns the value of the given index form the specified array.</returns>
 		private string GetStringFromArray(string[] array, int index)
 		{
 			if (array != null && array.Length > index && (array.GetValue(index) as string) != null)

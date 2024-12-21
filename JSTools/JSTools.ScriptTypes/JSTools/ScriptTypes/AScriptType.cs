@@ -61,6 +61,23 @@ namespace JSTools.ScriptTypes
 		//--------------------------------------------------------------------
 
 		/// <summary>
+		/// Checks whether the specified type can be mapped with this
+		/// script type.
+		/// </summary>
+		/// <param name="toCheck">Type which should be checked.</param>
+		/// <returns>Returns true if the specified type can be mapped with this
+		/// script type.</returns>
+		public virtual bool CanMapType(Type toCheck)
+		{
+			foreach (Type managedType in ManagedTypes)
+			{
+				if (managedType == toCheck)
+					return true;
+			}
+			return false;
+		}
+
+		/// <summary>
 		/// Checks whether the given string is compatible with this type. If
 		/// this method returns true, you may cast the string into the
 		/// representing object with the GetObjectFromString() method.
@@ -115,8 +132,8 @@ namespace JSTools.ScriptTypes
 			if (valueToConvert == null)
 				throw new ArgumentNullException("valueToConvert", "The given value contains a null reference.");
 
-			if (System.Array.IndexOf(ManagedTypes, valueToConvert.GetType()) == -1)
-				throw new InvalidOperationException("The type of the given value could not be mapped with the type of the current ScriptType instance.");
+			if (!IsManagedTypeSupported(valueToConvert.GetType()))
+				throw new InvalidOperationException("The type of the given value could not be mapped with the current ScriptType instance.");
 
 			try
 			{
@@ -144,5 +161,15 @@ namespace JSTools.ScriptTypes
 		/// <param name="decodeValue">True to decode the given value.</param>
 		/// <returns>Gets the value of the given string.</returns>
 		protected abstract object GetValueFromString(string valueToConvert, bool decodeValue);
+
+		private bool IsManagedTypeSupported(Type toCheck)
+		{
+			foreach (Type managedType in ManagedTypes)
+			{
+				if (managedType.IsAssignableFrom(toCheck))
+					return true;
+			}
+			return false;
+		}
 	}
 }

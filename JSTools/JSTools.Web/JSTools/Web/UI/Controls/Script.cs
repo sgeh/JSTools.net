@@ -184,7 +184,7 @@ namespace JSTools.Web.UI.Controls
 						}
 						default:
 						{
-							throw new InvalidOperationException("The DebugMode in the configuration is not supported!");
+							throw new InvalidOperationException("The DebugMode in the configuration is not supported.");
 						}
 					}
 				}
@@ -453,7 +453,7 @@ namespace JSTools.Web.UI.Controls
 			}
 			catch (Exception e)
 			{
-				throw new ScriptOptimizationException("Error while optimize the given script source!", e);
+				throw new ScriptOptimizationException("Error while optimize the given script source.", e);
 			}
 
 			if (!scriptCode.StartsWith("\n"))
@@ -493,15 +493,17 @@ namespace JSTools.Web.UI.Controls
 			{
 				case ScriptOptimization.RemoveComments:
 				{
-					return JSToolsContext.Cruncher.RemoveComments(Code, ScriptVersionUtil.ValueToScriptVersion(Version));
+					return JSToolsContext.Cruncher.RemoveComments(Code, Version);
 				}
 				case ScriptOptimization.Crunch:
 				{
-					return JSToolsContext.Cruncher.CrunchScript(Code, null, ScriptVersionUtil.ValueToScriptVersion(Version));
+					return JSToolsContext.Cruncher.CrunchScript(Code, null, Version);
 				}
 				case ScriptOptimization.SyntaxCheck:
 				{
-					JSToolsContext.Cruncher.ParseScript(Code, ScriptVersionUtil.ValueToScriptVersion(Version));
+					if (!JSToolsContext.Cruncher.IsValidScript(Code, Version))
+						throw new ScriptOptimizationException("The specified script contains a syntax error.");
+
 					return Code;
 				}
 				default:

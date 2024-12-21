@@ -19,6 +19,28 @@ using System.Collections;
 
 namespace JSTools.ScriptTypes
 {
+	/// <summary>
+	/// Represents a mapper which can be used to map types with script
+	/// types and map script strings with managed types.
+	/// 
+	/// The mapped type can be used to decode values form the client
+	/// or the encode data to render them to the client.
+	/// </summary>
+	/// <example>
+	///  <code>
+	///  // a value which should be written to the client
+	///  string valueToMap = "a dummy \t value";
+	///  
+	///  // create a new ScriptValueMapper instance
+	///  ScriptValueMapper mapper = new ScriptValueMapper();
+	///  
+	///  // map the type, this will return the appropriated script type
+	///  AScriptType mappedType = mapper.MapType(aValueToMap.GetType());
+	///  
+	///  // get string representation, which may be rendered to the client in a
+	///  // &lt;script&gt; tag, e.g. var a = &lt;%# scriptString %&gt;
+	///  </code>
+	/// </example>
 	public class ScriptValueMapper
 	{
 		//--------------------------------------------------------------------
@@ -29,7 +51,6 @@ namespace JSTools.ScriptTypes
 																	 new JSTools.ScriptTypes.Boolean(),
 																	 new JSTools.ScriptTypes.Number(),
 																	 new JSTools.ScriptTypes.RegExp(),
-																	 new JSTools.ScriptTypes.Array(),
 																	 new JSTools.ScriptTypes.Object(),
 																	 new JSTools.ScriptTypes.String()
 																 };
@@ -38,16 +59,27 @@ namespace JSTools.ScriptTypes
 		// Properties
 		//--------------------------------------------------------------------
 
+		/// <summary>
+		/// Represents the default type mapping and it's used if no other
+		/// type can be mapped.
+		/// </summary>
 		protected virtual AScriptType DefaultTypeMapping
+		{
+			get { return DEFAULT_MAPPINGS[3]; }
+		}
+
+		/// <summary>
+		/// Represents the default value type mapping and it's used if no
+		/// other type can be mapped.
+		/// </summary>
+		protected virtual AScriptType DefaultValueMapping
 		{
 			get { return DEFAULT_MAPPINGS[4]; }
 		}
 
-		protected virtual AScriptType DefaultValueMapping
-		{
-			get { return DEFAULT_MAPPINGS[5]; }
-		}
-
+		/// <summary>
+		/// Gets the implemented mappings.
+		/// </summary>
 		protected virtual AScriptType[] Mappings
 		{
 			get { return DEFAULT_MAPPINGS; }
@@ -72,37 +104,46 @@ namespace JSTools.ScriptTypes
 		// Methods
 		//--------------------------------------------------------------------
 
-		public virtual AScriptType MapType(object objectToMap)
+		/// <summary>
+		/// Maps the specified object type with a managed script type.
+		/// Default map type is Object.
+		/// </summary>
+		/// <param name="typeToMap">Type which should be mapped.</param>
+		/// <returns>Returns the mapped script type or a null reference, if the given string contains a null reference.</returns>
+		public virtual AScriptType MapType(Type typeToMap)
 		{
-			if (objectToMap != null)
-			{
-				foreach (AScriptType scriptType in Mappings)
-				{
-					if (scriptType == null || scriptType == DefaultTypeMapping)
-						continue;
+			if (typeToMap == null)
+				return null;
 
-					foreach (Type managedType in scriptType.ManagedTypes)
-					{
-						if (objectToMap.GetType() == managedType || objectToMap.GetType().IsSubclassOf(managedType))
-							return scriptType;
-					}
-				}
+			foreach (AScriptType scriptType in Mappings)
+			{
+				if (scriptType == null || scriptType == DefaultTypeMapping)
+					continue;
+
+				if (scriptType.CanMapType(typeToMap))
+					return scriptType;
 			}
 			return DefaultTypeMapping;
 		}
 
+		/// <summary>
+		/// Maps the specified script value (e.g. "[ 20, 210, 'a', { } ]")
+		/// with a managed script type. Default map type is String.
+		/// </summary>
+		/// <param name="valueToMap">Script value which should be mapped.</param>
+		/// <returns>Returns the mapped type or a null reference, if the given string contains a null reference.</returns>
 		public virtual AScriptType MapValue(string valueToMap)
 		{
-			if (valueToMap != null)
-			{
-				foreach (AScriptType scriptType in Mappings)
-				{
-					if (scriptType == null || scriptType == DefaultValueMapping)
-						continue;
+			if (valueToMap == null)
+				return null;
 
-					if (scriptType.IsTypeOf(valueToMap))
-						return scriptType;
-				}
+			foreach (AScriptType scriptType in Mappings)
+			{
+				if (scriptType == null || scriptType == DefaultValueMapping)
+					continue;
+
+				if (scriptType.IsTypeOf(valueToMap))
+					return scriptType;
 			}
 			return DefaultValueMapping;
 		}

@@ -16,16 +16,13 @@
 
 using System;
 using System.Collections.Specialized;
-using System.IO;
-using System.Text;
-using System.Xml;
 
-using JSTools.Xml;
+using JSTools.Config.ScriptFileManagement.Serialization;
 
 namespace JSTools.Config.ScriptFileManagement
 {
 	/// <summary>
-	/// Represents a &lt;module&gt; node in a configuration XmlDocument.
+	/// Represents a &lt;module&gt; node in the configuration XmlDocument.
 	/// </summary>
 	public class JSModule : AJSToolsScriptFileSection
 	{
@@ -33,24 +30,14 @@ namespace JSTools.Config.ScriptFileManagement
 		// Declarations
 		//--------------------------------------------------------------------
 
-		/// <summary>
-		/// Gets the name of a JSModule xml node.
-		/// </summary>
-		public const string MODULE_NODE_NAME = "module";
+		private const string MODULE_NODE_NAME = "module";
 
-		private const string NAME_ATTRIB = "name";
-		private const string DEFAULT_ATTRIB = "default";
-		private const string MODULE_REL_ATTRIB = "module";
-		private const string REQUIRES_NODE_NAME = "requires";
-
-		private string _name = "";
+		private string _name = string.Empty;
 		private bool _default = false;
 		private StringCollection _relations = new StringCollection();
 
 		private JSModuleContainer _childModules = null;
 		private JSScriptContainer _childScripts = null;
-
-		private XmlNode _moduleNode = null;
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -174,23 +161,22 @@ namespace JSTools.Config.ScriptFileManagement
 		/// <summary>
 		/// Initializes a new JavaScript configuration module.
 		/// </summary>
-		/// <param name="moduleNode">XmlNode which contians the module node.</param>
+		/// <param name="moduleData">Instance which contains the module data.</param>
 		/// <param name="parentSection">Parent JSToolsConfiguration of this node.</param>
-		/// <exception cref="ArgumentNullException">An argument contains a null reference.</exception>
+		/// <exception cref="ArgumentNullException">The given module data contain null.</exception>
 		/// <exception cref="InvalidOperationException">This module already contains a module definition for a name of a child script.</exception>
-		internal JSModule(XmlNode moduleNode, AJSToolsScriptFileSection parentSection) : base(parentSection)
+		internal JSModule(Module moduleData, AJSToolsScriptFileSection parentSection) : base(parentSection)
 		{
-			if (moduleNode == null)
-				throw new ArgumentNullException("moduleNode", "The given XmlNode contains a null reference.");
+			if (moduleData == null)
+				throw new ArgumentNullException("moduleData", "The given data contain null.");
 
-			_moduleNode = moduleNode;
-
-			InitModule();
+			_name = moduleData.Name;
+			_default = moduleData.IsDefault;
 
 			// init child elements
-			InitChildModules();
-			InitFileSources();
-			InitRelations();
+			InitChildModules(moduleData.Modules);
+			InitFileSources(moduleData.Files);
+			InitRelations(moduleData.Requires);
 		}
 
 		//--------------------------------------------------------------------
@@ -227,9 +213,7 @@ namespace JSTools.Config.ScriptFileManagement
 			foreach (string relationName in _relations)
 			{
 				if (relationName == realtionModuleName)
-				{
 					return true;
-				}
 			}
 			return false;
 		}
@@ -254,45 +238,32 @@ namespace JSTools.Config.ScriptFileManagement
 			foreach (JSScript script in _childScripts)
 			{
 				if (script.Path == filePath)
-				{
 					return true;
-				}
 			}
 			return false;
 		}
 
 		/// <summary>
-		/// Initializes the values of the XmlNode.
-		/// </summary>
-		private void InitModule()
-		{
-			_name = JSToolsXmlFunctions.GetValueFromNode(_moduleNode.Attributes[NAME_ATTRIB]);
-			_default = JSToolsXmlFunctions.GetBoolFromNodeValue(_moduleNode.Attributes[DEFAULT_ATTRIB]);
-		}
-
-		/// <summary>
 		/// Initializes the xml required nodes.
 		/// </summary>
-		private void InitRelations()
+		private void InitRelations(Requires[] requriedData)
 		{
-			foreach (XmlNode childModule in _moduleNode.SelectNodes(REQUIRES_NODE_NAME))
+			foreach (Requires requiredModule in requriedData)
 			{
-				_relations.Add(JSToolsXmlFunctions.GetAttributeFromNode(childModule, MODULE_REL_ATTRIB));
+				_relations.Add(requiredModule.Module);
 			}
 		}
 
 		/// <summary>
 		/// Initializes the child modules of this module.
 		/// </summary>
-		private void InitChildModules()
+		private void InitChildModules(Module[] moduleData)
 		{
-			XmlNodeList moduleNodes = _moduleNode.SelectNodes(MODULE_NODE_NAME);
-			JSModule[] modules = new JSModule[moduleNodes.Count];
+			JSModule[] modules = new JSModule[moduleData.Length];
 
-			for (int i = 0; i < moduleNodes.Count; ++i)
+			for (int i = 0; i < modules.Length; ++i)
 			{
-				XmlNode moduleNode = moduleNodes[i];
-				modules.SetValue(new JSModule(moduleNode, this), i);
+				modules[i] = new JSModule(moduleData[i], this);
 			}
 			_childModules = new JSModuleContainer(modules);
 		}
@@ -300,20 +271,20 @@ namespace JSTools.Config.ScriptFileManagement
 		/// <summary>
 		/// Initilializes the file tags.
 		/// </summary>
-		private void InitFileSources()
+		private void InitFileSources(File[] fileData)
 		{
-			XmlNodeList scriptNodes = _moduleNode.SelectNodes(JSScript.FILE_NODE_NAME);
-			JSScript[] scripts = new JSScript[scriptNodes.Count];
+			JSScript[] scripts = new JSScript[fileData.Length];
 
-			for (int i = 0; i < scriptNodes.Count; ++i)
+			for (int i = 0; i < scripts.Length; ++i)
 			{
-				XmlNode scriptNode = scriptNodes[i];
-				JSScript script = new JSScript(scriptNode, this); 
-				scripts.SetValue(script, i);
+				scripts[i] = new JSScript(fileData[i], this);
 
-				if (_childModules.Contains(script.Name))
+				if (_childModules.Contains(scripts[i].Name))
 				{
-					throw new InvalidOperationException("The module '" + Name + "' already contains a module definition for '" + script.Name + "'");
+					throw new InvalidOperationException(string.Format(
+						"The module '{0}' already contains a module definition for '{1}'.",
+						Name,
+						scripts[i].Name ));
 				}
 			}
 			_childScripts = new JSScriptContainer(scripts);

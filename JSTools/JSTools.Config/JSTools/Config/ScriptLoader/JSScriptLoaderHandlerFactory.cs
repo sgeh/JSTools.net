@@ -15,8 +15,10 @@
  */
 
 using System;
-using System.Configuration;
 using System.Xml;
+using System.Xml.Serialization;
+
+using JSTools.Config.ScriptLoader.Serialization;
 
 namespace JSTools.Config.ScriptLoader
 {
@@ -29,6 +31,11 @@ namespace JSTools.Config.ScriptLoader
 		//--------------------------------------------------------------------
 		// Declarations
 		//--------------------------------------------------------------------
+
+		/// <summary>
+		/// Gets the namespace of the xml nodes.
+		/// </summary>
+		public const string NAMESPACE = "http://www.jstools.net/#scriptFileLoader";
 
 		/// <summary>
 		/// Gets the name of the script file loader xml section.
@@ -73,7 +80,10 @@ namespace JSTools.Config.ScriptLoader
 		/// <param name="ownerConfig">Owner (parent) configuration instance.</param>
 		public override AJSToolsSection CreateInstance(XmlNode section, IJSToolsConfiguration ownerConfig)
 		{
-			return new JSScriptLoaderHandler(section, ownerConfig, SECTION_NAME);
+			XmlSerializer serializer = new XmlSerializer(typeof(ScriptFileLoader));
+			ScriptFileLoader scriptFileLoaderSection = (serializer.Deserialize(new XmlNodeReader(section)) as ScriptFileLoader);
+
+			return new JSScriptLoaderHandler(scriptFileLoaderSection, ownerConfig, SECTION_NAME);
 		}
 	}
 }

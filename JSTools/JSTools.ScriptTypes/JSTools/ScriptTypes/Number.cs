@@ -16,6 +16,7 @@
 
 using System;
 using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace JSTools.ScriptTypes
@@ -23,7 +24,7 @@ namespace JSTools.ScriptTypes
 	/// <summary>
 	/// Represents the javascript number type. A number is mapped with the
 	/// following .NET datatypes:
-	///  double, float, long, int, short, byte
+	/// decimal, double, float, long, int, short, byte
 	/// </summary>
 	public class Number : AScriptType
 	{
@@ -31,8 +32,12 @@ namespace JSTools.ScriptTypes
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private static readonly Regex SCRIPT_NUMBER_PATTERN = new Regex(@"^(?<number>[+\-]?\d*(.\d+)?)(e(?<sign>[+\-]?)(?<exponent>\d+))$", RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
-		private static readonly Regex MANAGED_NUMBER_PATTERN = new Regex(@"^(?<number>[+\-]?\d*(.\d+)?)((?<sign>[+\-]?)e(?<exponent>\d+))$", RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex SCRIPT_NUMBER_PATTERN = new Regex(@"^(?<number>[+\-]?(\d+.?\d*|\d*.\d+))(e(?<sign>[+\-]?)(?<exponent>\d+))?$", RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex MANAGED_NUMBER_PATTERN = new Regex(@"^(?<number>[+\-]?(\d+.?\d*|\d*.\d+))((?<sign>[+\-]?)e(?<exponent>\d+))?$", RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+		private const string NUMBER_GROUP = "number";
+		private const string SIGN_GROUP = "sign";
+		private const string EXPONENT_GROUP = "exponent";
 
 		private const string MAX_VALUE = "Number.MAX_VALUE";
 		private const string MIN_VALUE = "Number.MIN_VALUE";
@@ -55,7 +60,21 @@ namespace JSTools.ScriptTypes
 		/// </summary>
 		internal protected override Type[] ManagedTypes
 		{
-			get { return new Type[] { typeof(double), typeof(float), typeof(long), typeof(int), typeof(short), typeof(byte) }; }
+			get
+			{
+				return new Type[] {
+									  typeof(decimal),
+									  typeof(double),
+									  typeof(float),
+									  typeof(long),
+									  typeof(ulong),
+									  typeof(int),
+									  typeof(uint),
+									  typeof(short),
+									  typeof(ushort),
+									  typeof(byte)
+								  };
+			}
 		}
 
 		//--------------------------------------------------------------------
@@ -108,34 +127,37 @@ namespace JSTools.ScriptTypes
 		/// </returns>
 		protected override string GetStringRepresentation(object valueToConvert, bool encodeValue)
 		{
-			double doubleValue = (double)valueToConvert;
-			
-			if (doubleValue == double.MaxValue)
-				return MAX_VALUE;
+			// convert given value
+			double managedValue = 0;
+			unchecked { managedValue = Convert.ToDouble(valueToConvert); }
 
-			if (doubleValue == double.MinValue)
-				return MIN_VALUE;
-
-			if (double.IsNegativeInfinity(doubleValue))
+			// try to evaluate the representing client script values
+			if (double.IsPositiveInfinity(managedValue))
 				return POSITIVE_INFINITY;
 
-			if (double.IsNegativeInfinity(doubleValue))
+			if (double.IsNegativeInfinity(managedValue))
 				return NEGATIVE_INFINITY;
 
-			if (double.IsNaN(doubleValue))
+			if (managedValue >= double.MaxValue)
+				return MAX_VALUE;
+
+			if (managedValue <= double.MinValue)
+				return MIN_VALUE;
+
+			if (double.IsNaN(managedValue))
 				return NaN;
 
-			string convertedValue = doubleValue.ToString(NumberFormatInfo.InvariantInfo);
+			string convertedValue = GetStringRepresentation(valueToConvert);
 
 			// javascript has an other exp-format than .NET
 			Match convertedMatch = MANAGED_NUMBER_PATTERN.Match(convertedValue);
 
 			// change exp-sign, if needed
-			if (convertedMatch.Groups["exponent"].Length != 0)
-				return convertedMatch.Groups["number"].Value
+			if (convertedMatch.Groups[EXPONENT_GROUP].Length != 0)
+				return convertedMatch.Groups[NUMBER_GROUP].Value
 					+ "e"
-					+ convertedMatch.Groups["sign"].Value
-					+ convertedMatch.Groups["exponent"].Value;
+					+ convertedMatch.Groups[SIGN_GROUP].Value
+					+ convertedMatch.Groups[EXPONENT_GROUP].Value;
 
 			return convertedValue;
 		}
@@ -164,11 +186,11 @@ namespace JSTools.ScriptTypes
 			Match valueMatch = SCRIPT_NUMBER_PATTERN.Match(valueToConvert);
 
 			// javascript has an other exp-format than .NET
-			if (valueMatch.Groups["exponent"].Length != 0)
-				valueToConvert = valueMatch.Groups["number"].Value
-					+ valueMatch.Groups["sign"].Value
+			if (valueMatch.Groups[EXPONENT_GROUP].Length != 0)
+				valueToConvert = valueMatch.Groups[NUMBER_GROUP].Value
+					+ valueMatch.Groups[SIGN_GROUP].Value
 					+ "e"
-					+ valueMatch.Groups["exponent"].Value;
+					+ valueMatch.Groups[EXPONENT_GROUP].Value;
 
 			// try to parse the given string
 			double result;
@@ -181,22 +203,32 @@ namespace JSTools.ScriptTypes
 
 		private double GetSpecialValueFromString(string valueToConvert)
 		{
-			if (valueToConvert == MAX_VALUE_SCRIPT)
+			if (valueToConvert == MAX_VALUE_SCRIPT || valueToConvert == MAX_VALUE)
 				return double.MaxValue;
 
-			if (valueToConvert == MIN_VALUE_SCRIPT)
+			if (valueToConvert == MIN_VALUE_SCRIPT || valueToConvert == MIN_VALUE)
 				return double.MinValue;
 
-			if (valueToConvert == POSITIVE_INFINITY_SCRIPT)
+			if (valueToConvert == POSITIVE_INFINITY_SCRIPT || valueToConvert == POSITIVE_INFINITY)
 				return double.PositiveInfinity;
 
-			if (valueToConvert == NEGATIVE_INFINITY_SCRIPT)
+			if (valueToConvert == NEGATIVE_INFINITY_SCRIPT || valueToConvert == NEGATIVE_INFINITY)
 				return double.NegativeInfinity;
 
-			if (valueToConvert == NaN_SCRIPT)
+			if (valueToConvert == NaN_SCRIPT || valueToConvert == NaN)
 				return double.NaN;
 
 			return 0;
+		}
+
+		private string GetStringRepresentation(object valueToConvert)
+		{
+			MethodInfo toStringMethod = valueToConvert.GetType().GetMethod("ToString", new Type[] { typeof(IFormatProvider) } );
+
+			if (toStringMethod != null)
+				return (string)toStringMethod.Invoke(valueToConvert, new object[] { CultureInfo.InvariantCulture} );
+			else
+				return valueToConvert.ToString();
 		}
 	}
 }

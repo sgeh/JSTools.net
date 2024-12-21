@@ -176,6 +176,10 @@
                     BuildAction = "Content"
                 />
                 <File
+                    RelPath = "JSTools\Util\SimpleObjectSerializer.js"
+                    BuildAction = "Content"
+                />
+                <File
                     RelPath = "JSTools\Util\StringConverter.js"
                     BuildAction = "Content"
                 />

@@ -83,7 +83,9 @@ namespace JSTools.Parser.Cruncher
 			MAPPINGS.AddMapping("char", TokenType.Reserved);
 			MAPPINGS.AddMapping("class", TokenType.Reserved);
 			MAPPINGS.AddMapping("const", TokenType.Reserved);
-			MAPPINGS.AddMapping("debugger", TokenType.Reserved);
+
+			// provide compatibility with IE-debugger keyword
+//			MAPPINGS.AddMapping("debugger", TokenType.Reserved);
 			MAPPINGS.AddMapping("double", TokenType.Reserved);
 			MAPPINGS.AddMapping("enum", TokenType.Reserved);
 			MAPPINGS.AddMapping("extends", TokenType.Reserved);

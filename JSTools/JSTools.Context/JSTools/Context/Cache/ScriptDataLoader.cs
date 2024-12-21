@@ -42,7 +42,7 @@ namespace JSTools.Context.Cache
 		/// <summary>
 		/// Creates a new ScriptDataLoader instance.
 		/// </summary>
-		internal ScriptDataLoader(string scriptData, ScriptVersion version) : base(version)
+		internal ScriptDataLoader(string scriptData, float version) : base(version)
 		{
 			if (scriptData == null)
 				throw new ArgumentNullException("scriptData");

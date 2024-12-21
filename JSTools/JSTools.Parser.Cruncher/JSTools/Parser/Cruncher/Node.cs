@@ -246,6 +246,11 @@ namespace JSTools.Parser.Cruncher
 		}
 
 
+		public override string ToString()
+		{
+			return Enum.GetName(typeof(TokenType), _type);
+		}
+
 		public Node GetChildBefore(Node child) 
 		{
 			return GetChildBefore(child, true);

@@ -17,13 +17,19 @@
 using System;
 using System.IO;
 
+using JSTools.Parser.Cruncher.Nodes;
+
 namespace JSTools.Parser.Cruncher
 {
 	/// <summary>
 	/// This class represents the parsing context of a script.
 	/// </summary>
-	public sealed class ScriptCruncher
+	public sealed class ScriptCruncher : IScriptCruncher
 	{
+		//--------------------------------------------------------------------
+		// Declarations
+		//--------------------------------------------------------------------
+
 		public static readonly ScriptCruncher Instance = new ScriptCruncher();
 		
 		private const int DEFAULT_OFFSET = 1;
@@ -31,6 +37,9 @@ namespace JSTools.Parser.Cruncher
 		private const int DEFAULT_SET_LABELBACK = 0;
 		private static readonly ScriptVersion DEFAULT_VERSION = ScriptVersion.Version_1_3;
 		
+		//--------------------------------------------------------------------
+		// Properties
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Gets the implementation version.
@@ -50,6 +59,9 @@ namespace JSTools.Parser.Cruncher
 			get { return "Rhino 1.5 release 4.1 2003-04-21 (PARSER ONLY)"; }
 		}
 
+		//--------------------------------------------------------------------
+		// Constructors / Destructor
+		//--------------------------------------------------------------------
 
 		/// <summary>
 		/// Do not create new ScriptCruncher instances. The implementation
@@ -58,6 +70,64 @@ namespace JSTools.Parser.Cruncher
 		private ScriptCruncher() 
 		{
 		}
+
+		//--------------------------------------------------------------------
+		// Methods
+		//--------------------------------------------------------------------
+
+		#region IScriptCruncher Member
+
+		string JSTools.Parser.Cruncher.IScriptCruncher.FormatScript(string toFormat, float version)
+		{
+			return FormatScript(toFormat, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		string JSTools.Parser.Cruncher.IScriptCruncher.FormatScript(string toFormat, int offset, int defaultIndent, int labelSetBack, bool useTabs, bool newLineBeforeLB, float version)
+		{
+			return FormatScript(toFormat, offset, defaultIndent, labelSetBack, useTabs, newLineBeforeLB, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		string JSTools.Parser.Cruncher.IScriptCruncher.FormatScriptFile(string toFormat, float version)
+		{
+			return FormatScriptFile(toFormat, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		string JSTools.Parser.Cruncher.IScriptCruncher.FormatScriptFile(string toFormat, int offset, int defaultIndent, int labelSetBack, bool useTabs, bool newLineBeforeLB, float version)
+		{
+			return FormatScriptFile(toFormat, offset, defaultIndent, labelSetBack, useTabs, newLineBeforeLB, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		string JSTools.Parser.Cruncher.IScriptCruncher.RemoveComments(string toRemoveComments, float version)
+		{
+			return RemoveComments(toRemoveComments, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		string JSTools.Parser.Cruncher.IScriptCruncher.RemoveScriptFileComments(string toRemoveComments, float version)
+		{
+			return RemoveScriptFileComments(toRemoveComments, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		string JSTools.Parser.Cruncher.IScriptCruncher.CrunchScript(string toCrunch, string sourceName, float version)
+		{
+			return CrunchScript(toCrunch, sourceName, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		string JSTools.Parser.Cruncher.IScriptCruncher.CrunchScriptFile(string fileLocation, float version)
+		{
+			return CrunchScriptFile(fileLocation, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		bool JSTools.Parser.Cruncher.IScriptCruncher.IsValidScript(string toParse, float version)
+		{
+			return IsValidScript(toParse, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		bool JSTools.Parser.Cruncher.IScriptCruncher.IsValidScriptFile(string fileLocation, float version)
+		{
+			return IsValidScript(fileLocation, ScriptVersionUtil.ValueToScriptVersion(version));
+		}
+
+		#endregion
 
 		#region FormatScript Method
 
@@ -151,19 +221,11 @@ namespace JSTools.Parser.Cruncher
 
 		#region RemoveScriptFileComments Method
 
-		/// <summary>
-		/// Parses the given script file.
-		/// </summary>
-		/// <param name="fileLocation"></param>
 		public string RemoveScriptFileComments(string toRemoveComments)
 		{
 			return RemoveScriptFileComments(toRemoveComments, DEFAULT_VERSION);
 		}
 
-		/// <summary>
-		/// Parses the given script file.
-		/// </summary>
-		/// <param name="fileLocation"></param>
 		public string RemoveScriptFileComments(string toRemoveComments, ScriptVersion version)
 		{
 			return FormatScriptTree(ParseScriptFile(toRemoveComments, version), 0, 0, 0, false, false, version);
@@ -173,31 +235,16 @@ namespace JSTools.Parser.Cruncher
 
 		#region CrunchScript Method
 
-		/// <summary>
-		/// Parses the given script.
-		/// </summary>
-		/// <param name="toParse"></param>
-		/// <param name="sourceName"></param>
 		public string CrunchScript(string toCrunch)
 		{
 			return CrunchScript(toCrunch, null, DEFAULT_VERSION);
 		}
 
-		/// <summary>
-		/// Parses the given script.
-		/// </summary>
-		/// <param name="toParse"></param>
-		/// <param name="sourceName"></param>
 		public string CrunchScript(string toCrunch, string sourceName)
 		{
 			return CrunchScript(toCrunch, sourceName, DEFAULT_VERSION);
 		}
 
-		/// <summary>
-		/// Parses the given script.
-		/// </summary>
-		/// <param name="toParse"></param>
-		/// <param name="sourceName"></param>
 		public string CrunchScript(string toCrunch, string sourceName, ScriptVersion version)
 		{
 			return CrunchScriptTree(ParseScript(toCrunch, sourceName, version), version);
@@ -207,19 +254,11 @@ namespace JSTools.Parser.Cruncher
 
 		#region CrunchScriptFile Method
 
-		/// <summary>
-		/// Parses the given script file.
-		/// </summary>
-		/// <param name="fileLocation"></param>
 		public string CrunchScriptFile(string fileLocation)
 		{
 			return CrunchScriptFile(fileLocation, DEFAULT_VERSION);
 		}
 
-		/// <summary>
-		/// Parses the given script file.
-		/// </summary>
-		/// <param name="fileLocation"></param>
 		public string CrunchScriptFile(string fileLocation, ScriptVersion version)
 		{
 			return CrunchScriptTree(ParseScriptFile(fileLocation, version), version);
@@ -304,21 +343,11 @@ namespace JSTools.Parser.Cruncher
 
 		#region IsValidScript Method
 
-		/// <summary>
-		/// Checks whether the given script contains valid javascript syntax.
-		/// </summary>
-		/// <param name="toParse">String which should be parsed.</param>
-		/// <returns>Returns true, if the given string contains valid javascript.</returns>
 		public bool IsValidScript(string toParse)
 		{
 			return IsValidScript(toParse, DEFAULT_VERSION);
 		}
 
-		/// <summary>
-		/// Checks whether the given script contains valid javascript syntax.
-		/// </summary>
-		/// <param name="toParse">String which should be parsed.</param>
-		/// <returns>Returns true, if the given string contains valid javascript.</returns>
 		public bool IsValidScript(string toParse, ScriptVersion version)
 		{
 			try
@@ -336,21 +365,11 @@ namespace JSTools.Parser.Cruncher
 
 		#region IsValidScriptFile Method
 
-		/// <summary>
-		/// Checks whether the given file contains valid javascript syntax.
-		/// </summary>
-		/// <param name="fileLocation">Script file to parse.</param>
-		/// <returns>Returns true, if the given string contains valid javascript.</returns>
 		public bool IsValidScriptFile(string fileLocation)
 		{
 			return IsValidScriptFile(fileLocation, DEFAULT_VERSION);
 		}
 
-		/// <summary>
-		/// Checks whether the given file contains valid javascript syntax.
-		/// </summary>
-		/// <param name="fileLocation">Script file to parse.</param>
-		/// <returns>Returns true, if the given string contains valid javascript.</returns>
 		public bool IsValidScriptFile(string fileLocation, ScriptVersion version)
 		{
 			try
@@ -365,6 +384,7 @@ namespace JSTools.Parser.Cruncher
 		}
 
 		#endregion
+
 
 		private Node ParseScript(TextReader toParse, string sourceName, ScriptVersion version)
 		{

@@ -60,8 +60,7 @@ namespace JSTools.Test.Config
 		/// </summary>
 		[SetUp()]
 		public void SetUp()
-		{
-			_configuration = new JSToolsConfiguration();
+		{	
 			XmlDocument document = new XmlDocument();
 
 			// init document data
@@ -69,7 +68,7 @@ namespace JSTools.Test.Config
 			document.LoadXml(reader.ReadToEnd());
 
 			// load document
-			_configuration.LoadXml(document);
+			_configuration = new JSToolsConfiguration(document);
 		}
 
 		/// <summary>
@@ -85,12 +84,6 @@ namespace JSTools.Test.Config
 		public void GetConfig()
 		{
 			Assert.IsNotNull(_configuration.GetConfig("scripts"));
-		}
-
-		[Test()]
-		public void IsXmlDocumentInitialized()
-		{
-			Assert.IsTrue(_configuration.IsXmlDocumentInitialized);
 		}
 
 		[Test()]

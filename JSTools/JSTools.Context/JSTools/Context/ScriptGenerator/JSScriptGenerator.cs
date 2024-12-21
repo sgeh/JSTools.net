@@ -20,22 +20,35 @@ using System.Text;
 using JSTools;
 using JSTools.Config;
 using JSTools.ScriptTypes;
-
+using JSTools.Util.Serialization;
 
 namespace JSTools.Context.ScriptGenerator
 {
 	/// <summary>
-	/// 
+	/// Represents the default javascript script generator, which is used
+	/// to render javascript sections. This class provides functionalities
+	/// which may be used to avoid client side script syntax errors.
 	/// </summary>
-	public class JSScriptGenerator
+	public class JSScriptGenerator : IScriptGenerator
 	{
 		//--------------------------------------------------------------------
 		// Declarations
 		//--------------------------------------------------------------------
 
+		private const string DEFAULT_OUTPUT_FUNCTION = "document.write";
+		private const string DEFAULT_ALERT_FUNCTION = "window.alert";
+
 		//--------------------------------------------------------------------
 		// Properties
 		//--------------------------------------------------------------------
+
+		/// <summary>
+		///  <see cref="IScriptGenerator.LineBreak" />
+		/// </summary>
+		public string LineBreak
+		{
+			get { return JSScriptWriter.LINE_BREAK; }
+		}
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -56,73 +69,250 @@ namespace JSTools.Context.ScriptGenerator
 		// Methods
 		//--------------------------------------------------------------------
 
-		public string CreateSingleLineComment(string comment)
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateSingleLineComment" />
+		/// </summary>
+		/// <param name="comment">
+		///  <see cref="IScriptGenerator.CreateSingleLineComment" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateSingleLineComment" />
+		/// </returns>
+		public virtual string CreateSingleLineComment(string comment)
 		{
-			return null;
+			JSScriptWriter writer = new JSScriptWriter();
+			writer.AppendSingleLineComment(comment);
+			return writer.ToString();
 		}
 
-		public string CreateMultiLineComment(string comment)
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateMultiLineComment" />
+		/// </summary>
+		/// <param name="comment">
+		///  <see cref="IScriptGenerator.CreateMultiLineComment" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateMultiLineComment" />
+		/// </returns>
+		public virtual string CreateMultiLineComment(string comment)
 		{
-			return null;
+			JSScriptWriter writer = new JSScriptWriter();
+			writer.AppendMultiLineComment(comment);
+			return writer.ToString();
 		}
 
-		public string CreateAssignment(string variableName, object variableValue)
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateAssignment" />
+		/// </summary>
+		/// <param name="variableName">
+		///  <see cref="IScriptGenerator.CreateAssignment" />
+		/// </param>
+		/// <param name="variableValue">
+		///  <see cref="IScriptGenerator.CreateAssignment" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateAssignment" />
+		/// </returns>
+		public virtual string CreateAssignment(string variableName, object variableValue)
 		{
-			return null;
+			JSScriptWriter writer = new JSScriptWriter();
+			writer.AppendAssignment(variableName, variableValue);
+			return writer.ToString();
 		}
 
-		public string CreateAssignment(string variableName, AScriptType variableValue)
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateVariableDeclaration" />
+		/// </summary>
+		/// <param name="variableName">
+		///  <see cref="IScriptGenerator.CreateVariableDeclaration" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateVariableDeclaration" />
+		/// </returns>
+		public virtual string CreateVariableDeclaration(string variableName)
 		{
-			return null;
+			JSScriptWriter writer = new JSScriptWriter();
+			writer.AppendVariableDeclaration(variableName);
+			return writer.ToString();
 		}
 
-		public string CreateVariableDeclaration(string variableName)
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateVariableDeclaration" />
+		/// </summary>
+		/// <param name="variableName">
+		///  <see cref="IScriptGenerator.CreateVariableDeclaration" />
+		/// </param>
+		/// <param name="variableValue">
+		///  <see cref="IScriptGenerator.CreateVariableDeclaration" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateVariableDeclaration" />
+		/// </returns>
+		public virtual string CreateVariableDeclaration(string variableName, object variableValue)
 		{
-			return null;
+			JSScriptWriter writer = new JSScriptWriter();
+			writer.AppendVariableAssignment(variableName, variableValue, JSScriptWriter.ASSIGNMENT_OP, false);
+			return writer.ToString();
 		}
 
-		public string CreateVariableDeclaration(string variableName, object variableValue)
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateFunctionCall" />
+		/// </summary>
+		/// <param name="functionName">
+		///  <see cref="IScriptGenerator.CreateFunctionCall" />
+		/// </param>
+		/// <param name="arguments">
+		///  <see cref="IScriptGenerator.CreateFunctionCall" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateFunctionCall" />
+		/// </returns>
+		public virtual string CreateFunctionCall(string functionName, params object[] arguments)
 		{
-			return null;
+			JSScriptWriter writer = new JSScriptWriter();
+			writer.AppendFunctionCall(functionName, arguments);
+			return writer.ToString();
 		}
 
-		public string CreateVariableDeclaration(string variableName, AScriptType variableValue)
+		/// <summary>
+		///  <see cref="IScriptGenerator.SerializeObject" />
+		/// </summary>
+		/// <param name="toSerialze">
+		///  <see cref="IScriptGenerator.SerializeObject" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.SerializeObject" />
+		/// </returns>
+		public virtual string SerializeObject(object toSerialze)
 		{
-			return null;
+			JSScriptWriter writer = new JSScriptWriter();
+			writer.WriteValue(toSerialze);
+			return writer.ToString();
 		}
 
-		public string CreateFunctionCall(string functionName, params object[] arguments)
+		/// <summary>
+		///  <see cref="IScriptGenerator.DeserializeObject" />
+		/// </summary>
+		/// <param name="toDeserialze">
+		///  <see cref="IScriptGenerator.DeserializeObject" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.DeserializeObject" />
+		/// </returns>
+		public virtual object DeserializeObject(string toDeserialze)
 		{
-			return null;
+			return new SimpleObjectSerializer().Deserialize(toDeserialze);
 		}
 
-		public string CreateFunctionCall(string functionName, params AScriptType[] arguments)
+		/// <summary>
+		///  <see cref="IScriptGenerator.DeserializeObject" />
+		/// </summary>
+		/// <param name="toDeserialze">
+		///  <see cref="IScriptGenerator.DeserializeObject" />
+		/// </param>
+		/// <param name="toFill">
+		///  <see cref="IScriptGenerator.DeserializeObject" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.DeserializeObject" />
+		/// </returns>
+		public virtual object DeserializeObject(string toDeserialze, object toFill)
 		{
-			return null;
+			return new SimpleObjectSerializer().Deserialize(toDeserialze, toFill);
 		}
 
-		public string SerializeObject(object toSerialze)
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreatePlainOutput" />
+		/// </summary>
+		/// <param name="toWrite">
+		///  <see cref="IScriptGenerator.CreatePlainOutput" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreatePlainOutput" />
+		/// </returns>
+		public virtual string CreatePlainOutput(object toWrite)
 		{
-			return null;
+			JSScriptWriter writer = new JSScriptWriter();
+			writer.AppendFunctionCall(DEFAULT_OUTPUT_FUNCTION);
+			writer.Write(toWrite);
+			writer.AppendFunctionCallEnd();
+			return writer.ToString();
 		}
 
-		public string CreateException(string outputFunction, Exception exception)
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateOutput" />
+		/// </summary>
+		/// <param name="toWrite">
+		///  <see cref="IScriptGenerator.CreateOutput" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateOutput" />
+		/// </returns>
+		public virtual string CreateOutput(object toWrite)
 		{
-			return null;
-			/*
-			StringBuilder builder = new StringBuilder();
+			return CreateFunctionCall(DEFAULT_OUTPUT_FUNCTION, toWrite);
+		}
 
-			while (exception != null)
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateAlert" />
+		/// </summary>
+		/// <param name="toAlert">
+		///  <see cref="IScriptGenerator.CreateAlert" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateAlert" />
+		/// </returns>
+		public virtual string CreateAlert(object toAlert)
+		{
+			return CreateFunctionCall(DEFAULT_ALERT_FUNCTION, toAlert);
+		}
+
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateException" />
+		/// </summary>
+		/// <param name="outputFunction">
+		///  <see cref="IScriptGenerator.CreateException" />
+		/// </param>
+		/// <param name="exception">
+		///  <see cref="IScriptGenerator.CreateException" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateException" />
+		/// </returns>
+		public virtual string CreateException(string outputFunction, Exception exception)
+		{
+			JSScriptWriter writer = new JSScriptWriter();
+
+			// render exception output
+			Exception exceptionStack = exception;
+			StringBuilder alertArgument = new StringBuilder();
+
+			while (exceptionStack != null)
 			{
-				builder.Append(exception.Message);
-				builder.Append("\n");
-				builder.Append(exception.StackTrace.ToString());
-				builder.Append("\n");
-				builder.Append(exception.Message);
-				builder.Append(exception.Message);
+				alertArgument.Append(exceptionStack.Message);
+				alertArgument.Append(LineBreak);
+				alertArgument.Append(exceptionStack.StackTrace.ToString());
+				alertArgument.Append(LineBreak);
+				alertArgument.Append(LineBreak);
+				exceptionStack = exceptionStack.InnerException;
 			}
-			CreateFunctionCall(outputFunction, ;
-			*/
+
+			writer.AppendFunctionCall(outputFunction, alertArgument.ToString());
+			return writer.ToString();
+		}
+
+		/// <summary>
+		///  <see cref="IScriptGenerator.CreateExceptionAlert" />
+		/// </summary>
+		/// <param name="exception">
+		///  <see cref="IScriptGenerator.CreateExceptionAlert" />
+		/// </param>
+		/// <returns>
+		///  <see cref="IScriptGenerator.CreateExceptionAlert" />
+		/// </returns>
+		public virtual string CreateExceptionAlert(Exception exception)
+		{
+			return CreateException(DEFAULT_ALERT_FUNCTION, exception);
 		}
 	}
 }

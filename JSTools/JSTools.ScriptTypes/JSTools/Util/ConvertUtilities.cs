@@ -22,7 +22,10 @@ using System.Text.RegularExpressions;
 namespace JSTools.Util
 {
 	/// <summary>
-	/// 
+	/// Provides global string encode/decode functionalities. Hex2Dec and
+	/// Dec2Hex can be used to translate a hex value into a dec value.
+	/// ScriptEscape and ScriptUnescape are equal to the client side escape()
+	/// and unescape() functions.
 	/// </summary>
 	public sealed class ConvertUtilities
 	{
@@ -119,7 +122,7 @@ namespace JSTools.Util
 
 		private static string OnEscapedCharMatch(Match matchedChar)
 		{
-			int convertedValue = Hex2Dec(matchedChar.Groups[0].Value);
+			int convertedValue = Hex2Dec(matchedChar.Groups[1].Value);
 
 			if (convertedValue > -1 && convertedValue < 256)
 				return Encoding.ASCII.GetString(new byte[] { (byte)convertedValue } );

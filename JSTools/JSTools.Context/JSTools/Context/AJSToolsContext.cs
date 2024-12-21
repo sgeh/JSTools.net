@@ -16,7 +16,8 @@
 
 using System;
 using System.IO;
-using System.Runtime.CompilerServices;
+using System.Reflection;
+using System.Threading;
 using System.Xml;
 
 using JSTools.Config;
@@ -34,7 +35,7 @@ namespace JSTools.Context
 	/// enviroment (e.g. ASP.NET uses web.config file with web dependent
 	/// configuration settings, weg-apps may use app.config files, ...)
 	/// </summary>
-	public abstract class AJSToolsContext
+	public abstract class AJSToolsContext : ICloneable
 	{
 		//--------------------------------------------------------------------
 		// Declarations
@@ -45,10 +46,11 @@ namespace JSTools.Context
 		private readonly IContextConfigHandler _configHandler = null;
 		private readonly EventHandler _configEventHandler = null;
 
+		private ReaderWriterLock _lock = new ReaderWriterLock();
 		private IJSToolsConfiguration _configuration = null;
 		private ScriptCache _cache = null;
-		private ScriptVersion _scriptVersion = ScriptVersion.Unkonwn;
-		private JSScriptGenerator _scriptGenerator = null;
+		private IScriptCruncher _cruncher = null;
+		private IScriptGenerator _scriptGenerator = null;
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -61,16 +63,28 @@ namespace JSTools.Context
 		/// <exception cref="JSToolsContextException">Could not load the given configuration document.</exception>
 		public IJSToolsConfiguration Configuration
 		{
-			get { return _configuration; }
+			get
+			{
+				_lock.AcquireReaderLock(Timeout.Infinite);
+
+				try { return _configuration; }
+				finally { _lock.ReleaseReaderLock(); }
+			}
 		}
 
 		/// <summary>
 		/// Gets a cruncher instance associated with the settings of
 		/// the current configuration.
 		/// </summary>
-		public ScriptCruncher Cruncher
+		public IScriptCruncher Cruncher
 		{
-			get { return ScriptCruncher.Instance; }
+			get
+			{
+				_lock.AcquireReaderLock(Timeout.Infinite);
+
+				try { return _cruncher; }
+				finally { _lock.ReleaseReaderLock(); }
+			}		
 		}
 
 		/// <summary>
@@ -79,24 +93,28 @@ namespace JSTools.Context
 		/// </summary>
 		public ScriptCache Cache
 		{
-			get { return _cache; }
+			get
+			{
+				_lock.AcquireReaderLock(Timeout.Infinite);
+
+				try { return _cache; }
+				finally { _lock.ReleaseReaderLock(); }
+			}		
 		}
 
 		/// <summary>
 		/// Gets a script generator instance, which can be used to create scripts
 		/// which are .
 		/// </summary>
-		public JSScriptGenerator ScriptGenerator
+		public IScriptGenerator ScriptGenerator
 		{
-			get { return _scriptGenerator; }
-		}
+			get
+			{
+				_lock.AcquireReaderLock(Timeout.Infinite);
 
-		/// <summary>
-		/// Gets the default script version specified in the configuration.
-		/// </summary>
-		public ScriptVersion ScriptVersion
-		{
-			get { return _scriptVersion; }
+				try { return _scriptGenerator; }
+				finally { _lock.ReleaseReaderLock(); }
+			}		
 		}
 
 		/// <summary>
@@ -132,7 +150,16 @@ namespace JSTools.Context
 			if (_configHandler == null)
 				throw new JSToolsContextException("Error while creating the configuration handler, IContextConfigHandler.CreateContextConfigHandler() has returned a null reference.");
 
-			ReinitContext();
+			LockAndReinitContext();
+		}
+
+		/// <summary>
+		/// Clean up used resources.
+		/// </summary>
+		~AJSToolsContext()
+		{
+			if (_configHandler != null)
+				_configHandler.Refresh -= _configEventHandler;
 		}
 
 		//--------------------------------------------------------------------
@@ -141,12 +168,66 @@ namespace JSTools.Context
 
 		private void OnConfigHandlerRefresh(object sender, EventArgs e)
 		{
-			ReinitContext();
+			LockAndReinitContext();
 		}
 
 		//--------------------------------------------------------------------
 		// Methods
 		//--------------------------------------------------------------------
+
+		#region ICloneable Member
+
+		/// <summary>
+		/// Creates a new immutable clone of this instance.
+		/// </summary>
+		/// <returns>Returns the cloned instance.</returns>
+		public AJSToolsContext Clone()
+		{
+			AJSToolsContext clonedInstance = CloneInstance();
+
+			_lock.AcquireReaderLock(Timeout.Infinite);
+
+			try
+			{
+				clonedInstance._configuration = _configuration;
+				clonedInstance._cache = _cache;
+				clonedInstance._scriptGenerator = _scriptGenerator;
+				clonedInstance._cruncher = _cruncher;
+			}
+			finally { _lock.ReleaseReaderLock(); }
+
+			return clonedInstance;
+		}
+
+		/// <summary>
+		/// Creates a new clone of the current instance.
+		/// </summary>
+		/// <returns>Returns the cloned instance.</returns>
+		protected abstract AJSToolsContext CloneInstance();
+
+		/// <summary>
+		/// Creates a new immutable clone of this instance.
+		/// </summary>
+		/// <returns>Returns the cloned instance.</returns>
+		object ICloneable.Clone()
+		{
+			return Clone();
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Refreshes the current context and reinitializes the associated
+		/// instances.
+		/// </summary>
+		/// <remarks>
+		/// Caution:
+		/// Clones cannot be refreshed, they are immutable.
+		/// </remarks>
+		public void Refresh()
+		{
+			LockAndReinitContext();
+		}
 
 		/// <summary>
 		/// Gets the cached item associated with the specified path. A path
@@ -160,6 +241,7 @@ namespace JSTools.Context
 		/// </summary>
 		/// <param name="path">Path which should be searched.</param>
 		/// <returns>Returns a null reference or the found cache item.</returns>
+		/// <exception cref="JSToolsContextException">Error while getting/creating the cache item.</exception>
 		public IScriptContainer GetCachedItemByPath(string path)
 		{
 			if (path != null && path.Length != 0)
@@ -171,8 +253,8 @@ namespace JSTools.Context
 				{
 					return GetCachedItem(
 						path.Substring(
-							(path.StartsWith("/") ? 1 : 0),
-							path.Length - Configuration.ScriptFileHandler.ScriptExtension.Length - 1) );
+						(path.StartsWith("/") ? 1 : 0),
+						path.Length - Configuration.ScriptFileHandler.ScriptExtension.Length - 1) );
 				}
 			}
 			return null;
@@ -188,65 +270,83 @@ namespace JSTools.Context
 		/// </summary>
 		/// <param name="cacheKey">Key of the cache item to get.</param>
 		/// <returns>Returns a null reference or the found cache item.</returns>
+		/// <exception cref="JSToolsContextException">Error while getting/creating the cache item.</exception>
 		public IScriptContainer GetCachedItem(string cacheKey)
 		{
-			if (cacheKey != null)
+			try
 			{
-				if (Cache.HasKey(cacheKey))
+				if (cacheKey != null)
 				{
-					return Cache[cacheKey];
+					if (Cache.HasKey(cacheKey))
+					{
+						return Cache[cacheKey];
+					}
+					else
+					{
+						AJSToolsScriptFileSection section = Configuration.ScriptFileHandler.GetSection(cacheKey);
+
+						if (section != null)
+							return GetSectionFromCache(section);
+					}
 				}
-				else
-				{
-					AJSToolsScriptFileSection section = Configuration.ScriptFileHandler.GetSection(cacheKey);
-
-					if (section != null)
-						return GetSectionFromCache(section);
-				}
+				return null;
 			}
-			return null;
-		}
-
-		private IScriptContainer GetSectionFromCache(AJSToolsScriptFileSection section)
-		{
-			bool doCrunch = (section.OwnerConfiguration.ScriptFileHandler.DebugMode == DebugMode.None);
-			int cacheExpiration = (doCrunch ? CACHE_EXPIRATION_MINUTES : 0);
-
-			if (section is JSScript)
+			catch (Exception e)
 			{
-				// add requested script to cache
-				return Cache.AddFileToCache(
-					((JSScript)section).Path,
-					cacheExpiration,
-					((JSScript)section).PhysicalPath,
-					false,
-					doCrunch,
-					ScriptVersion );
-			}
-			else if (section is JSModule)
-			{
-				// render module (do not 
-				JSScriptModuleRenderProcessTicket moduleTicket = new JSScriptModuleRenderProcessTicket((JSModule)section, this);
-				moduleTicket.AddRenderHandler(new JSScriptModuleRenderHandler());
-				section.OwnerConfiguration.Render(moduleTicket);
-
-				// return rendered module
-				return moduleTicket.ScriptContainer;
-			}
-			else
-			{
-				throw new InvalidOperationException("Invalid section requested.");
+				throw new JSToolsContextException(
+					string.Format("Error while getting/creating the cache item '{0}'.", cacheKey),
+					e );
 			}
 		}
 
 		/// <summary>
-		/// Refreshes the current context and reinitializes the associated
-		/// instances.
+		/// Adds the given script to the cache and returns the created cache bucket.
 		/// </summary>
-		public void Refresh()
+		/// <param name="section">Section which should be stored in the cache.</param>
+		/// <returns>Returns the created cache bucket.</returns>
+		protected virtual IScriptContainer GetFileScriptContainer(JSScript section)
 		{
-			ReinitContext();
+			bool doCrunch = (section.OwnerConfiguration.ScriptFileHandler.DebugMode == DebugMode.None);
+			int cacheExpiration = (doCrunch ? CACHE_EXPIRATION_MINUTES : 0);
+
+			// add requested script to cache
+			return Cache.AddFileToCache(
+				section.Path,
+				cacheExpiration,
+				section.PhysicalPath,
+				false,
+				doCrunch,
+				Configuration.ScriptFileHandler.ScriptVersion );
 		}
+
+		/// <summary>
+		/// Renders the given module and returns a new script container instance,
+		/// which contains the rendered content.
+		/// </summary>
+		/// <param name="section">Moudle which should be rendered.</param>
+		/// <returns>Returns the rendered content.</returns>
+		protected virtual IScriptContainer GetModuleScriptContainer(JSModule section)
+		{
+			// render module
+			JSScriptModuleRenderProcessTicket moduleTicket = new JSScriptModuleRenderProcessTicket(section, this);
+			moduleTicket.AddRenderHandler(new JSScriptModuleRenderHandler());
+			section.OwnerConfiguration.Render(moduleTicket);
+
+			// return rendered module
+			return moduleTicket.ScriptContainer;
+		}
+
+		private IScriptContainer GetSectionFromCache(AJSToolsScriptFileSection section)
+		{
+			if (section is JSScript)
+				return GetFileScriptContainer((JSScript)section);
+			else if (section is JSModule)
+				return GetModuleScriptContainer((JSModule)section);
+			else
+				throw new InvalidOperationException("Invalid section requested.");
+		}
+
+		#region Proxy Methods
 
 		/// <summary>
 		///  <see cref="ConvertUtilities" />
@@ -303,6 +403,10 @@ namespace JSTools.Context
 		{
 			return ConvertUtilities.Dec2Hex(toConvert);
 		}
+		
+		#endregion
+
+		#region Context Initialization
 
 		/// <summary>
 		/// Creates a new IContextConfigHandler instance, which is appropriated
@@ -312,16 +416,26 @@ namespace JSTools.Context
 		protected abstract IContextConfigHandler CreateContextConfigHandler();
 
 		/// <summary>
-		/// Initializes the current context instance. This method may be
-		/// called more than once.
+		/// Reinitializes the configuration, cache, script generator and 
+		/// cruncher instance.
 		/// </summary>
-		[MethodImpl(MethodImplOptions.Synchronized)]
 		protected virtual void ReinitContext()
 		{
 			_configuration = InitConfiguration();
-			_scriptVersion = ScriptVersionUtil.ValueToScriptVersion(_configuration.ScriptFileHandler.ScriptVersion);
-			_cache = new ScriptCache(ScriptVersion);
+			_cache = new ScriptCache(Configuration.ScriptFileHandler.ScriptVersion);
 			_scriptGenerator = new JSScriptGenerator();
+			_cruncher = ScriptCruncher.Instance;
+		}
+
+		private void LockAndReinitContext()
+		{
+			if (_configHandler == null)
+				throw new InvalidOperationException("Could not refresh the context because the current context does not provide a configuration handler instance.");
+
+			_lock.AcquireWriterLock(Timeout.Infinite);
+
+			try { ReinitContext(); }
+			finally { _lock.ReleaseWriterLock(); }
 		}
 
 		private IJSToolsConfiguration InitConfiguration()
@@ -342,5 +456,6 @@ namespace JSTools.Context
 
 			return new JSToolsConfiguration(configuration);
 		}
+		#endregion
 	}
 }

@@ -15,8 +15,12 @@
  */
 
 using System;
+using System.IO;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
+
+using JSTools.Parser.Cruncher.Nodes;
 
 namespace JSTools.Parser.Cruncher
 {
@@ -164,73 +168,15 @@ namespace JSTools.Parser.Cruncher
 
 		public XmlDocument ToXml(Node treeToStore)
 		{
-			// create document and document element
+			XmlSerializer serializer = new XmlSerializer(typeof(Node));
 			XmlDocument document = new XmlDocument();
-			XmlElement docElement = document.CreateElement("NodeTree");
-			document.AppendChild(docElement);
 
-			// append child nodes (recursive)
-			AppendHirarchy(docElement, treeToStore);
-
-			// store file
+			using (StringWriter writer = new StringWriter())
+			{
+				serializer.Serialize(writer, treeToStore);
+				document.LoadXml(writer.ToString());
+			}
 			return document;
-		}
-
-		private void AppendHirarchy(XmlNode toAppend, Node nodeHirarchy)
-		{
-			Node currentNode = nodeHirarchy;
-
-			while (currentNode != null)
-			{
-				// create node element for current hirarchy
-				XmlElement nodeElement = toAppend.OwnerDocument.CreateElement(currentNode.GetType().Name);
-				toAppend.AppendChild(nodeElement);
-
-				// append type attribute
-				XmlAttribute typeAttribute = toAppend.OwnerDocument.CreateAttribute("type");
-				typeAttribute.Value = currentNode.Type.ToString();
-				nodeElement.Attributes.Append(typeAttribute);
-
-				// append function prop attribute
-				if (currentNode.GetProp(NodeProperty.Function) != null)
-				{
-					FunctionNode function = (FunctionNode)currentNode.GetProp(NodeProperty.Function);
-
-					XmlAttribute funcAttribute = toAppend.OwnerDocument.CreateAttribute("Function");
-					funcAttribute.Value = "function [" + function.FunctionName + "]";
-					nodeElement.Attributes.Append(funcAttribute);
-
-					AppendHirarchy(nodeElement, function);
-				}
-
-				foreach (string name in Enum.GetNames(typeof(NodeProperty)))
-				{
-					AppendAttribute(
-						nodeElement,
-						currentNode,
-						name,
-						(NodeProperty)Enum.Parse(typeof(NodeProperty), name) );
-				}
-
-				// recursive call to render child nodes
-				AppendHirarchy(nodeElement, currentNode.FirstChild);
-				currentNode = currentNode.Next;
-			}
-		}
-
-		private void AppendAttribute(
-			XmlElement toAppend,
-			Node valueContainer,
-			string attributName,
-			NodeProperty propToAppend)
-		{
-			// append source prop attribute
-			if (valueContainer.GetProp(propToAppend) != null)
-			{
-				XmlAttribute attribute = toAppend.OwnerDocument.CreateAttribute(attributName);
-				attribute.Value = (valueContainer.GetProp(propToAppend).ToString());
-				toAppend.Attributes.Append(attribute);
-			}
 		}
 
 		private void InternalDecompile(
@@ -243,12 +189,9 @@ namespace JSTools.Parser.Cruncher
 			StringBuilder result)
 		{
 			// get node source (function nodes and top nodes accommodate this property)
-			char[] source = null;
-		
-			if (compiledTree.Current.GetProp(NodeProperty.Source) != null)
-				source = (char[])compiledTree.Current.GetProp(NodeProperty.Source);
+			char[] source = compiledTree.Current.Source;
 
-			if (source == null || source.Length == 0)
+			if (source.Length == 0)
 				return;
 
 			// start decompiling

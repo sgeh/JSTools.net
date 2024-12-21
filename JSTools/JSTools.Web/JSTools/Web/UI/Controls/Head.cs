@@ -118,7 +118,7 @@ namespace JSTools.Web.UI.Controls
 		public void AddConfigRenderHandler(IJSToolsRenderHandler handler)
 		{
 			if (handler == null)
-				throw new ArgumentNullException("handler", "The given handler contains a null reference!");
+				throw new ArgumentNullException("handler", "The given handler contains a null reference.");
 
 			RenderHandlerControls.Add(new RenderHandler(handler));
 		}
@@ -138,13 +138,13 @@ namespace JSTools.Web.UI.Controls
 		public void RegisterHeaderScript(string key, string code, string scriptType, float scriptVersion)
 		{
 			if (key == null)
-				throw new ArgumentNullException("key", "The given key contains a null reference!");
+				throw new ArgumentNullException("key", "The given key contains a null reference.");
 
 			if (code == null)
-				throw new ArgumentNullException("code", "The given code type contains a null reference!");
+				throw new ArgumentNullException("code", "The given code type contains a null reference.");
 
 			if (scriptType == null)
-				throw new ArgumentNullException("scriptType", "The given script type contains a null reference!");
+				throw new ArgumentNullException("scriptType", "The given script type contains a null reference.");
 
 			Script headerScript = new Script();
 			headerScript.ID = key + HEADER_POSTFIX;
@@ -166,7 +166,7 @@ namespace JSTools.Web.UI.Controls
 		public void RegisterHeaderScript(string key, Uri path)
 		{
 			if (key == null)
-				throw new ArgumentNullException("key", "The given key contains a null reference!");
+				throw new ArgumentNullException("key", "The given key contains a null reference.");
 
 			Script headerScript = new Script();
 			headerScript.ID = key + HEADER_POSTFIX;
@@ -189,10 +189,10 @@ namespace JSTools.Web.UI.Controls
 		public void RegisterHeaderScript(string key, Uri path, string scriptType, float scriptVersion)
 		{
 			if (key == null)
-				throw new ArgumentNullException("key", "The given key contains a null reference!");
+				throw new ArgumentNullException("key", "The given key contains a null reference.");
 
 			if (scriptType == null)
-				throw new ArgumentNullException("scriptType", "The given script type contains a null reference!");
+				throw new ArgumentNullException("scriptType", "The given script type contains a null reference.");
 
 			Script headerScript = new Script();
 			headerScript.ID = key + HEADER_POSTFIX;
@@ -215,10 +215,10 @@ namespace JSTools.Web.UI.Controls
 		public void RegisterHeaderScript(string key, string code)
 		{
 			if (key == null)
-				throw new ArgumentNullException("key", "The given key contains a null reference!");
+				throw new ArgumentNullException("key", "The given key contains a null reference.");
 
 			if (code == null)
-				throw new ArgumentNullException("code", "The given code contains a null reference!");
+				throw new ArgumentNullException("code", "The given code contains a null reference.");
 
 			Script headerScript = new Script();
 			headerScript.ID = key + HEADER_POSTFIX;
@@ -238,10 +238,10 @@ namespace JSTools.Web.UI.Controls
 		public void RegisterHeaderContent(string key, string content)
 		{
 			if (key == null)
-				throw new ArgumentNullException("key", "The given key contains a null reference!");
+				throw new ArgumentNullException("key", "The given key contains a null reference.");
 
 			if (content == null)
-				throw new ArgumentNullException("content", "The given script contains a null reference!");
+				throw new ArgumentNullException("content", "The given script contains a null reference.");
 
 			LiteralControl headerContent = new LiteralControl();
 			headerContent.ID = key + HEADER_POSTFIX;

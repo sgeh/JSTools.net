@@ -24,6 +24,7 @@ using("JSTools.Web.Cookie");
 		<script language="javascript" type="text/javascript" src="Test/Timers.js"></script>
 		<script language="javascript" type="text/javascript" src="Test/Exception.js"></script>
 		<script language="javascript" type="text/javascript" src="Test/Cookie.js"></script>
+		<script language="javascript" type="text/javascript" src="Test/SimpleObjectSerializer.js"></script>
 		<form id="frameSet_left" method="post" runat="server">
 		</form>
 	</body>

@@ -104,11 +104,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JSTools\Parser\Cruncher\FunctionNode.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "JSTools\Parser\Cruncher\FunctionTree.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -119,17 +114,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "JSTools\Parser\Cruncher\IScriptCruncher.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JSTools\Parser\Cruncher\KeywordMapper.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "JSTools\Parser\Cruncher\LineBuffer.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "JSTools\Parser\Cruncher\Node.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -160,6 +155,41 @@
                 />
                 <File
                     RelPath = "JSTools\Parser\Cruncher\TokenStream.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Cruncher\Nodes\FunctionNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Cruncher\Nodes\Node.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Cruncher\Nodes\NumberNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Cruncher\Nodes\PropertyContainer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Cruncher\Nodes\PropertyEnumerator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Cruncher\Nodes\PropertyValueBucket.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\Cruncher\Nodes\StringNode.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

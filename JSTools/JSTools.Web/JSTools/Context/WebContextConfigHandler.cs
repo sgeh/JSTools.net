@@ -130,7 +130,7 @@ namespace JSTools.Context
 		private XmlDocument InitConfigXmlFile(XmlNode section)
 		{
 			if (section.Attributes[SOURCE_ATTRIBUTE] == null)
-				throw new ConfigurationException("Could not find the source attribute of the JSTools configuration section!");
+				throw new ConfigurationException("Could not find the source attribute of the JSTools configuration section.");
 
 			string configSource = section.Attributes[SOURCE_ATTRIBUTE].Value;
 			XmlDocument configuration = new XmlDocument();

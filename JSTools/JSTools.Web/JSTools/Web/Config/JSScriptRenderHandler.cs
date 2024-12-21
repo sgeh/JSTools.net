@@ -23,7 +23,7 @@ using JSTools.Config.ScriptFileManagement;
 using JSTools.Web.Config;
 using JSTools.Web.UI.Controls;
 
-namespace JSTools.Web.UI
+namespace JSTools.Web.Config
 {
 	/// <summary>
 	/// Represents a render handler instance for the JSExceptionHandler section. Renders

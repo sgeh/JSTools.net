@@ -16,6 +16,8 @@
 
 using System;
 
+using JSTools.Parser.Cruncher.Nodes;
+
 namespace JSTools.Parser.Cruncher
 {
 	internal enum LoopType
@@ -51,15 +53,15 @@ namespace JSTools.Parser.Cruncher
 		internal Node CreateScript(Node body, string sourceName,
 			int baseLineno, int endLineno, char[] source)
 		{
-			Node result = Node.NewString(TokenType.Script, sourceName);
+			Node result = new StringNode(TokenType.Script, sourceName);
 			Node children = body.FirstChild;
 			if (children != null)
 				result.AddChildrenToBack(children);
-			result.PutProp(NodeProperty.SourceName, sourceName);
-			result.PutIntProp(NodeProperty.BaseLineNo, baseLineno);
-			result.PutIntProp(NodeProperty.EndLineNo, endLineno);
+			result.Props.PutProp(NodeProperty.SourceName, sourceName);
+			result.Props.PutIntProp(NodeProperty.BaseLineNo, baseLineno);
+			result.Props.PutIntProp(NodeProperty.EndLineNo, endLineno);
 			if (source != null)
-				result.PutProp(NodeProperty.Source, source);
+				result.Source = source;
 			return result;
 		}
 
@@ -105,7 +107,7 @@ namespace JSTools.Parser.Cruncher
 		 */
 		internal Node CreateName(string name) 
 		{
-			return Node.NewString(TokenType.Name, name);
+			return new StringNode(TokenType.Name, name);
 		}
 
 		/**
@@ -113,7 +115,7 @@ namespace JSTools.Parser.Cruncher
 		 */
 		internal Node CreateString(string stringToCreate) 
 		{
-			return Node.NewString(stringToCreate);
+			return new StringNode(stringToCreate);
 		}
 
 		/**
@@ -121,7 +123,7 @@ namespace JSTools.Parser.Cruncher
 		 */
 		internal Node CreateNumber(string number) 
 		{
-			return Node.NewNumber(number);
+			return new NumberNode(number);
 		}
 
 		/**
@@ -167,7 +169,7 @@ namespace JSTools.Parser.Cruncher
 		internal Node CreateLabel(string label, int lineno) 
 		{
 			Node result = new Node(TokenType.Label, lineno);
-			Node name = Node.NewString(TokenType.Name, label);
+			Node name = new StringNode(TokenType.Name, label);
 			result.AddChildToBack(name);
 			return result;
 		}
@@ -184,7 +186,7 @@ namespace JSTools.Parser.Cruncher
 			} 
 			else 
 			{
-				Node name = Node.NewString(TokenType.Name, label);
+				Node name = new StringNode(TokenType.Name, label);
 				result.AddChildToBack(name);
 				return result;
 			}
@@ -202,7 +204,7 @@ namespace JSTools.Parser.Cruncher
 			} 
 			else 
 			{
-				Node name = Node.NewString(TokenType.Name, label);
+				Node name = new StringNode(TokenType.Name, label);
 				result.AddChildToBack(name);
 				return result;
 			}
@@ -234,19 +236,19 @@ namespace JSTools.Parser.Cruncher
 			FunctionNode f = (FunctionNode) CreateFunctionNode(name, args,
 				statements);
 			f.FunctionType = (isExpr ? FunctionType.FunctionExpression : FunctionType.FunctionStatement);
-			f.PutProp(NodeProperty.SourceName, sourceName);
-			f.PutIntProp(NodeProperty.BaseLineNo, baseLineno);
-			f.PutIntProp(NodeProperty.EndLineNo, endLineno);
+			f.Props.PutProp(NodeProperty.SourceName, sourceName);
+			f.Props.PutIntProp(NodeProperty.BaseLineNo, baseLineno);
+			f.Props.PutIntProp(NodeProperty.EndLineNo, endLineno);
 			if (source != null)
-				f.PutProp(NodeProperty.Source, source);
-			Node result = Node.NewString(TokenType.Function, name);
-			result.PutProp(NodeProperty.Function, f);
+				f.Source = source;
+			Node result = new StringNode(TokenType.Function, name);
+			result.Props.PutProp(NodeProperty.Function, f);
 			return result;
 		}
 
 		internal void SetFunctionExpressionStatement(Node n) 
 		{
-			FunctionNode f = (FunctionNode)n.GetProp(NodeProperty.Function);
+			FunctionNode f = (FunctionNode)n.Props.GetProp(NodeProperty.Function);
 			f.FunctionType = FunctionType.FunctionExpressionStatement;
 		}
 
@@ -298,7 +300,7 @@ namespace JSTools.Parser.Cruncher
 				cond = new Node(TokenType.Primary, TokenType.True);
 			}
 			Node IFEQ = new Node(TokenType.IfEq, (Node)cond);
-			IFEQ.PutProp(NodeProperty.Target, bodyTarget);
+			IFEQ.Props.PutProp(NodeProperty.Target, bodyTarget);
 			Node breakTarget = new Node(TokenType.Target);
 
 			Node result = new Node(TokenType.Loop, lineno);
@@ -308,14 +310,14 @@ namespace JSTools.Parser.Cruncher
 			result.AddChildToBack(IFEQ);
 			result.AddChildToBack(breakTarget);
 
-			result.PutProp(NodeProperty.Break, breakTarget);
+			result.Props.PutProp(NodeProperty.Break, breakTarget);
 			Node continueTarget = condTarget;
 
 			if (loopType == LoopType.While || loopType == LoopType.For) 
 			{
 				// Just add a GOTO to the condition in the do..while
 				Node GOTO = new Node(TokenType.Goto);
-				GOTO.PutProp(NodeProperty.Target, condTarget);
+				GOTO.Props.PutProp(NodeProperty.Target, condTarget);
 				result.AddChildToFront(GOTO);
 
 				if (loopType == LoopType.For) 
@@ -339,7 +341,7 @@ namespace JSTools.Parser.Cruncher
 				}
 			}
 
-			result.PutProp(NodeProperty.Continue, continueTarget);
+			result.Props.PutProp(NodeProperty.Continue, continueTarget);
 
 			return result;
 		}
@@ -373,7 +375,7 @@ namespace JSTools.Parser.Cruncher
 					if (lhsNode.FirstChild != lastChild) 
 						ReportError("msg.mult.index");
 
-					lvalue = Node.NewString(TokenType.Name, lastChild.ToString());
+					lvalue = new StringNode(TokenType.Name, lastChild.ToString());
 					break;
 
 				default:
@@ -383,7 +385,7 @@ namespace JSTools.Parser.Cruncher
 
 			Node init = new Node(TokenType.EnumInit, objNode);
 			Node next = new Node(TokenType.EnumNext);
-			next.PutProp(NodeProperty.Enum, init);
+			next.Props.PutProp(NodeProperty.Enum, init);
 			Node temp = CreateNewTemp(next);
 			Node cond = new Node(TokenType.EqOp, TokenType.Ne);
 			cond.AddChildToBack(temp);
@@ -399,7 +401,7 @@ namespace JSTools.Parser.Cruncher
 				result.AddChildToFront(lhsNode);
 
 			Node done = new Node(TokenType.EnumDone);
-			done.PutProp(NodeProperty.Enum, init);
+			done.Props.PutProp(NodeProperty.Enum, init);
 			result.AddChildToBack(done);
 
 			return result;
@@ -443,11 +445,11 @@ namespace JSTools.Parser.Cruncher
 				{
 					// make a TARGET for the finally that the tcf node knows about
 					finallyTarget = new Node(TokenType.Target);
-					pn.PutProp(NodeProperty.Finally, finallyTarget);
+					pn.Props.PutProp(NodeProperty.Finally, finallyTarget);
 
 					// add jsr finally to the try block
 					Node jsrFinally = new Node(TokenType.Jsr);
-					jsrFinally.PutProp(NodeProperty.Target, finallyTarget);
+					jsrFinally.Props.PutProp(NodeProperty.Target, finallyTarget);
 					pn.AddChildToBack(jsrFinally);
 				}
 			}
@@ -458,7 +460,7 @@ namespace JSTools.Parser.Cruncher
 
 			Node endTarget = new Node(TokenType.Target);
 			Node GOTOToEnd = new Node(TokenType.Goto);
-			GOTOToEnd.PutProp(NodeProperty.Target, endTarget);
+			GOTOToEnd.Props.PutProp(NodeProperty.Target, endTarget);
 			pn.AddChildToBack(GOTOToEnd);
 
 			if (hasCatch) 
@@ -498,7 +500,7 @@ namespace JSTools.Parser.Cruncher
 				 */
 				// make a TARGET for the catch that the tcf node knows about
 				Node catchTarget = new Node(TokenType.Target);
-				pn.PutProp(NodeProperty.Target, catchTarget);
+				pn.Props.PutProp(NodeProperty.Target, catchTarget);
 				// mark it
 				pn.AddChildToBack(catchTarget);
 
@@ -525,14 +527,14 @@ namespace JSTools.Parser.Cruncher
 
 					Node newScope = CreateNewLocal(new Node(TokenType.NewScope));
 					Node initScope = new Node(TokenType.SetProp, newScope,
-						Node.NewString(
+						new StringNode(
 						name.ToString()),
 						CreateUseLocal(exn));
 					catchStmt.AddChildToBack(new Node(TokenType.Pop, initScope));
 
 					catchBlock.AddChildToBack(new Node(TokenType.LeaveWith));
 					Node GOTOToEndCatch = new Node(TokenType.Goto);
-					GOTOToEndCatch.PutProp(NodeProperty.Target, endCatch);
+					GOTOToEndCatch.Props.PutProp(NodeProperty.Target, endCatch);
 					catchBlock.AddChildToBack(GOTOToEndCatch);
 
 					Node ifStmt = (Node) CreateIf(cond, catchBlock, null, catchLineNo);
@@ -560,10 +562,10 @@ namespace JSTools.Parser.Cruncher
 				if (hasFinally) 
 				{
 					Node jsrFinally = new Node(TokenType.Jsr);
-					jsrFinally.PutProp(NodeProperty.Target, finallyTarget);
+					jsrFinally.Props.PutProp(NodeProperty.Target, finallyTarget);
 					pn.AddChildToBack(jsrFinally);
 					Node GOTO = new Node(TokenType.Goto);
-					GOTO.PutProp(NodeProperty.Target, endTarget);
+					GOTO.Props.PutProp(NodeProperty.Target, endTarget);
 					pn.AddChildToBack(GOTO);
 				}
 			}
@@ -578,7 +580,7 @@ namespace JSTools.Parser.Cruncher
 				Node ret = CreateUseLocal(returnTemp);
 
 				// add the magic prop that makes it output a RET
-				ret.PutProp(NodeProperty.Target, true);
+				ret.Props.PutProp(NodeProperty.Target, true);
 				pn.AddChildToBack(ret);
 			}
 			pn.AddChildToBack(endTarget);
@@ -612,7 +614,7 @@ namespace JSTools.Parser.Cruncher
 		{
 			Node array;
 			array = new Node(TokenType.New,
-				Node.NewString(TokenType.Name, "Array"));
+				new StringNode(TokenType.Name, "Array"));
 			Node temp = CreateNewTemp(array);
 
 			Node elem = null;
@@ -630,7 +632,7 @@ namespace JSTools.Parser.Cruncher
 					continue;
 				}
 				Node addelem = new Node(TokenType.SetElem, CreateUseTemp(temp),
-					Node.NewNumber(i.ToString()), elem);
+					new NumberNode(i.ToString()), elem);
 				i++;
 				comma.AddChildToBack(addelem);
 			}
@@ -657,14 +659,14 @@ namespace JSTools.Parser.Cruncher
 				{
 					Node setlength = new Node(TokenType.SetProp,
 						CreateUseTemp(temp),
-						Node.NewString("length"),
-						Node.NewNumber(i.ToString()));
+						new StringNode("length"),
+						new NumberNode(i.ToString()));
 					comma.AddChildToBack(setlength);
 				}
 			} 
 			else 
 			{
-				array.AddChildToBack(Node.NewNumber(i.ToString()));
+				array.AddChildToBack(new NumberNode(i.ToString()));
 			}
 			comma.AddChildToBack(CreateUseTemp(temp));
 			return comma;
@@ -678,7 +680,7 @@ namespace JSTools.Parser.Cruncher
 		 */
 		internal Node CreateObjectLiteral(Node obj) 
 		{
-			Node result = new Node(TokenType.New, Node.NewString(TokenType.Name,
+			Node result = new Node(TokenType.New, new StringNode(TokenType.Name,
 				"object"));
 			Node temp = CreateNewTemp(result);
 
@@ -705,9 +707,9 @@ namespace JSTools.Parser.Cruncher
 		internal Node CreateRegExp(string regExpString, string flags) 
 		{
 			if (flags.Length == 0)
-				return new Node(TokenType.RegExp, Node.NewString(regExpString));
+				return new Node(TokenType.RegExp, new StringNode(regExpString));
 			else
-				return new Node(TokenType.RegExp, Node.NewString(regExpString), Node.NewString(flags));
+				return new Node(TokenType.RegExp, new StringNode(regExpString), new StringNode(flags));
 		}
 
 		/**
@@ -719,7 +721,7 @@ namespace JSTools.Parser.Cruncher
 			Node result = new Node(TokenType.Block, lineno);
 			Node ifNotTarget = new Node(TokenType.Target);
 			Node IFNE = new Node(TokenType.IfNe, cond);
-			IFNE.PutProp(NodeProperty.Target, ifNotTarget);
+			IFNE.Props.PutProp(NodeProperty.Target, ifNotTarget);
 
 			result.AddChildToBack(IFNE);
 			result.AddChildrenToBack(ifTrue);
@@ -728,7 +730,7 @@ namespace JSTools.Parser.Cruncher
 			{
 				Node GOTOToEnd = new Node(TokenType.Goto);
 				Node endTarget = new Node(TokenType.Target);
-				GOTOToEnd.PutProp(NodeProperty.Target, endTarget);
+				GOTOToEnd.Props.PutProp(NodeProperty.Target, endTarget);
 				result.AddChildToBack(GOTOToEnd);
 				result.AddChildToBack(ifNotTarget);
 				result.AddChildrenToBack(ifFalse);
@@ -845,7 +847,7 @@ namespace JSTools.Parser.Cruncher
 					if (id == "__proto__" || id == "__parent__")
 					{
 						Node result = new Node(nodeType, (Node) left);
-						result.PutProp(NodeProperty.SpecialProperty, id);
+						result.Props.PutProp(NodeProperty.SpecialProperty, id);
 						return result;
 					}
 					break;
@@ -879,9 +881,9 @@ namespace JSTools.Parser.Cruncher
 					return CreateSetName(nodeOp, left, right, postfix);
 
 				case TokenType.GetProp:
-					idString = (string) left.GetProp(NodeProperty.SpecialProperty);
+					idString = (string) left.Props.GetProp(NodeProperty.SpecialProperty);
 					if (idString != null)
-						id = Node.NewString(idString);
+						id = new StringNode(idString);
 					/* fall through */
 					goto case TokenType.GetElem;
 
@@ -912,16 +914,16 @@ namespace JSTools.Parser.Cruncher
 			if (s == "__proto__" || s == "__parent__") 
 			{
 				Node result = new Node(TokenType.SetProp, left, right);
-				result.PutProp(NodeProperty.SpecialProperty, s);
+				result.Props.PutProp(NodeProperty.SpecialProperty, s);
 				return result;
 			}
 
-			Node opLeft = Node.NewString(TokenType.Name, s);
+			Node opLeft = new StringNode(TokenType.Name, s);
 			if (postfix)
 				opLeft = CreateNewTemp(opLeft);
 			Node op = new Node(nodeOp, opLeft, right);
 
-			Node lvalueLeft = Node.NewString(TokenType.BindName, s);
+			Node lvalueLeft = new StringNode(TokenType.BindName, s);
 			Node resultNode = new Node(TokenType.SetName, lvalueLeft, op);
 			if (postfix) 
 			{
@@ -952,11 +954,11 @@ namespace JSTools.Parser.Cruncher
 			if (type == TokenType.NewTemp) 
 			{
 				Node result = new Node(TokenType.UseTemp);
-				result.PutProp(NodeProperty.Temp, newTemp);
-				int n = newTemp.GetIntProp(NodeProperty.Uses, 0);
+				result.Props.PutProp(NodeProperty.Temp, newTemp);
+				int n = newTemp.Props.GetIntProp(NodeProperty.Uses, 0);
 				if (n != int.MaxValue) 
 				{
-					newTemp.PutIntProp(NodeProperty.Uses, n + 1);
+					newTemp.Props.PutIntProp(NodeProperty.Uses, n + 1);
 				}
 				return result;
 			}
@@ -975,7 +977,7 @@ namespace JSTools.Parser.Cruncher
 			if (type == TokenType.NewLocal) 
 			{
 				Node result = new Node(TokenType.UseLocal);
-				result.PutProp(NodeProperty.Local, newLocal);
+				result.Props.PutProp(NodeProperty.Local, newLocal);
 				return result;
 			}
 			return newLocal.CloneNode();    // what's this path for ?
@@ -1019,7 +1021,7 @@ namespace JSTools.Parser.Cruncher
 				if (s != null && s == "__proto__" || s == "__parent__")
 				{
 					Node result = new Node(type, obj, expr);
-					result.PutProp(NodeProperty.SpecialProperty, s);
+					result.Props.PutProp(NodeProperty.SpecialProperty, s);
 					return result;
 				}
 			}

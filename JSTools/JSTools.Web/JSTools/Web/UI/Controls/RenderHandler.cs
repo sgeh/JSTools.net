@@ -61,7 +61,7 @@ namespace JSTools.Web.UI.Controls
 		internal RenderHandler(IJSToolsRenderHandler renderHandler)
 		{
 			if (renderHandler == null)
-				throw new ArgumentNullException("renderHandler", "The given render handler array contains a null reference!");
+				throw new ArgumentNullException("renderHandler", "The given render handler array contains a null reference.");
 
 			_renderHandler = renderHandler;
 		}

@@ -21,10 +21,10 @@ using System.Xml;
 
 using JSTools.Config;
 using JSTools.Config.ExceptionHandling;
-using JSTools.Web.Config;
+using JSTools.Context.ScriptGenerator;
 using JSTools.Web.UI.Controls;
 
-namespace JSTools.Web.UI
+namespace JSTools.Web.Config
 {
 	/// <summary>
 	/// Represents a render handler instance for the JSExceptionHandler section.
@@ -34,10 +34,13 @@ namespace JSTools.Web.UI
 		//--------------------------------------------------------------------
 		// Declarations
 		//--------------------------------------------------------------------
+		
+		private const string EVENT_HANDLING_VARIABLE = "JSTools.Exception.EventHandling";
+		private const string EVENT_HANDLING_ENUM = "JSTools.ExceptionHandling.ErrorEvent.{0}";
 
-		private const string EVENT_HANDLING_SCRIPT = "\nJSTools.Exception.ErrorHandling = JSTools.ExceptionHandling.ErrorHandling.{0};";
-		private const string ERROR_HANDLING_SCRIPT = "\nJSTools.Exception.EventHandling {0} JSTools.ExceptionHandling.ErrorEvent.{1};";
-		private const string NATIVE_ERROR_EVENT_ASSIGNMENT = "\n{0} = JSTools.Exception.ThrowNative;";
+		private const string ERROR_HANDLING_VARIABLE = "JSTools.Exception.ErrorHandling";
+		private const string ERROR_HANDLING_ENUM = "JSTools.ExceptionHandling.ErrorHandling.{0}";
+		private const string NATIVE_ERROR_EVENT = "JSTools.Exception.ThrowNative";
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -87,60 +90,70 @@ namespace JSTools.Web.UI
 
 			JSExceptionHandler section = (JSExceptionHandler)sectionToRender;
 			WebRenderProcessTicket webTicket = (WebRenderProcessTicket)ticket;
-			StringBuilder toWrite = new StringBuilder();
-
+			JSScriptWriter writer = new JSScriptWriter();
+			
 			// do not attach native script error handling method, if it is disbled in the configuration
 			if (section.ErrorHandling != ErrorHandling.None)
-				toWrite.Append(string.Format(NATIVE_ERROR_EVENT_ASSIGNMENT, section.ErrorProvider));
+				writer.AppendVariableAssignment(section.ErrorProvider, NATIVE_ERROR_EVENT, true);
 
-			RenderErrorEventScript(toWrite, section.ErrorEvent);
-			RenderErrorHandlingScript(toWrite, section.ErrorHandling);
+			RenderErrorEventScript(writer, section.ErrorEvent);
+			RenderErrorHandlingScript(writer, section.ErrorHandling);
 
 			// create script
 			Script handlingScript = new Script();
-			handlingScript.Code = toWrite.ToString();
+			handlingScript.Code = writer.ToString();
 			webTicket.RenderHandler.Controls.Add(handlingScript);
 
 			// create white space literal
 			webTicket.RenderHandler.Controls.Add(new LiteralControl("\n"));
 		}
 
-		private void RenderErrorEventScript(StringBuilder toWrite, ErrorEvent errorEventMode)
+		private void RenderErrorEventScript(JSScriptWriter writer, ErrorEvent errorEventMode)
 		{
 			if (errorEventMode == ErrorEvent.None)
 			{
-				RenderErrorEventScript(toWrite, ErrorEvent.None, "=");
+				AppendEventAssignment(writer, ErrorEvent.None);
 			}
 			else if (errorEventMode == ErrorEvent.All)
 			{
-				RenderErrorEventScript(toWrite, ErrorEvent.All, "=");
+				AppendEventAssignment(writer, ErrorEvent.All);
 			}
 			else
 			{
 				if ((errorEventMode & ErrorEvent.Log) != 0)
-					RenderErrorEventScript(toWrite, ErrorEvent.Log, "|=");
+					AppendEventOrAssignment(writer, ErrorEvent.Log);
 
 				if ((errorEventMode & ErrorEvent.Error) != 0)
-					RenderErrorEventScript(toWrite, ErrorEvent.Error, "|=");
+					AppendEventOrAssignment(writer, ErrorEvent.Error);
 
 				if ((errorEventMode & ErrorEvent.Warn) != 0)
-					RenderErrorEventScript(toWrite, ErrorEvent.Warn, "|=");
+					AppendEventOrAssignment(writer, ErrorEvent.Warn);
 			}
 		}
 
-		private void RenderErrorEventScript(StringBuilder toWrite, ErrorEvent valueToWrite, string assignmentOperator)
+		private void AppendEventAssignment(JSScriptWriter writer, ErrorEvent valueToWrite)
 		{
-			toWrite.Append(string.Format(
-				ERROR_HANDLING_SCRIPT,
-				assignmentOperator,
-				Enum.GetName(typeof(ErrorEvent), valueToWrite)) );
+			writer.AppendVariableAssignment(
+				EVENT_HANDLING_VARIABLE,
+				string.Format(EVENT_HANDLING_ENUM, Enum.GetName(typeof(ErrorEvent), valueToWrite)),
+				true );
 		}
 
-		private void RenderErrorHandlingScript(StringBuilder toWrite, ErrorHandling valueToWrite)
+		private void AppendEventOrAssignment(JSScriptWriter writer, ErrorEvent valueToWrite)
 		{
-			toWrite.Append(string.Format(
-				EVENT_HANDLING_SCRIPT,
-				Enum.GetName(typeof(ErrorHandling), valueToWrite)) );
+			writer.AppendVariableAssignment(
+				EVENT_HANDLING_VARIABLE,
+				string.Format(EVENT_HANDLING_ENUM, Enum.GetName(typeof(ErrorEvent), valueToWrite)),
+				JSScriptWriter.BITWISE_OR_ASSIGNMENT_OP,
+				true );
+		}
+
+		private void RenderErrorHandlingScript(JSScriptWriter writer, ErrorHandling valueToWrite)
+		{
+			writer.AppendVariableAssignment(
+				ERROR_HANDLING_VARIABLE,
+				string.Format(ERROR_HANDLING_ENUM, Enum.GetName(typeof(ErrorHandling), valueToWrite)),
+				true );
 		}
 	}
 }

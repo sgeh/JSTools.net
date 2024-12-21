@@ -37,7 +37,7 @@ namespace JSTools.Context.Cache
 		//--------------------------------------------------------------------
 
 		private const string SUPPORTED_SCRIPT_TYPE = "text/javascript";
-		private ScriptVersion _version = ScriptVersion.Unkonwn;
+		private float _version = -1;
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -68,7 +68,7 @@ namespace JSTools.Context.Cache
 		/// Creates a new ACacheDataLoader instance.
 		/// </summary>
 		/// <param name="version">Script version which is used to crunch the script.</param>
-		internal AJScriptDataLoader(ScriptVersion version)
+		internal AJScriptDataLoader(float version)
 		{
 			_version = version;
 		}
@@ -120,7 +120,7 @@ namespace JSTools.Context.Cache
 		/// <param name="loadedData">Script which should be parsed.</param>
 		protected virtual void ParseScript(string loadedData)
 		{
-			ScriptCruncher.Instance.ParseScript(loadedData, _version);
+			ScriptCruncher.Instance.ParseScript(loadedData, ScriptVersionUtil.ValueToScriptVersion(_version));
 		}
 
 		/// <summary>
@@ -129,7 +129,7 @@ namespace JSTools.Context.Cache
 		/// <param name="loadedData">Script which should be crunched.</param>
 		protected virtual string CrunchScript(string loadedData)
 		{
-			return ScriptCruncher.Instance.CrunchScript(LoadData(), null, _version);
+			return ScriptCruncher.Instance.CrunchScript(LoadData(), null, ScriptVersionUtil.ValueToScriptVersion(_version));
 		}
 	}
 }

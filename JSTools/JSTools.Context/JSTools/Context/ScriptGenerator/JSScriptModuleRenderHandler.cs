@@ -34,14 +34,11 @@ namespace JSTools.Context.ScriptGenerator
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private const double EXPIRATION_DAYS = 2;
-		private const string DEBUG_FILE_MODE = "document.write({0});\n\n";
-		private const string DEBUG_FILE_FOOTER = "\n\n\n\n";
 		private const string DEBUG_FILE_HEADER =
-			"//----------------------------------------------------------------------------\n"
-			+ "//--- Source File: {0}\n"
-			+ "//--- Last Update: {1}\n"
-			+ "//----------------------------------------------------------------------------\n\n";
+			  "-----------------------------------------------------{2}"
+			+ "--- Source File: {0}{2}"
+			+ "--- Last Update: {1}{2}"
+			+ "-----------------------------------------------------{2}{2}";
 
 		private JSScriptModuleRenderProcessTicket _moduleTicket = null;
 		private JSScriptFileHandler _section = null;
@@ -106,10 +103,14 @@ namespace JSTools.Context.ScriptGenerator
 		{
 			foreach (JSScript script in _moduleTicket.SectionToRender.ScriptFiles)
 			{
-				_moduleTicket.ScriptContainer.Script.Append(
-					String.Format(
-						DEBUG_FILE_MODE,
-						_section.GetScriptFileJavaScriptTag(script, _moduleTicket.Context.ApplicationPath)) );
+				// init content to render
+				string scriptTag = _section.GetScriptFileJavaScriptTag(script, _moduleTicket.Context.ApplicationPath);
+				string scriptOutput = _moduleTicket.Context.ScriptGenerator.CreatePlainOutput(scriptTag);
+
+				// render content
+				_moduleTicket.ScriptContainer.Script.Append(scriptOutput);
+				_moduleTicket.ScriptContainer.Script.Append(_moduleTicket.Context.ScriptGenerator.LineBreak);
+				_moduleTicket.ScriptContainer.Script.Append(_moduleTicket.Context.ScriptGenerator.LineBreak);
 			}
 		}
 
@@ -119,13 +120,21 @@ namespace JSTools.Context.ScriptGenerator
 			{
 				IScriptContainer cachedScript = _moduleTicket.Context.GetCachedItem(script.Id);
 
-				_moduleTicket.ScriptContainer.Script.Append(
-					String.Format(DEBUG_FILE_HEADER,
-						script.RequestPath,
-						cachedScript.LastUpdate) );
-
+				// init content to render
+				string header = string.Format(
+					DEBUG_FILE_HEADER,
+					script.RequestPath,
+					cachedScript.LastUpdate,
+					_moduleTicket.Context.ScriptGenerator.LineBreak );
+				string headerComment = _moduleTicket.Context.ScriptGenerator.CreateMultiLineComment(header);
+				
+				// render content
+				_moduleTicket.ScriptContainer.Script.Append(headerComment);
 				RenderScript(cachedScript);
-				_moduleTicket.ScriptContainer.Script.Append(DEBUG_FILE_FOOTER);
+				_moduleTicket.ScriptContainer.Script.Append(_moduleTicket.Context.ScriptGenerator.LineBreak);
+				_moduleTicket.ScriptContainer.Script.Append(_moduleTicket.Context.ScriptGenerator.LineBreak);
+				_moduleTicket.ScriptContainer.Script.Append(_moduleTicket.Context.ScriptGenerator.LineBreak);
+				_moduleTicket.ScriptContainer.Script.Append(_moduleTicket.Context.ScriptGenerator.LineBreak);
 			}
 		}
 

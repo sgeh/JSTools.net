@@ -69,16 +69,37 @@
                     AssemblyName = "System"
                     HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.dll"
                 />
+                <Reference
+                    Name = "JSTools.Parser.Cruncher"
+                    Project = "{6C7E0971-A37B-4A3D-840C-FAF2EC98C6A8}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "System.Data"
+                    AssemblyName = "System.Data"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Data.dll"
+                />
+                <Reference
+                    Name = "System.Drawing"
+                    AssemblyName = "System.Drawing"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Drawing.dll"
+                />
+                <Reference
+                    Name = "System.Windows.Forms"
+                    AssemblyName = "System.Windows.Forms"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Windows.Forms.dll"
+                />
+                <Reference
+                    Name = "System.XML"
+                    AssemblyName = "System.Xml"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
+                />
             </References>
         </Build>
         <Files>
             <Include>
                 <File
                     RelPath = "AssemblyInfo.cs"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "JSTools\ScriptTypes\Array.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -126,6 +147,60 @@
                     RelPath = "JSTools\Util\ConvertUtilities.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\CustomObjDeserializer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\DeserializationException.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\Deserializer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\IScriptDeserializer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\JSObjDeserializer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\JSScriptArray.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\JSScriptObject.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\ScriptValueTypeAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\Serializer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Util\Serialization\SimpleObjectSerializer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "vpproject\JSTools.ScriptTypes.vpp"
+                    BuildAction = "None"
                 />
             </Include>
         </Files>

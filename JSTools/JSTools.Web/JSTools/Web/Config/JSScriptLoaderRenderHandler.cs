@@ -22,10 +22,11 @@ using System.Xml;
 using JSTools.Config;
 using JSTools.Config.ScriptFileManagement;
 using JSTools.Config.ScriptLoader;
-using JSTools.Web.Config;
+using JSTools.Context;
+using JSTools.Context.ScriptGenerator;
 using JSTools.Web.UI.Controls;
 
-namespace JSTools.Web.UI
+namespace JSTools.Web.Config
 {
 	/// <summary>
 	/// Represents a render handler instance for the JSScriptLoader section.
@@ -35,6 +36,12 @@ namespace JSTools.Web.UI
 		//--------------------------------------------------------------------
 		// Declarations
 		//--------------------------------------------------------------------
+
+		private const string SCRIPT_LANGUAGE = "JSTools.ScriptLoader.ScriptLanguage";
+		private const string ENCODE_FILE_LOC = "JSTools.ScriptLoader.EncodeFileLocation";
+		private const string SCRIPT_VERSION = "JSTools.ScriptLoader.ScriptVersion";
+		private const string SCRIPT_EXTENSION = "JSTools.ScriptLoader.ScriptExtension";
+		private const string SCRIPT_FILE_LOC = "JSTools.ScriptLoader.ScriptFileLocation";
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -85,40 +92,28 @@ namespace JSTools.Web.UI
 
 			// create script
 			Script sectionScript = new Script();
-			sectionScript.Code = RenderLoadScript(section, appPath);
+			sectionScript.Code = RenderLoadScript(webTicket, section, appPath);
 			webTicket.RenderHandler.Controls.Add(sectionScript);
 
 			// create white space literal
 			webTicket.RenderHandler.Controls.Add(new LiteralControl("\n"));
 		}
 
-		/// <summary>
-		/// Renders the script loader settings.
-		/// </summary>
-		/// <param name="sectionHandler">Section to render.</param>
-		/// <param name="appPath">Application path.</param>
-		private string RenderLoadScript(JSScriptLoaderHandler sectionHandler, string appPath)
+		private string RenderLoadScript(WebRenderProcessTicket ticket, JSScriptLoaderHandler sectionHandler, string appPath)
 		{
-			StringBuilder toWrite = new StringBuilder();
 			JSScriptFileHandler scriptSection = sectionHandler.OwnerConfiguration.ScriptFileHandler;
+			JSScriptWriter writer = new JSScriptWriter();
 
-			RenderStringVariable(toWrite, "JSTools.ScriptLoader.ScriptLanguage", scriptSection.ScriptType);
-			RenderVariable(toWrite, "JSTools.ScriptLoader.EncodeFileLocation", sectionHandler.EncodeFileLocation.ToString().ToLower());
-			RenderVariable(toWrite, "JSTools.ScriptLoader.ScriptVersion", scriptSection.ScriptVersion.ToString());
-			RenderStringVariable(toWrite, "JSTools.ScriptLoader.ScriptExtension", scriptSection.ScriptExtension);
-			RenderStringVariable(toWrite, "JSTools.ScriptLoader.ScriptFileLocation", GetScriptFileLocation(sectionHandler, appPath, toWrite));
+			writer.AppendAssignment(SCRIPT_LANGUAGE, scriptSection.ScriptType, true);
+			writer.AppendAssignment(ENCODE_FILE_LOC, sectionHandler.EncodeFileLocation, true);
+			writer.AppendAssignment(SCRIPT_VERSION, scriptSection.ScriptVersion, true);
+			writer.AppendAssignment(SCRIPT_EXTENSION, scriptSection.ScriptExtension, true);
+			writer.AppendAssignment(SCRIPT_FILE_LOC, GetScriptFileLocation(sectionHandler, appPath), true);
 
-			return toWrite.ToString();
+			return writer.ToString();
 		}
 
-		/// <summary>
-		/// Returns the script file location, which should be used for the using directive.
-		/// </summary>
-		/// <param name="toWrite">Context, in which should be written.</param>
-		/// <param name="appPath">Application path.</param>
-		/// <param name="sectionHandler">Section to render.</param>
-		/// <returns>Retruns the script file location.</returns>
-		private string GetScriptFileLocation(JSScriptLoaderHandler sectionHandler, string appPath, StringBuilder toWrite)
+		private string GetScriptFileLocation(JSScriptLoaderHandler sectionHandler, string appPath)
 		{
 			if (sectionHandler.InsertLocationPrefix)
 			{
@@ -128,36 +123,6 @@ namespace JSTools.Web.UI
 			{
 				return sectionHandler.ScriptFileLocation;
 			}
-		}
-
-		/// <summary>
-		/// Renders a variable and assignes the given value with double quotes (").
-		/// </summary>
-		/// <param name="toWrite">Context, in which should be written.</param>
-		/// <param name="variableName">Name of the variable.</param>
-		/// <param name="variableValue">Value of the variable.</param>
-		private void RenderStringVariable(StringBuilder toWrite, string variableName, string variableValue)
-		{
-			toWrite.Append("\n");
-			toWrite.Append(variableName);
-			toWrite.Append(" = \"");
-			toWrite.Append(variableValue);
-			toWrite.Append("\";");
-		}
-
-		/// <summary>
-		/// Renders a variable and assignes the given value.
-		/// </summary>
-		/// <param name="toWrite">Context, in which should be written.</param>
-		/// <param name="variableName">Name of the variable.</param>
-		/// <param name="variableValue">Value of the variable.</param>
-		private void RenderVariable(StringBuilder toWrite, string variableName, string variableValue)
-		{
-			toWrite.Append("\n");
-			toWrite.Append(variableName);
-			toWrite.Append(" = ");
-			toWrite.Append(variableValue);
-			toWrite.Append(";");
 		}
 	}
 }

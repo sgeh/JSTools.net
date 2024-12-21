@@ -15,42 +15,39 @@
  */
 
 using System;
-using System.Collections;
-using System.IO;
-using System.Text;
-using System.Xml;
 
-using JSTools.Xml;
+using JSTools.Config.ScriptFileManagement.Serialization;
 
 namespace JSTools.Config.ScriptFileManagement
 {
 	/// <summary>
-	/// Specifies if the script should be crunched and additional debug informations should
-	/// be rendered.
+	/// Specifies if the script should be crunched and additional
+	/// debug informations should be rendered.
 	/// </summary>
 	public enum DebugMode
 	{
 		/// <summary>
-		/// The source files of a module will be crunched and written into one file which is
-		/// renderd to the client.
+		/// The source files of a module will be crunched and written
+		/// into one file which is renderd to the client.
 		/// </summary>
 		None,
 
 		/// <summary>
-		/// The whole source files of a module will be written into one file which is rendered
-		/// to the client.
+		/// The whole source files of a module will be written into one
+		/// file which is rendered to the client.
 		/// </summary>
 		Module,
 
 		/// <summary>
-		/// The whole source files will be rendered to the client. Netscape 4.x does not support
-		/// this feature. Use module instead.
+		/// The whole source files will be rendered to the client.
+		/// Netscape 4.x does not support this feature. Use module instead.
 		/// </summary>
 		File
 	}
 
 	/// <summary>
-	/// Represents an instance of the &lt;scripts&gt; configuration section in the JSTools.net configuration.
+	/// Represents an instance of the &lt;scripts&gt; configuration section
+	/// in the JSTools.net configuration.
 	/// </summary>
 	public class JSScriptFileHandler : AJSToolsScriptFileSection
 	{
@@ -70,14 +67,6 @@ namespace JSTools.Config.ScriptFileManagement
 		/// </summary>
 		public const char NAME_SEPARATOR = '.';
 
-		private const string TYPE_ATTRIB = "type";
-		private const string SCRIPT_VERSION_ATTRIB = "version";
-		private const string SCRIPT_TYPE_ATTRIB = "language";
-		private const string CONTENT_TYPE_ATTRIB = "contentType";
-		private const string DEBUG_ATTRIB = "debug";
-		private const string SOURCE_ATTRIB = "src";
-		private const string EXTENSION_ATTRIB = "extension";
-
 		private const string COMMENT_BEGIN = "\n" + JSToolsConfiguration.COMMENT_BEGIN;
 		private const string COMMENT_END = "\n//" + JSToolsConfiguration.COMMENT_END;
 
@@ -93,9 +82,7 @@ namespace JSTools.Config.ScriptFileManagement
 		private string _source = string.Empty;
 		private string _extension = ".js";
 		private JSModuleContainer _childModules = null;
-
 		private string _sectionName = string.Empty;
-		private XmlNode _configSection = null;
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -190,23 +177,28 @@ namespace JSTools.Config.ScriptFileManagement
 		/// <summary>
 		/// Creates a new JSScriptFileHandler instance.
 		/// </summary>
-		/// <param name="section">Xml section.</param>
+		/// <param name="sectionData">Section data.</param>
 		/// <param name="ownerConfig">Owner (parent) configuration instance.</param>
 		/// <param name="nodeName">Contains the name of the representing node.</param>
 		/// <exception cref="ArgumentNullException">An argument contains a null reference.</exception>
 		/// <exception cref="InvalidOperationException">A required module could not be found.</exception>
-		public JSScriptFileHandler(XmlNode section, IJSToolsConfiguration ownerConfig, string nodeName) : base(ownerConfig)
+		public JSScriptFileHandler(Scripts sectionData, IJSToolsConfiguration ownerConfig, string nodeName) : base(ownerConfig)
 		{
-			if (section == null)
-				throw new ArgumentNullException("section", "The given xml section contains a null reference.");
+			if (sectionData == null)
+				throw new ArgumentNullException("section", "The given section data contain null.");
 
 			if (nodeName == null)
 				throw new ArgumentNullException("nodeName", "The given node name contains a null reference.");
 
 			_sectionName = nodeName;
-			_configSection = section;
+			_source = GetValidPath(sectionData.Src);
+			_extension = GetExtension(sectionData.Extension);
+			_scriptVersion = sectionData.Version;
+			_debugMode = sectionData.Debug;
+			_scriptType = sectionData.Language.ToLower();
+			_contentType = sectionData.ContentType.ToLower();
 
-			InitConfiguration();
+			InitModuleNodes(sectionData.Modules);
 		}
 
 		//--------------------------------------------------------------------
@@ -592,25 +584,11 @@ namespace JSTools.Config.ScriptFileManagement
 		}
 
 		/// <summary>
-		/// Initializes the values of this configuration object.
-		/// </summary>
-		private void InitConfiguration()
-		{
-			_source = GetValidPath(JSToolsXmlFunctions.GetAttributeFromNode(_configSection, SOURCE_ATTRIB));
-			_extension = GetExtension();
-
-			InitScriptNode();
-			InitModuleNodes();
-		}
-
-		/// <summary>
 		/// Checks the extension given by the configuration for validity.
 		/// </summary>
 		/// <returns>Retruns a valid script extension.</returns>
-		private string GetExtension()
+		private string GetExtension(string extension)
 		{
-			string extension = JSToolsXmlFunctions.GetAttributeFromNode(_configSection, EXTENSION_ATTRIB);
-
 			if (extension == null || extension.Length == 0)
 				return _extension;
 
@@ -638,61 +616,15 @@ namespace JSTools.Config.ScriptFileManagement
 		}
 
 		/// <summary>
-		/// Initializes the values of the &lt;scripts&gt; node.
-		/// </summary>
-		private void InitScriptNode()
-		{
-			InitScriptVersion();
-			InitDebugMode();
-
-			_scriptType = JSToolsXmlFunctions.GetValueFromNode(_configSection.Attributes[SCRIPT_TYPE_ATTRIB]).ToLower();
-			_contentType = JSToolsXmlFunctions.GetValueFromNode(_configSection.Attributes[CONTENT_TYPE_ATTRIB]).ToLower();
-		}
-
-		/// <summary>
-		/// Initializes the value of the debug attribute.
-		/// </summary>
-		private void InitDebugMode()
-		{
-			try
-			{
-				_debugMode = (DebugMode)Enum.Parse(typeof(DebugMode), JSToolsXmlFunctions.GetValueFromNode(_configSection.Attributes[DEBUG_ATTRIB]), true);
-			}
-			catch
-			{
-				// ignore value if an exception occurs
-			}
-		}
-
-		/// <summary>
-		/// Initializes the value of the scriptVersion attribute.
-		/// </summary>
-		private void InitScriptVersion()
-		{
-			string scriptVersion = JSToolsXmlFunctions.GetValueFromNode(_configSection.Attributes[SCRIPT_VERSION_ATTRIB]);
-
-			try
-			{
-				_scriptVersion = Convert.ToSingle(scriptVersion);
-			}
-			catch
-			{
-				// ignore value if an exception occurs
-			}
-		}
-
-		/// <summary>
 		/// Initializes all module nodes.
 		/// </summary>
-		private void InitModuleNodes()
+		private void InitModuleNodes(Module[] moduleData)
 		{
-			XmlNodeList moduleNodes = _configSection.SelectNodes(JSModule.MODULE_NODE_NAME);
-			JSModule[] modules = new JSModule[moduleNodes.Count];
+			JSModule[] modules = new JSModule[moduleData.Length];
 
-			for (int i = 0; i < moduleNodes.Count; ++i)
+			for (int i = 0; i < modules.Length; ++i)
 			{
-				XmlNode moduleNode = moduleNodes[i];
-				modules.SetValue(new JSModule(moduleNode, this), i);
+				modules[i] = new JSModule(moduleData[i], this);
 			}
 
 			_childModules = new JSModuleContainer(modules);

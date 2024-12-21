@@ -15,18 +15,13 @@
  */
 
 using System;
-using System.IO;
-using System.Text;
-using System.Xml;
 
-using JSTools.Xml;
+using JSTools.Config.ScriptFileManagement.Serialization;
 
 namespace JSTools.Config.ScriptFileManagement
 {
 	/// <summary>
-	/// Contains the &lt;file&gt; node implementation. A JSScript can render two different javascript tags,
-	/// a link tag (the value is specified by the &lt;file src=""&gt; tag), and a code tag (the value
-	/// is specified by the CDATA value of the &lt;file&gt; node.
+	/// Represents a &lt;file&gt; node in the configuration XmlDocument.
 	/// </summary>
 	public class JSScript : AJSToolsScriptFileSection
 	{
@@ -34,18 +29,11 @@ namespace JSTools.Config.ScriptFileManagement
 		// Declarations
 		//--------------------------------------------------------------------
 
-		/// <summary>
-		/// Gets the name of a JSScript xml node.
-		/// </summary>
-		public const string FILE_NODE_NAME = "file";
-
-		private const string SRC_ATTRIB = "src";
+		private const string FILE_NODE_NAME = "file";
 
 		private string _fileName = string.Empty;
 		private string _name = string.Empty;
-		private string _code = string.Empty;
 		private string _physicalPath = string.Empty;
-		private XmlNode _fileNode = null;
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -65,14 +53,6 @@ namespace JSTools.Config.ScriptFileManagement
 		public string PhysicalPath
 		{
 			get { return _physicalPath; }
-		}
-
-		/// <summary>
-		/// Gets the script source code.
-		/// </summary>
-		public string Code
-		{
-			get { return _code; }
 		}
 
 		/// <summary>
@@ -138,16 +118,18 @@ namespace JSTools.Config.ScriptFileManagement
 		/// <summary>
 		/// Creates a new JSScript instance.
 		/// </summary>
-		/// <param name="scriptNode">Xml node, which contains the source informations.</param>
+		/// <param name="fileData">Instance which contains the script data.</param>
 		/// <param name="parent">Parent AJSToolsScriptFileSection instance.</param>
 		/// <exception cref="ArgumentNullException">An argument contains a null reference.</exception>
-		internal JSScript(XmlNode scriptNode, AJSToolsScriptFileSection parent) : base(parent)
+		internal JSScript(File fileData, AJSToolsScriptFileSection parent) : base(parent)
 		{
-			if (scriptNode == null)
-				throw new ArgumentNullException("scriptNode", "The file xml node contains a null reference.");
+			if (fileData == null)
+				throw new ArgumentNullException("scriptNode", "The given script data contain null.");
 
-			_fileNode = scriptNode;
-			InitScript();
+			_fileName = fileData.Src;
+			_name = System.IO.Path.GetFileNameWithoutExtension(_fileName);
+
+			InitPhysicalFilePath();
 		}
 
 		//--------------------------------------------------------------------
@@ -157,21 +139,6 @@ namespace JSTools.Config.ScriptFileManagement
 		//--------------------------------------------------------------------
 		// Methods
 		//--------------------------------------------------------------------
-
-		/// <summary>
-		/// Initializes the script file node.
-		/// </summary>
-		private void InitScript()
-		{
-			_fileName = JSToolsXmlFunctions.GetAttributeFromNode(_fileNode, SRC_ATTRIB);
-			_name = System.IO.Path.GetFileNameWithoutExtension(_fileName);
-
-			if (_fileNode.FirstChild != null)
-			{
-				_code = _fileNode.FirstChild.Value;
-			}
-			InitPhysicalFilePath();
-		}
 
 		/// <summary>
 		/// Initializes the physical path of this script file.

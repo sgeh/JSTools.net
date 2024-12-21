@@ -21,11 +21,18 @@ using JSTools.Util;
 
 namespace JSTools.ScriptTypes
 {
+	/// <summary>
+	/// Represents a client script value converter. This class can be used
+	/// to serialize managed objects into a client script string or to
+	/// deserialize a client script string into a managed object.
+	/// </summary>
 	public class ScriptValue
 	{
 		//--------------------------------------------------------------------
 		// Declarations
 		//--------------------------------------------------------------------
+
+		private const string NULL_VALUE = "null";
 
 		private ScriptValueMapper _mapper = null;
 		private AScriptType _scriptType = null;
@@ -40,8 +47,8 @@ namespace JSTools.ScriptTypes
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		/// True to encode the converted value. This feature is not available
-		/// on all ScriptTypes. Default value is false.
+		/// True to encode the converted value. This feature is not supported
+		/// by all ScriptTypes. Default value is false.
 		/// </summary>
 		public bool EncodeValue
 		{
@@ -50,8 +57,8 @@ namespace JSTools.ScriptTypes
 		}
 
 		/// <summary>
-		/// True to decode the specified value. This feature is not available
-		/// on all ScriptTypes. Default value is true.
+		/// True to decode the specified value. This feature is not supported
+		/// by all ScriptTypes. Default value is true.
 		/// </summary>
 		public bool DecodeValue
 		{
@@ -65,15 +72,22 @@ namespace JSTools.ScriptTypes
 		/// </summary>
 		public object Value
 		{
-			get { return _value; }
+			get
+			{
+				if (_value == null && _scriptType != null)
+					_value = _scriptType.GetObjectFromString(_scriptStringValue, DecodeValue);
+
+				return _value;
+			}
 			set
 			{
-				if (value != null)
-				{
-					_value = value;
-					_scriptType = Mapper.MapType(value);
-					_scriptStringValue = _scriptType.GetScriptStringFromObject(value, EncodeValue);
-				}
+				_value = value;
+				_scriptStringValue = null;
+
+				if (_value != null)
+					_scriptType = Mapper.MapType(_value.GetType());
+				else
+					_scriptType = null;
 			}
 		}
 
@@ -83,15 +97,22 @@ namespace JSTools.ScriptTypes
 		/// </summary>
 		public string ScriptStringValue
 		{
-			get { return (_scriptStringValue != null) ? _scriptStringValue : string.Empty; }
+			get
+			{
+				if (_scriptStringValue == null && _scriptType != null)
+					_scriptStringValue = _scriptType.GetScriptStringFromObject(_value, EncodeValue);
+
+				return (_scriptStringValue != null) ? _scriptStringValue : NULL_VALUE;
+			}
 			set
 			{
-				if (value != null)
-				{
-					_scriptStringValue = value;
-					_scriptType = Mapper.MapValue(value);
-					_value = _scriptType.GetObjectFromString(value, DecodeValue);
-				}
+				_value = null;
+				_scriptStringValue = value;
+
+				if (_scriptStringValue != null && _scriptStringValue != NULL_VALUE)
+					_scriptType = Mapper.MapValue(_scriptStringValue);
+				else
+					_scriptType = null;
 			}
 		}
 
@@ -136,6 +157,17 @@ namespace JSTools.ScriptTypes
 		{
 			EncodeValue = encodeValue;
 			Value = valueToConvert;
+		}
+
+		/// <summary>
+		/// Creates a new ScriptValue instance.
+		/// </summary>
+		/// <param name="valueToDeserialialize">Value which should be deserialized.</param>
+		/// <param name="decodeValue">True to decode the values to serialize.</param>
+		public ScriptValue(string valueToDeserialialize, bool decodeValue)
+		{
+			DecodeValue = decodeValue;
+			ScriptStringValue = valueToDeserialialize;
 		}
 
 		/// <summary>

@@ -17,7 +17,7 @@
                 DelaySign = "false"
                 OutputType = "Library"
                 PreBuildEvent = ""
-                PostBuildEvent = ""
+                PostBuildEvent = 'REM Copy Debug Resources&#xd;&#xa;xcopy "$(ProjectDir)resources\*" "$(TargetDir)resources\" /F /Y'
                 RootNamespace = "JSTools.Test"
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = ""
@@ -100,6 +100,11 @@
                     Project = "{6C7E0971-A37B-4A3D-840C-FAF2EC98C6A8}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
+                <Reference
+                    Name = "JSTools.ScriptTypes"
+                    Project = "{06E2D003-00C7-4F4B-8C8B-A74C6F3854C8}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
             </References>
         </Build>
         <Files>
@@ -120,6 +125,11 @@
                 />
                 <File
                     RelPath = "JSTools\Test\Parser\ScriptCruncher.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Test\Util\Serialization.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

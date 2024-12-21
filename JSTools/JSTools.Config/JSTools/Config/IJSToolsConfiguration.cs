@@ -41,14 +41,6 @@ namespace JSTools.Config
 			get;
 		}
 
-		/// <summary>
-		/// Returns true, if a XmlDocument is initialized.
-		/// </summary>
-		bool IsXmlDocumentInitialized
-		{
-			get;
-		}
-
 		//--------------------------------------------------------------------
 		// Methods
 		//--------------------------------------------------------------------
@@ -60,55 +52,6 @@ namespace JSTools.Config
 		/// <returns>Returns the requested configuration instance.</returns>
 		/// <exception cref="ArgumentNullException">The specified name contains a null reference.</exception>
 		AJSToolsSection GetConfig(string configNodeName);
-
-		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
-		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified xml document.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was not already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		void LoadXml(XmlDocument configDocument);
-
-		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
-		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified string.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was not already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
-		void LoadXml(string configDocument);
-
-		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
-		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified Stream.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was not already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
-		void LoadXml(Stream configDocument);
-
-		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
-		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified XmlReader.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was not already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
-		void LoadXml(XmlReader configDocument);
-
-		/// <summary>
-		/// Loads the given XmlDocument and initializes the configuration sections.
-		/// </summary>
-		/// <param name="configDocument">Loads the configuration from the specified TextReader.</param>
-		/// <exception cref="ArgumentNullException">The given xml document contains a null reference.</exception>
-		/// <exception cref="InvalidOperationException">The configuration XmlDocument was not already specified.</exception>
-		/// <exception cref="ConfigurationException">Could not initialize a type specified in a configuration xml section.</exception>
-		/// <exception cref="XmlException">There is a load or parse error in the XML.</exception>
-		void LoadXml(TextReader configDocument);
 
 		/// <summary>
 		/// Writes the JSTools sections into the given render context.

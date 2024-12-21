@@ -71,7 +71,7 @@ namespace JSTools.Web.UI.Controls
 		/// <exception cref="InvalidOperationException">Could not add the given control at a specified index, use Add instead.</exception>
 		public override void AddAt(int index, Control child)
 		{
-			throw new InvalidOperationException("Could not add the given control at a specified index, use Add instead!");
+			throw new InvalidOperationException("Could not add the given control at a specified index, use Add instead.");
 		}
 	}
 }

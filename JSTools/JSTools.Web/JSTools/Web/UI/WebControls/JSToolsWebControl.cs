@@ -56,7 +56,7 @@ namespace JSTools.Web.UI.WebControls
 		/// <remarks>The attributes are neccessary for the designer. Otherwise, it crashes.</remarks>
 		[property: Browsable(false)]
 		[property: DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public JSToolsWebContext JSToolsContext
+		public virtual JSToolsWebContext JSToolsContext
 		{
 			get { return Page.JSToolsContext; }
 		}

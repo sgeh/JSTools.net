@@ -53,6 +53,7 @@ namespace JSTools.Web.UI.Controls
 			};
 
 		private Head _header = null;
+		private JSToolsWebContext _context = null;
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -61,13 +62,22 @@ namespace JSTools.Web.UI.Controls
 		/// <summary>
 		/// Returns the current JSToolsWebContext, which contains a parser, a cache
 		/// and a configuration instance.
+		/// 
+		/// You can override this property to implement your own context
+		/// functionalities or to override something.
 		/// </summary>
 		/// <remarks>The attributes are neccessary for the designer. Otherwise, it crashes.</remarks>
 		[property: Browsable(false)]
 		[property: DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public JSToolsWebContext JSToolsContext
+		public virtual JSToolsWebContext JSToolsContext
 		{
-			get { return JSToolsWebContext.Instance; }
+			get
+			{
+				if (_context == null)
+					_context = (JSToolsWebContext)JSToolsWebContext.Instance.Clone();
+
+				return _context;
+			}
 		}
 
 		//--------------------------------------------------------------------
@@ -102,7 +112,7 @@ namespace JSTools.Web.UI.Controls
 			}
 
 			if (_header == null)
-				throw new ControlNotFoundException("Could not find a header control. A JSToolsPage must contain a head control!");
+				throw new ControlNotFoundException("Could not find a header control. A JSToolsPage must contain a 'Head' control.");
 		}
 
 		//--------------------------------------------------------------------
@@ -118,7 +128,7 @@ namespace JSTools.Web.UI.Controls
 		public void AddConfigRenderHandler(IJSToolsRenderHandler handler)
 		{
 			if (handler == null)
-				throw new ArgumentNullException("handler", "The given handler contains a null reference!");
+				throw new ArgumentNullException("handler", "The given handler contains a null reference.");
 
 			_header.AddConfigRenderHandler(handler);
 		}

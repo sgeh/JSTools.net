@@ -17,10 +17,9 @@
 using System;
 using System.Configuration;
 using System.Text;
-using System.Xml;
 
+using JSTools.Config.ExceptionHandling.Serialization;
 using JSTools.Config.ScriptFileManagement;
-using JSTools.Xml;
 
 namespace JSTools.Config.ExceptionHandling
 {
@@ -89,16 +88,6 @@ namespace JSTools.Config.ExceptionHandling
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private const string TYPE_ATTRIB = "type";
-		private const string REQUIRES_ATTIRB = "requires";
-		private const string ERROR_PROVIDER_ATTIRB = "errorProvider";
-		private const string ERROR_HANDLING_ATTIRB = "errorHandling";
-
-		private const string EVENT_NODE_NAME = "event";
-		private const string LOG_ATTIRB = "log";
-		private const string ERROR_ATTIRB = "error";
-		private const string WARN_ATTIRB = "warn";
-
 		private ErrorHandling _errorHandling = ErrorHandling.None;
 		private ErrorEvent _errorEvent = ErrorEvent.None;
 		private string _requiredModule = string.Empty;
@@ -156,24 +145,27 @@ namespace JSTools.Config.ExceptionHandling
 		/// <summary>
 		/// Initializes a new JSExceptionHandler instance.
 		/// </summary>
-		/// <param name="exceptionNode">XmlNode, which contains the configuration data.</param>
+		/// <param name="exceptionData">Exception data.</param>
 		/// <param name="ownerConfig">Owner (parent) configuration instance.</param>
 		/// <param name="nodeName">Contains the name of the representing node.</param>
 		/// <exception cref="ArgumentNullException">An argument contains a null reference.</exception>
-		public JSExceptionHandler(XmlNode exceptionNode, IJSToolsConfiguration ownerConfig, string nodeName) : base(ownerConfig)
+		public JSExceptionHandler(
+			JSTools.Config.ExceptionHandling.Serialization.ExceptionHandling exceptionData,
+			IJSToolsConfiguration ownerConfig,
+			string nodeName) : base(ownerConfig)
 		{
-			if (exceptionNode == null)
+			if (exceptionData == null)
 				throw new ArgumentNullException("exceptionNode", "The given xml section contains a null reference.");
 
 			if (nodeName == null)
 				throw new ArgumentNullException("nodeName", "The given node name contains a null reference.");
 
 			_sectionName = nodeName;
-			_requiredModule = JSToolsXmlFunctions.GetAttributeFromNode(exceptionNode, REQUIRES_ATTIRB);
-			_errorProvider = JSToolsXmlFunctions.GetAttributeFromNode(exceptionNode, ERROR_PROVIDER_ATTIRB);
+			_errorHandling = exceptionData.ErrorHandling;
+			_requiredModule = exceptionData.Requires;
+			_errorProvider = exceptionData.ErrorProvider;
 
-			InitErrorEventEnum(exceptionNode);
-			InitErrorHandlingEnum(exceptionNode);
+			InitErrorEventEnum(exceptionData.Event);
 		}
 
 		//--------------------------------------------------------------------
@@ -199,54 +191,21 @@ namespace JSTools.Config.ExceptionHandling
 				throw new InvalidOperationException("Could not find a module with the name '" + _requiredModule + "'.");
 		}
 
-		/// <summary>
-		/// Initializes the catchErrors attribute of the given exception node. The recieved value is filled
-		/// into the _errorHandling variable.
-		/// </summary>
-		/// <param name="exceptionNode">Exception node to initialize.</param>
-		private void InitErrorHandlingEnum(XmlNode exceptionNode)
+		private void InitErrorEventEnum(Event data)
 		{
-			try
-			{
-				_errorHandling = (ErrorHandling)Enum.Parse(
-					typeof(ErrorHandling),
-					JSToolsXmlFunctions.GetAttributeFromNode(exceptionNode, ERROR_HANDLING_ATTIRB),
-					true );
-			}
-			catch
-			{
-				_errorHandling = ErrorHandling.None;
-			}
-		}
-
-		/// <summary>
-		/// Initializes the event node of the given exception node. The recieved value is filled
-		/// into the _errorEvent variable.
-		/// </summary>
-		/// <param name="exceptionNode">Exception node to initialize.</param>
-		private void InitErrorEventEnum(XmlNode exceptionNode)
-		{
-			XmlNode logNode = exceptionNode.SelectSingleNode(EVENT_NODE_NAME + "/@" + LOG_ATTIRB);
-			XmlNode errorNode = exceptionNode.SelectSingleNode(EVENT_NODE_NAME + "/@" + ERROR_ATTIRB);
-			XmlNode warnNode = exceptionNode.SelectSingleNode(EVENT_NODE_NAME + "/@" + WARN_ATTIRB);
-
-			bool log = JSToolsXmlFunctions.GetBoolFromNodeValue(logNode);
-			bool error = JSToolsXmlFunctions.GetBoolFromNodeValue(errorNode);
-			bool warn = JSToolsXmlFunctions.GetBoolFromNodeValue(warnNode);
-
-			if (log && error && warn)
+			if (data.Log && data.Error && data.Warn)
 			{
 				_errorEvent = ErrorEvent.All;
 			}
 			else
 			{
-				if (log)
+				if (data.Log)
 					_errorEvent |= ErrorEvent.Log;
 
-				if (error)
+				if (data.Error)
 					_errorEvent |= ErrorEvent.Error;
 
-				if (warn)
+				if (data.Warn)
 					_errorEvent |= ErrorEvent.Warn;
 			}
 		}

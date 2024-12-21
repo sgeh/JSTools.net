@@ -32,7 +32,7 @@ namespace JSTools.Web.Request
 	/// Handles requests of files with .js extensions. The script files must be declared in the
 	/// JSTools config section.
 	/// </summary>
-	public class JSScriptModule : IHttpModule
+	public class JSScriptModule : IHttpModule, IDisposable
 	{
 		//--------------------------------------------------------------------
 		// Declarations
@@ -40,11 +40,21 @@ namespace JSTools.Web.Request
 
 		private const string CONTENT_LENGTH_HEADER = "Content-Length";
 
+		private HttpApplication _application = null;
+		private EventHandler _beginRequestHandler = null;
 		private bool _isDisposed = false;
 
 		//--------------------------------------------------------------------
 		// Properties
 		//--------------------------------------------------------------------
+
+		/// <summary>
+		/// Gets the global web context instance.
+		/// </summary>
+		protected virtual JSToolsWebContext WebContext
+		{
+			get { return (JSToolsWebContext)JSToolsWebContext.Instance.Clone(); }
+		}
 
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
@@ -62,13 +72,7 @@ namespace JSTools.Web.Request
 		/// </summary>
 		~JSScriptModule()
 		{
-			Dispose(true);
-			// This object will be cleaned up by the Dispose method.
-			// Therefore, you should call GC.SupressFinalize to
-			// take this object off the finalization queue 
-			// and prevent finalization code for this object
-			// from executing a second time.
-			GC.SuppressFinalize(this);
+			EnsureDispose(false);
 		}
 
 		//--------------------------------------------------------------------
@@ -82,12 +86,15 @@ namespace JSTools.Web.Request
 		/// <param name="args"></param>
 		private void OnBeginRequest(object sender, EventArgs args)
 		{
+			JSToolsWebContext context = WebContext;
+			HttpApplication currentApp = (HttpApplication)sender;
+
 			try
 			{
-				IScriptContainer requestedItem = JSToolsWebContext.Instance.GetCachedItemByPath(((HttpApplication)sender).Request.Path);
+				IScriptContainer requestedItem = context.GetCachedItemByPath(currentApp.Request.Path);
 				
 				if (requestedItem != null)
-					RespondRequestedItem((HttpApplication)sender, requestedItem);
+					RespondRequestedItem(currentApp, context, requestedItem);
 			}
 			catch (ThreadAbortException)
 			{
@@ -97,7 +104,11 @@ namespace JSTools.Web.Request
 			}
 			catch (Exception e)
 			{
-				throw new HttpException(500, "Internal Server Error. Error description: " + e.Message, e);
+				// ooops! an error has occured during getting the requested script container
+				RenderData(
+					currentApp,
+					context.Configuration.ScriptFileHandler.ContentType,
+					context.ScriptGenerator.CreateExceptionAlert(e) );
 			}
 		}
 
@@ -106,12 +117,20 @@ namespace JSTools.Web.Request
 		//--------------------------------------------------------------------
 
 		#region Dispose Pattern
+
 		/// <summary>
-		/// <see cref="System.Web.IHttpModule.Dispose"/>
+		///  <see cref="System.Web.IHttpModule.Dispose"/>
 		/// </summary>
 		public void Dispose()
 		{
-			Dispose(true);
+			EnsureDispose(true);
+
+			// This object will be cleaned up by the Dispose method.
+			// Therefore, you should call GC.SupressFinalize to
+			// take this object off the finalization queue 
+			// and prevent finalization code for this object
+			// from executing a second time.
+			GC.SuppressFinalize(this);
 		}
 
 		/// <summary>
@@ -120,29 +139,67 @@ namespace JSTools.Web.Request
 		/// <param name="disposing">True to clean up external managed resources.</param>
 		protected virtual void Dispose(bool disposing)
 		{
-			if (_isDisposed)
+			if (disposing)
 			{
-				if (!disposing)
-				{
-					// clean up external referenced resources
-					// -> call _member.Dispose() method
-				}
+				// clean up external referenced resources
+				// -> call _member.Dispose() method
 
-				// clean up unmanaged resources
+				// detach begin event
+				if (_beginRequestHandler != null)
+					_application.BeginRequest -= _beginRequestHandler;
+			}
+
+			// clean up unmanaged resources
+		}
+
+		private void EnsureDispose(bool disposing)
+		{
+			if (!_isDisposed)
+			{
+				// call protected dispose method
+				Dispose(disposing);
+
+				// mark instance as disposed
 				_isDisposed = true;
 			}
 		}
+
 		#endregion
 
 		/// <summary>
-		/// <see cref="System.Web.IHttpModule.Init"/>
+		///  <see cref="System.Web.IHttpModule.Init"/>
 		/// </summary>
-		public void Init(HttpApplication context)
+		public void Init(HttpApplication application)
 		{
-			context.BeginRequest += new EventHandler(OnBeginRequest);
+			_application = application; // store global web-application object in order to detach the event later
+			_application.BeginRequest += (_beginRequestHandler = new EventHandler(OnBeginRequest));
 		}
 
-		private void RespondRequestedItem(HttpApplication currentApp, IScriptContainer toRespond)
+		private void RespondRequestedItem(HttpApplication currentApp, JSToolsWebContext context, IScriptContainer toRespond)
+		{
+			#region Enable client side cache.
+
+			if (toRespond.ExpirationTime != DateTime.MinValue)
+			{
+				// init cache headers
+				currentApp.Response.Cache.SetLastModified(toRespond.LastUpdate);
+				currentApp.Response.Cache.SetCacheability(HttpCacheability.Public);
+				currentApp.Response.Cache.SetExpires(DateTime.MinValue);
+			}
+
+			#endregion
+
+			#region Write rendered script data into the output stream.
+
+			RenderData(
+				currentApp,
+				context.Configuration.ScriptFileHandler.ContentType,
+				toRespond.GetCachedCode() );
+
+			#endregion
+		}
+
+		private void RenderData(HttpApplication currentApp, string contentType, string toRender)
 		{
 			// clear response before writing
 			currentApp.Response.Clear();
@@ -151,28 +208,15 @@ namespace JSTools.Web.Request
 			currentApp.Response.BufferOutput = true;
 
 			// init content type
-			currentApp.Response.ContentType = JSToolsWebContext.Instance.Configuration.ScriptFileHandler.ContentType;
+			currentApp.Response.ContentType = contentType;
 
-			#region Enable client side cache.
-
-			if (toRespond.ExpirationTime != DateTime.MinValue)
+			// render data
+			if (toRender != null)
 			{
-				// init cache headers
-				currentApp.Response.Cache.SetLastModified(toRespond.LastUpdate);
-				currentApp.Response.Cache.SetCacheability(HttpCacheability.Public);
-				currentApp.Response.Cache.SetExpires(toRespond.ExpirationTime);
+				byte[] bytesToRespond = currentApp.Response.ContentEncoding.GetBytes(toRender);
+				currentApp.Response.AppendHeader(CONTENT_LENGTH_HEADER, bytesToRespond.Length.ToString());
+				currentApp.Response.BinaryWrite(bytesToRespond);
 			}
-
-			#endregion
-
-			#region Write rendered script data into the output stream.
-
-			byte[] bytes = currentApp.Response.ContentEncoding.GetBytes(toRespond.GetCachedCode());
-
-			currentApp.Response.AppendHeader(CONTENT_LENGTH_HEADER, bytes.Length.ToString());
-			currentApp.Response.BinaryWrite(bytes);
-
-			#endregion
 
 			// flush and quit response
 			currentApp.Response.Flush();

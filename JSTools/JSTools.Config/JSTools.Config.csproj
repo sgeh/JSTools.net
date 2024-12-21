@@ -81,7 +81,6 @@
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
-                <Folder RelPath = "Diagrams\" />
                 <File
                     RelPath = "JSTools\Config\AJSToolsConfigSectionHandlerFactory.cs"
                     SubType = "Code"
@@ -128,6 +127,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "JSTools\Config\ExceptionHandling\Serialization\Event.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Config\ExceptionHandling\Serialization\ExceptionHandling.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JSTools\Config\ScriptFileManagement\AJSToolsScriptFileSection.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -168,6 +177,26 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "JSTools\Config\ScriptFileManagement\Serialization\File.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Config\ScriptFileManagement\Serialization\Module.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Config\ScriptFileManagement\Serialization\Requires.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Config\ScriptFileManagement\Serialization\Scripts.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JSTools\Config\ScriptLoader\JSScriptLoaderHandler.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -178,7 +207,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JSTools\Xml\JSToolsXmlFunctions.cs"
+                    RelPath = "JSTools\Config\ScriptLoader\Serialization\ScriptFileLoader.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

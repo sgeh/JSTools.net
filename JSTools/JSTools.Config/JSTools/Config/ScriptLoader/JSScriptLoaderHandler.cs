@@ -20,7 +20,7 @@ using System.Text;
 using System.Xml;
 
 using JSTools.Config.ScriptFileManagement;
-using JSTools.Xml;
+using JSTools.Config.ScriptLoader.Serialization;
 
 namespace JSTools.Config.ScriptLoader
 {
@@ -33,13 +33,8 @@ namespace JSTools.Config.ScriptLoader
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private const string REQUIRES_ATTIRB = "requires";
-		private const string LOCATION_ATTIRB = "scriptFileLocation";
-		private const string INSERT_PREFIX_ATTIRB = "insertAppPrefix";
-		private const string ENCODE_LOCATION_ATTIRB = "encodeFileLocation";
-
-		private string _requiredModule = "";
-		private string _location = "";
+		private string _requiredModule = string.Empty;
+		private string _location = string.Empty;
 		private bool _insertLocationPrefix = false;
 		private bool _encodeLocation = false;
 		private string _sectionName = string.Empty;
@@ -99,7 +94,7 @@ namespace JSTools.Config.ScriptLoader
 		/// <param name="ownerConfig">Owner (parent) configuration instance.</param>
 		/// <param name="nodeName">Contains the name of the representing node.</param>
 		/// <exception cref="ArgumentNullException">An argument contains a null reference.</exception>
-		public JSScriptLoaderHandler(XmlNode scriptLoaderNode, IJSToolsConfiguration ownerConfig, string nodeName) : base(ownerConfig)
+		public JSScriptLoaderHandler(ScriptFileLoader scriptLoaderNode, IJSToolsConfiguration ownerConfig, string nodeName) : base(ownerConfig)
 		{
 			if (scriptLoaderNode == null)
 				throw new ArgumentNullException("scriptLoaderNode", "The given xml section contains a null reference.");
@@ -108,10 +103,10 @@ namespace JSTools.Config.ScriptLoader
 				throw new ArgumentNullException("nodeName", "The given node name contains a null reference.");
 
 			_sectionName = nodeName;
-			_requiredModule = JSToolsXmlFunctions.GetAttributeFromNode(scriptLoaderNode, REQUIRES_ATTIRB);
-			_location = JSToolsXmlFunctions.GetAttributeFromNode(scriptLoaderNode, LOCATION_ATTIRB);
-			_insertLocationPrefix = JSToolsXmlFunctions.GetBoolFromNodeValue(scriptLoaderNode.Attributes[INSERT_PREFIX_ATTIRB]);
-			_encodeLocation = JSToolsXmlFunctions.GetBoolFromNodeValue(scriptLoaderNode.Attributes[ENCODE_LOCATION_ATTIRB]);
+			_requiredModule = scriptLoaderNode.Requires;
+			_location = scriptLoaderNode.ScriptFileLocation;
+			_insertLocationPrefix = scriptLoaderNode.InsertAppPrefix;
+			_encodeLocation = scriptLoaderNode.EncodeFileLocation;
 		}
 
 		//--------------------------------------------------------------------

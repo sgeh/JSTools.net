@@ -16,6 +16,8 @@
 
 using System;
 
+using JSTools.Parser.Cruncher.Nodes;
+
 namespace JSTools.Parser.Cruncher
 {
 	/// <summary>

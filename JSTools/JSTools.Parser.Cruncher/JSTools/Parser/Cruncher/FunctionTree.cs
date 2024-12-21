@@ -17,6 +17,8 @@
 using System;
 using System.Collections;
 
+using JSTools.Parser.Cruncher.Nodes;
+
 namespace JSTools.Parser.Cruncher
 {
 	internal class FunctionTree
@@ -55,8 +57,8 @@ namespace JSTools.Parser.Cruncher
 			while (currentNode != null)
 			{
 				// search for function property
-				if (currentNode.GetProp(NodeProperty.Function) != null)
-					_childTrees.Add(new FunctionTree((Node)currentNode.GetProp(NodeProperty.Function)));
+				if (currentNode.Props.GetProp(NodeProperty.Function) != null)
+					_childTrees.Add(new FunctionTree((Node)currentNode.Props.GetProp(NodeProperty.Function)));
 
 				// search in the current tree for a node with a function property
 				InitFunctionNodes(currentNode);

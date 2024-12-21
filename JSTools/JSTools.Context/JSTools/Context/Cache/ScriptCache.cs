@@ -23,9 +23,14 @@ using JSTools.Parser.Cruncher;
 namespace JSTools.Context.Cache
 {
 	/// <summary>
-	/// Caches script files and crunches them, if required. This class is safe for multithreaded
-	/// operations.
+	/// Caches script files and crunches them, if required. This class and
+	/// all its instance methods are safe for multithreaded operations.
 	/// </summary>
+	/// <remarks>
+	/// To override some functionalities of this class, you have to derive
+	/// from AJSToolsContext and override the ReinitContext method in order
+	/// to return your own ScriptCache implementation.
+	/// </remarks>
 	public class ScriptCache : ICollection
 	{
 		//--------------------------------------------------------------------
@@ -33,7 +38,7 @@ namespace JSTools.Context.Cache
 		//--------------------------------------------------------------------
 
 		private Hashtable _cache = Hashtable.Synchronized(new Hashtable());
-		private ScriptVersion _version = ScriptVersion.Unkonwn;
+		private float _version = -1;
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -94,7 +99,7 @@ namespace JSTools.Context.Cache
 		/// JavaScript version of the script files, used for crunching the script files.
 		/// The given float should have a format like 1.5 or 1.2 .
 		/// </param>
-		internal ScriptCache(ScriptVersion scriptVersion)
+		internal ScriptCache(float scriptVersion)
 		{
 			_version = scriptVersion;
 		}
@@ -145,7 +150,7 @@ namespace JSTools.Context.Cache
 		/// <param name="script">Script code to cache.</param>
 		/// <param name="checkSyntax">True to check the syntax of the read script data.</param>
 		/// <param name="crunch">True to crunch the read script data. This will implicit check the script data syntax.</param>
-		public IScriptContainer AddScriptToChache(string cacheId, string script, bool checkSyntax, bool crunch)
+		public virtual IScriptContainer AddScriptToChache(string cacheId, string script, bool checkSyntax, bool crunch)
 		{
 			return AddScriptToChache(cacheId, -1, script, checkSyntax, crunch, _version);
 		}
@@ -161,7 +166,7 @@ namespace JSTools.Context.Cache
 		/// <param name="checkSyntax">True to check the syntax of the read script data.</param>
 		/// <param name="crunch">True to crunch the read script data. This will implicit check the script data syntax.</param>
 		/// <param name="scriptVersion">Script version, which is used to crunch and to check the script syntax.</param>
-		public IScriptContainer AddScriptToChache(string cacheId, int cacheExpiration, string script, bool checkSyntax, bool crunch, ScriptVersion scriptVersion)
+		public virtual IScriptContainer AddScriptToChache(string cacheId, int cacheExpiration, string script, bool checkSyntax, bool crunch, float scriptVersion)
 		{
 			return AddBucketToCache(cacheId, new ScriptDataLoader(script, scriptVersion), cacheExpiration, checkSyntax, crunch);
 		}
@@ -175,7 +180,7 @@ namespace JSTools.Context.Cache
 		/// <param name="scriptFilePath">Path of the script file to cache.</param>
 		/// <param name="checkSyntax">True to check the syntax of the read script data.</param>
 		/// <param name="crunch">True to crunch the read script data. This will implicit check the script data syntax.</param>
-		public IScriptContainer AddFileToCache(string cacheId, string scriptFilePath, bool checkSyntax, bool crunch)
+		public virtual IScriptContainer AddFileToCache(string cacheId, string scriptFilePath, bool checkSyntax, bool crunch)
 		{
 			return AddFileToCache(cacheId, -1, scriptFilePath, checkSyntax, crunch, _version);
 		}
@@ -191,7 +196,7 @@ namespace JSTools.Context.Cache
 		/// <param name="checkSyntax">True to check the syntax of the read script data.</param>
 		/// <param name="crunch">True to crunch the read script data. This will implicit check the script data syntax.</param>
 		/// <param name="scriptVersion">Script version, which is used to crunch and to check the script syntax.</param>
-		public IScriptContainer AddFileToCache(string cacheId, int cacheExpiration, string scriptFilePath, bool checkSyntax, bool crunch, ScriptVersion scriptVersion)
+		public virtual IScriptContainer AddFileToCache(string cacheId, int cacheExpiration, string scriptFilePath, bool checkSyntax, bool crunch, float scriptVersion)
 		{
 			return AddBucketToCache(cacheId, new FileDataLoader(scriptFilePath, scriptVersion), cacheExpiration, checkSyntax, crunch);
 		}

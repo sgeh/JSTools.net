@@ -53,7 +53,7 @@ namespace JSTools.Context.Cache
 		/// <summary>
 		/// Creates a new FileDataLoader instance.
 		/// </summary>
-		internal FileDataLoader(string scriptFilePath, ScriptVersion version) : base(version)
+		internal FileDataLoader(string scriptFilePath, float version) : base(version)
 		{
 			if (scriptFilePath == null)
 				throw new ArgumentNullException("scriptFilePath");

@@ -16,6 +16,9 @@
 
 using System;
 using System.Xml;
+using System.Xml.Serialization;
+
+using JSTools.Config.ScriptFileManagement.Serialization;
 
 namespace JSTools.Config.ScriptFileManagement
 {
@@ -29,6 +32,21 @@ namespace JSTools.Config.ScriptFileManagement
 		// Declarations
 		//--------------------------------------------------------------------
 
+		/// <summary>
+		/// Gets the namespace abbreviation.
+		/// </summary>
+		public const string NAMESPACE_ABBR = "js";
+
+		/// <summary>
+		/// Gets the namespace abbreviation pattern, required for x-path.
+		/// </summary>
+		public const string NAMESPACE_XPATH = NAMESPACE_ABBR + ":" + SECTION_NAME;
+
+		/// <summary>
+		/// Gets the namespace of the xml nodes.
+		/// </summary>
+		public const string NAMESPACE = "http://www.jstools.net/#scripts";
+		
 		/// <summary>
 		/// Gets the name of the script file xml section.
 		/// </summary>
@@ -72,7 +90,10 @@ namespace JSTools.Config.ScriptFileManagement
 		/// <param name="ownerConfig">Owner (parent) configuration instance.</param>
 		public override AJSToolsSection CreateInstance(XmlNode section, IJSToolsConfiguration ownerConfig)
 		{
-			return new JSScriptFileHandler(section, ownerConfig, SECTION_NAME);
+			XmlSerializer serializer = new XmlSerializer(typeof(Scripts));
+			Scripts scriptsSection = (serializer.Deserialize(new XmlNodeReader(section)) as Scripts);
+
+			return new JSScriptFileHandler(scriptsSection, ownerConfig, SECTION_NAME);
 		}
 	}
 }

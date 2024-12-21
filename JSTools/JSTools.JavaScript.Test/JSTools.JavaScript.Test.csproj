@@ -183,6 +183,10 @@
                     BuildAction = "Content"
                 />
                 <File
+                    RelPath = "JSTools\Test\SimpleObjectSerializer.js"
+                    BuildAction = "Content"
+                />
+                <File
                     RelPath = "JSTools\Test\StackTrace.js"
                     BuildAction = "Content"
                 />

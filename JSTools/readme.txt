@@ -20,4 +20,4 @@
  *  Silvan Gehrig
  */
 
-RELEASE 0.40
+RELEASE 0.41

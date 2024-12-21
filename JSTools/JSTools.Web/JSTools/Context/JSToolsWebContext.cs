@@ -34,6 +34,17 @@ namespace JSTools.Context
 		/// <summary>
 		/// Gets the one and only JSToolsWebContext instance.
 		/// </summary>
+		/// <remarks>
+		/// You should not work with the global context instance because the values
+		/// of the properties may change during a request. You should create an
+		/// immutalbe clone and use it to perform mutliple operations on the context.
+		///  <code>
+		///   JSToolsWebContext webContext = JSToolsWebContext.Instance;
+		///   JSToolsWebContext immutableWebContext = (JSToolsWebContext)_webContext.Clone();
+		///   
+		///   // do some operations with "immutableWebContext"
+		///  </code>
+		/// </remarks>
 		public static readonly JSToolsWebContext Instance = new JSToolsWebContext();
 
 		private const string JSTOOLS_SETTINGS_SECTION = "JSTools.net";
@@ -77,6 +88,15 @@ namespace JSTools.Context
 		//--------------------------------------------------------------------
 
 		/// <summary>
+		/// Creates a new clone of the current instance.
+		/// </summary>
+		/// <returns>Returns the cloned instance.</returns>
+		protected override AJSToolsContext CloneInstance()
+		{
+			return new JSToolsWebContext();
+		}
+
+		/// <summary>
 		/// Creates a new IContextConfigHandler instance, which is appropriated
 		/// to the current environment.
 		/// </summary>
@@ -86,7 +106,7 @@ namespace JSTools.Context
 			IContextConfigHandler configHandler = (HttpContext.GetAppConfig(JSTOOLS_SETTINGS_SECTION) as IContextConfigHandler);
 
 			if (configHandler == null)
-				throw new ConfigurationException("Could not find a '" + JSTOOLS_SETTINGS_SECTION + "' section in the weg.config file!");
+				throw new ConfigurationException("Could not find a '" + JSTOOLS_SETTINGS_SECTION + "' section in the weg.config file.");
 
 			return configHandler;
 		}

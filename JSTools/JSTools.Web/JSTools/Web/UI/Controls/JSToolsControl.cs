@@ -59,7 +59,7 @@ namespace JSTools.Web.UI.Controls
 		/// <remarks>The attributes are neccessary for the designer. Otherwise, it crashes.</remarks>
 		[property: Browsable(false)]
 		[property: DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public JSToolsWebContext JSToolsContext
+		public virtual JSToolsWebContext JSToolsContext
 		{
 			get { return Page.JSToolsContext; }
 		}
@@ -107,7 +107,7 @@ namespace JSTools.Web.UI.Controls
 			base.OnInit(e);
 
 			if ((_jsToolsPage = (base.Page as JSToolsPage)) == null)
-				throw new InvalidOperationException("Could not initialize the parent page instance. The parent page must be derived from JSToolsPage!");
+				throw new InvalidOperationException("Could not initialize the parent page instance. The parent page must be derived from JSToolsPage.");
 		}
 
 		//--------------------------------------------------------------------

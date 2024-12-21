@@ -15,20 +15,25 @@
  */
 
 using System;
-using System.Collections;
 using System.Text;
 using System.Text.RegularExpressions;
+
+using JSTools.Util.Serialization;
 
 namespace JSTools.ScriptTypes
 {
 	/// <summary>
-	/// 
+	/// Represents the javascript Object type. The string representation will
+	/// begin with a '[' or '{' and end with a ']' or '}' character.
 	/// </summary>
+	/// <remarks>Arrays are objects too.</remarks>
 	public class Object : AScriptType
 	{
 		//--------------------------------------------------------------------
 		// Declarations
 		//--------------------------------------------------------------------
+
+		private static readonly Regex OBJECT_PATTERN = new Regex(@"^\s*([\[\{]).*\1\s*$", RegexOptions.Compiled | RegexOptions.Singleline);
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -62,51 +67,51 @@ namespace JSTools.ScriptTypes
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.IsTypeOf" />
 		/// </summary>
 		/// <param name="toCheck">
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.IsTypeOf" />
 		/// </param>
 		/// <returns>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.IsTypeOf" />
 		/// </returns>
 		public override bool IsTypeOf(string toCheck)
 		{
-			return true;
+			return (toCheck != null && OBJECT_PATTERN.IsMatch(toCheck));
 		}
 
 		/// <summary>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetStringRepresentation" />
 		/// </summary>
 		/// <param name="valueToConvert">
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetStringRepresentation" />
 		/// </param>
 		/// <param name="encodeValue">
-		///  <see cref="AScriptType"/>
+		///  <see cref="AScriptType.GetStringRepresentation"/>
 		/// </param>
 		/// <returns>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetStringRepresentation" />
 		/// </returns>
 		protected override string GetStringRepresentation(object valueToConvert, bool encodeValue)
 		{
-			return null;
+			return new SimpleObjectSerializer().Serialize(valueToConvert, encodeValue);
 		}
 
 		/// <summary>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetValueFromString" />
 		/// </summary>
 		/// <param name="valueToConvert">
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetValueFromString" />
 		/// </param>
 		/// <param name="decodeValue">
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetValueFromString" />
 		/// </param>
 		/// <returns>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetValueFromString" />
 		/// </returns>
 		protected override object GetValueFromString(string valueToConvert, bool decodeValue)
 		{
-			return null;
+			return new SimpleObjectSerializer().Deserialize(valueToConvert, decodeValue);
 		}
 	}
 }

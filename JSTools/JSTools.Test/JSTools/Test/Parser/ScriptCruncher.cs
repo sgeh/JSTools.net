@@ -84,6 +84,7 @@ namespace JSTools.Test.Parser.Cruncher
 		[Test()]
 		public void CrunchScript()
 		{
+			//string output = _cruncher.CrunchScript("var crunchy={a3:3,b6:{},c0:{},d5:{},d3i:\"<tes\\ \t\",e0$:' testy\\n',_d3e:false,ar:[38,56,'string',[0,2,4],{}]}", "Crunch Script Test", ScriptVersion.Version_1_3);
 			string output = _cruncher.CrunchScript(ReadFile(), "Crunch Script Test", ScriptVersion.Version_1_3);
 			Assert.IsFalse(output == null || output.Length == 0);
 		}
@@ -108,7 +109,6 @@ namespace JSTools.Test.Parser.Cruncher
 			string output = _cruncher.RemoveScriptFileComments(Settings.Instance.CrunchFilePath);
 			Assert.IsFalse(output == null || output.Length == 0);
 		}
-
 
 		private void WriteFile(string toWrite)
 		{

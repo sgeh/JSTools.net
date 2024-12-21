@@ -75,13 +75,13 @@ namespace JSTools.ScriptTypes
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.IsTypeOf" />
 		/// </summary>
 		/// <param name="toCheck">
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.IsTypeOf" />
 		/// </param>
 		/// <returns>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.IsTypeOf" />
 		/// </returns>
 		public override bool IsTypeOf(string toCheck)
 		{
@@ -89,16 +89,16 @@ namespace JSTools.ScriptTypes
 		}
 
 		/// <summary>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetStringRepresentation" />
 		/// </summary>
 		/// <param name="valueToConvert">
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetStringRepresentation" />
 		/// </param>
 		/// <param name="encodeValue">
-		///  <see cref="AScriptType"/>
+		///  <see cref="AScriptType.GetStringRepresentation"/>
 		/// </param>
 		/// <returns>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetStringRepresentation" />
 		/// </returns>
 		protected override string GetStringRepresentation(object valueToConvert, bool encodeValue)
 		{
@@ -113,16 +113,16 @@ namespace JSTools.ScriptTypes
 		}
 
 		/// <summary>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetValueFromString" />
 		/// </summary>
 		/// <param name="valueToConvert">
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetValueFromString" />
 		/// </param>
 		/// <param name="decodeValue">
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetValueFromString" />
 		/// </param>
 		/// <returns>
-		///  <see cref="AScriptType" />
+		///  <see cref="AScriptType.GetValueFromString" />
 		/// </returns>
 		protected override object GetValueFromString(string valueToConvert, bool decodeValue)
 		{

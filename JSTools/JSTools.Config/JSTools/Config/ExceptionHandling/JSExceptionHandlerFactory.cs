@@ -17,6 +17,9 @@
 using System;
 using System.Configuration;
 using System.Xml;
+using System.Xml.Serialization;
+
+using JSTools.Config.ExceptionHandling.Serialization;
 
 namespace JSTools.Config.ExceptionHandling
 {
@@ -29,6 +32,11 @@ namespace JSTools.Config.ExceptionHandling
 		//--------------------------------------------------------------------
 		// Declarations
 		//--------------------------------------------------------------------
+
+		/// <summary>
+		/// Gets the namespace of the xml nodes.
+		/// </summary>
+		public const string NAMESPACE = "http://www.jstools.net/#exceptionHandling";
 
 		/// <summary>
 		/// Gets the name of the exception handling xml section.
@@ -73,7 +81,10 @@ namespace JSTools.Config.ExceptionHandling
 		/// <param name="ownerConfig">Owner (parent) configuration instance.</param>
 		public override AJSToolsSection CreateInstance(XmlNode section, IJSToolsConfiguration ownerConfig)
 		{
-			return new JSExceptionHandler(section, ownerConfig, SECTION_NAME);
+			XmlSerializer serializer = new XmlSerializer(typeof(JSTools.Config.ExceptionHandling.Serialization.ExceptionHandling));
+			JSTools.Config.ExceptionHandling.Serialization.ExceptionHandling exceptionHandlingSection = (serializer.Deserialize(new XmlNodeReader(section)) as JSTools.Config.ExceptionHandling.Serialization.ExceptionHandling);
+
+			return new JSExceptionHandler(exceptionHandlingSection, ownerConfig, SECTION_NAME);
 		}
 	}
 }
