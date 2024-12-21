@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.Cruncher.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -44,15 +50,16 @@ namespace JSTools.Parser.Cruncher
 		/// <summary>
 		/// Gets the implementation version.
 		/// 
-		/// <p>
+		/// <para>
 		/// The implementation version is of the form
 		/// <pre>
-		///    "<i>name langVer</i> <code>release</code> <i>relNum date</i>"
+		///    "<i>name langVer</i> <c>release</c> <i>relNum date</i>"
 		/// </pre>
 		/// where <i>name</i> is the name of the product, <i>langVer</i> is
 		/// the language version, <i>relNum</i> is the release number, and
 		/// <i>date</i> is the release date for that specific
 		/// release in the form "yyyy mm dd".
+		/// </para>
 		/// </summary>
 		public string ImplementationVersion
 		{

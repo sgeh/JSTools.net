@@ -1,4 +1,7 @@
 /*
+ * JSTools.ScriptTypes.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -119,7 +125,7 @@ namespace JSTools.ScriptTypes
 				// encode string and insert quotes
 				return string.Format(
 					SCRIPT_STRING,
-					ConvertUtilities.ScriptEscape(convertedValue) );
+					ConvertUtilities.Instance.ScriptEscape(convertedValue) );
 			}
 			else
 			{
@@ -155,7 +161,7 @@ namespace JSTools.ScriptTypes
 			valueToConvert = GetStringValue(valueToConvert);
 
 			if (decodeValue)
-				return ConvertUtilities.ScriptUnescape(valueToConvert);
+				return ConvertUtilities.Instance.ScriptUnescape(valueToConvert);
 
 			return valueToConvert;
 		}

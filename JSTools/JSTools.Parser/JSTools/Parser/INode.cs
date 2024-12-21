@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -28,14 +34,20 @@ namespace JSTools.Parser
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		/// Fired if a node begins.
+		/// Returns the assigned parse item instance.
 		/// </summary>
-		event EventHandler OnBegin;
+		IParseItem ParseItem
+		{
+			get;
+		}
 
 		/// <summary>
-		/// Fired if a node ends.
+		/// Returns the parent node instance.
 		/// </summary>
-		event EventHandler OnEnd;
+		INode ParentNode
+		{
+			get;
+		}
 
 		/// <summary>
 		/// Returns the children of the current node instance.
@@ -54,23 +66,25 @@ namespace JSTools.Parser
 		}
 
 		/// <summary>
-		/// Returns the line number on which this item ends.
+		/// Gets/sets the line number on which this item ends.
 		/// </summary>
 		int LineNumberEnd
 		{
 			get;
-		}
-
-		/// <summary>
-		/// Gets/sets the absolute start offset.
-		/// </summary>
-		int OffsetEnd
-		{
-			get;
+			set;
 		}
 
 		/// <summary>
 		/// Gets/sets the absolute end offset.
+		/// </summary>
+		int OffsetEnd
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Gets the absolute start offset.
 		/// </summary>
 		int OffsetBegin
 		{
@@ -78,7 +92,7 @@ namespace JSTools.Parser
 		}
 
 		/// <summary>
-		/// Gets/sets the start offset of the start line.
+		/// Gets the start offset of the start line.
 		/// </summary>
 		int LineOffsetBegin
 		{
@@ -86,19 +100,12 @@ namespace JSTools.Parser
 		}
 
 		/// <summary>
-		/// Gets/sets the end offset of the start end.
+		/// Gets/sets the end offset.
 		/// </summary>
 		int LineOffsetEnd
 		{
 			get;
-		}
-
-		/// <summary>
-		/// Returns the name of the representing parse item.
-		/// </summary>
-		string ParseItemName
-		{
-			get;
+			set;
 		}
 
 		/// <summary>
@@ -157,23 +164,6 @@ namespace JSTools.Parser
 		//--------------------------------------------------------------------
 		// Methods
 		//--------------------------------------------------------------------
-
-		/// <summary>
-		/// Initilizes this node instance. Informations about the line number and line offset
-		/// are specified with the arguments of this method.
-		/// </summary>
-		/// <param name="globalCode">Whole code to parse.</param>
-		/// <param name="offsetBegin">Absolute start offset.</param>
-		/// <param name="lineOffsetBegin">Offset of the start line.</param>
-		/// <param name="lineNumberBegin">Line number, at which this instance begins.</param>
-		void SetUpBegin(string globalCode, int offsetBegin, int lineOffsetBegin, int lineNumberBegin);
-
-		/// <summary>
-		/// Initilizes the end of this instance.
-		/// </summary>
-		/// <param name="lineOffsetEnd">Offset of the end line.</param>
-		/// <param name="lineNumberEnd">Line number, at which this instance ends.</param>
-		void SetUpEnd(int lineOffsetEnd, int lineNumberEnd);
 
 		/// <summary>
 		/// Adds a new child to the current node. It will be append on the end of the list.

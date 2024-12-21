@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.Cruncher.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -27,7 +33,7 @@ namespace JSTools.Parser.Cruncher
 	public class KeywordMapper
 	{
 		public static readonly KeywordMapper Instance = new KeywordMapper();
-		private static readonly KeywordMappingContiner MAPPINGS = new KeywordMappingContiner();
+		private static readonly KeywordMappingContainer MAPPINGS = new KeywordMappingContainer();
 
 		/// <summary>
 		/// Get the name of the keyword associated with the specified
@@ -148,11 +154,11 @@ namespace JSTools.Parser.Cruncher
 		/// Internal mapping container class. This class stores the
 		/// mappings and maps them.
 		/// </summary>
-		private class KeywordMappingContiner
+		private class KeywordMappingContainer
 		{
 			private SortedList _mappings = new SortedList();
 
-			internal KeywordMappingContiner()
+			internal KeywordMappingContainer()
 			{
 			}
 

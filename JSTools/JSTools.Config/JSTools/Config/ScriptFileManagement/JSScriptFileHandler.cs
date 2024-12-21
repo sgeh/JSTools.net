@@ -1,4 +1,7 @@
 /*
+ * JSTools.Config.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -83,6 +89,7 @@ namespace JSTools.Config.ScriptFileManagement
 		private string _extension = ".js";
 		private JSModuleContainer _childModules = null;
 		private string _sectionName = string.Empty;
+		private int _cacheExpiration = 20;
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -170,6 +177,14 @@ namespace JSTools.Config.ScriptFileManagement
 			get { return _sectionName; }
 		}
 
+		/// <summary>
+		/// Gets the default expiration time of the cached script items.
+		/// </summary>
+		public int CacheExpiration
+		{
+			get { return _cacheExpiration; }
+		}
+
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -197,6 +212,7 @@ namespace JSTools.Config.ScriptFileManagement
 			_debugMode = sectionData.Debug;
 			_scriptType = sectionData.Language.ToLower();
 			_contentType = sectionData.ContentType.ToLower();
+			_cacheExpiration = (sectionData.CacheExpiration > -1) ? sectionData.CacheExpiration : 0;
 
 			InitModuleNodes(sectionData.Modules);
 		}

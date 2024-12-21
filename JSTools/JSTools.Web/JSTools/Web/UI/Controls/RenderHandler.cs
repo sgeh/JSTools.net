@@ -1,4 +1,7 @@
 /*
+ * JSTools.Web.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -30,11 +36,28 @@ namespace JSTools.Web.UI.Controls
 	/// a IJSToolsRenderHandler instance. The child controls will be
 	/// filled into the Controls collection an instance of this class.
 	/// 
+	/// <para>
 	/// As default, this collection accommodates three controls:
-	///  - A LiteralControl, which contains a carriage return.
-	///  - A Comment control, which contains the name of the section to
-	///    render.
-	///  - A LiteralControl, which contains a carriage return.
+	/// 
+	/// <list type="bullet">
+	///  <item>
+	///   <description>
+	///   A LiteralControl, which contains a carriage return.
+	///   </description>
+	///  </item>
+	///  <item>
+	///   <description>
+	///   A Comment control, which contains the name of the section
+	///   to render.
+	///   </description>
+	///  </item>
+	///  <item>
+	///   <description>
+	///   A LiteralControl, which contains a carriage return.
+	///   </description>
+	///  </item>
+	/// </list>
+	/// </para>
 	/// </summary>
 	public class RenderHandler : JSToolsControl
 	{

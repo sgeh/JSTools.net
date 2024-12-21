@@ -1,4 +1,7 @@
 /*
+ * JSTools.Web.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -108,11 +114,14 @@ namespace JSTools.Web.UI.Controls
 		/// Adds a new configuration render handler. The configuration sections are
 		/// rendered into the header control.
 		/// 
+		/// <para>
 		/// Render handlers are required for rendering configuration sections, which
 		/// are specified in the JSToolsConfiguration (web.config).
-		/// 
-		/// The render handlers should be added before the render event occurs.
+		/// </para>
 		/// </summary>
+		/// <remarks>
+		/// The render handlers should be added before the render event occurs.
+		/// </remarks>
 		/// <param name="handler">Handler to add.</param>
 		/// <exception cref="ArgumentNullException">The given handler contains a null reference.</exception>
 		public void AddConfigRenderHandler(IJSToolsRenderHandler handler)

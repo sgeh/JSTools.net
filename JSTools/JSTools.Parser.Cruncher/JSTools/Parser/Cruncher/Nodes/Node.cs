@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.Cruncher.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Norris Boyd
+ *  Roger Lawrence
+ *  Mike McCabe
+ *  Silvan Gehrig
  */
 
 using System;
@@ -24,39 +33,45 @@ namespace JSTools.Parser.Cruncher.Nodes
 	/// <summary>
 	/// This class represents the intermediate code representation. 
 	/// 
+	/// <para>
 	/// Function nodes (and its child function nodes) are generated as follows:
+	///  <code>
+	///  Description             | Tree
+	///  ------------------------------------------------------------
+	///  - Top or function node     + Node : FunctionNode / Node
+	///  - GetProp() Method of        + Props.Source : byte[] 
+	///    top or function node
+	///  - First Property of top      + First : StringNode
+	///    top or function node
+	///  - GetProp() Method of         + Props.GetProp(NodeProperty.Function) : FunctionNode
+	///    first child node
+	///  </code>
+	/// </para>
 	/// 
-	/// Description             | Tree
-	/// ------------------------------------------------------------
-	/// - Top or function node     + Node : FunctionNode / Node
-	/// - GetProp() Method of        + Props.Source : byte[] 
-	///   top or function node
-	/// - First Property of top      + First : StringNode
-	///   top or function node
-	/// - GetProp() Method of         + Props.GetProp(NodeProperty.Function) : FunctionNode
-	///   first child node
-	/// 
+	/// <para>
 	/// The First property points to a nested hirarchy. The Next
 	/// property determines the next Node of the current hirarchy.
+	/// </para>
 	/// 
-	/// 
+	/// <para>
 	/// The node tree is generated as follows:
-	///  <c>
-	/// Description             | Tree
-	/// ------------------------------------------------------------
-	/// - Top or function node     + Node : FunctionNode / Node
-	/// - First property of         + First : StringNode
-	///   top or function node
-	///	- Next property of          + Next
-	///	  StringNode                + Next
-	///	- ...                       + First
+	///  <code>
+	///  Description             | Tree
+	///  ------------------------------------------------------------
+	///  - Top or function node     + Node : FunctionNode / Node
+	///  - First property of         + First : StringNode
+	///    top or function node
+	///	 - Next property of          + Next
+	///	   StringNode                + Next
+	///	 - ...                       + First
+	///	                              + Next
+	///	                              + Next
+	///	                              + Last
 	///	                             + Next
-	///	                             + Next
-	///	                             + Last
-	///	                            + Next
-	///	- Last property of          + Last
-	///	  top or function node
-	///	 </c>
+	///	 - Last property of          + Last
+	///	   top or function node
+	///	 </code>
+	///	</para>
 	/// </summary>
 	/// <remarks>
 	/// Deserialization of a node tree is not fully implemented yet.
@@ -454,7 +469,7 @@ namespace JSTools.Parser.Cruncher.Nodes
 			}
 		}
 
-		/**
+		/*
 		 * Add 'child' before 'node'.
 		 */
 		public void AddChildBefore(Node newChild, Node node) 
@@ -472,7 +487,7 @@ namespace JSTools.Parser.Cruncher.Nodes
 			AddChildAfter(newChild, prev);
 		}
 
-		/**
+		/*
 		 * Add 'child' after 'node'.
 		 */
 		public void AddChildAfter(Node newChild, Node node) 

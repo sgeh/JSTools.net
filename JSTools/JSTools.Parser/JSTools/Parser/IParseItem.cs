@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -21,24 +27,20 @@ namespace JSTools.Parser
 	/// <summary>
 	/// Descripts an item, which is used to parse the specified string.
 	/// 
+	/// <para>
 	/// After the function Begin() has returned true, the CreateNode() method
 	/// will be called to create the node tree.
+	/// </para>
 	/// 
+	/// <para>
 	/// For example, a for-loop statement can be specified with this interface.
+	/// </para>
 	/// </summary>
-	public interface IParseItem
+	public interface IParseItem : IParserContextItem
 	{
 		//--------------------------------------------------------------------
 		// Properties
 		//--------------------------------------------------------------------
-
-		/// <summary>
-		/// Returns the name of this parse item.
-		/// </summary>
-		string ItemName
-		{
-			get;
-		}
 
 		/// <summary>
 		/// Returns true, if the ending character can not be a start character
@@ -46,6 +48,21 @@ namespace JSTools.Parser
 		/// current character and continue with the next. The method will be called
 		/// after End() has returned true.
 		/// </summary>
+		/// <example>
+		/// The following string should be parsed:
+		/// 
+		/// <para>
+		/// <c>{hello}</c>
+		/// </para>
+		/// 
+		/// <para>
+		/// The parse item begins with <c>{</c> and ends with <c>}</c>. 
+		/// This means that <c>}</c> is the last character of the item (the
+		/// <c>bool End()</c> method returns true) which should not be
+		/// parsed by another parse item. Then the IsAbsoluteEnd should
+		/// return true.
+		/// </para>
+		/// </example>
 		bool IsAbsoluteEnd
 		{
 			get;
@@ -56,31 +73,30 @@ namespace JSTools.Parser
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		/// Returns a new INode object. It is used to create the node tree.
+		/// Checks whether the current item is active or not.
 		/// </summary>
-		INode CreateNode();
-
-		/// <summary>
-		/// Returns true, if this parse item begins at the specified index.
-		/// </summary>
+		/// <returns>
+		/// Returns the created node.
+		/// </returns>
+		/// <param name="scope">IScopeParser which parses the string.</param>
 		/// <param name="parentNode">Parent node instance.</param>
 		/// <param name="parseString">String, which should be parsed.</param>
-		/// <param name="index">Long value, which represents the current scan index.</param>
-		bool Begin(INode parentNode, string parseString, int index);
+		/// <param name="absOffsetBegin">Absolute begin offset.</param>
+		/// <param name="lineOffsetBegin">Offset of the start line.</param>
+		/// <param name="lineNumberBegin">Line number, at which this instance begins.</param>
+		INode Begin(IScopeParser scope, INode parentNode, string parseString, int absOffsetBegin, int lineOffsetBegin, int lineNumberBegin);
 
 		/// <summary>
-		/// Returns true, if the given char ends this parse item.
+		/// Checks whether the current item is inactive.
 		/// </summary>
-		/// <param name="parentNode">Parent node instance.</param>
+		/// <returns>
+		/// Returns true, if the current item is not anctive anymore.
+		/// </returns>
+		/// <param name="scope">IScopeParser which parses the string.</param>
+		/// <param name="parentNode">Current node instance.</param>
 		/// <param name="parseString">String, which should be parsed.</param>
 		/// <param name="index">Long value, which represents the current scan index.</param>
-		bool End(INode parentNode, string parseString, int index);
-
-		/// <summary>
-		/// Sets the parent parser, which can be used to create recursive calls.
-		/// </summary>
-		/// <param name="parent">The parent parser.</param>
-		/// <exception cref="InvalidOperationException">A parent parser instance was already set.</exception>
-		void SetParser(TokenParser parent);
+		/// <param name="length">Length (number of parsed characters) of the current parse item.</param>
+		bool End(IScopeParser scope, INode parentNode, string parseString, int index, int length);
 	}
 }

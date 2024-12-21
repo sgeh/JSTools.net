@@ -1,4 +1,7 @@
 /*
+ * JSTools.Context.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -37,8 +43,14 @@ namespace JSTools.Context.Cache
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private Hashtable _cache = Hashtable.Synchronized(new Hashtable());
-		private float _version = -1;
+		/// <summary>
+		/// Gets the one and only ScriptCache instance.
+		/// </summary>
+		public static ScriptCache Instance = new ScriptCache();
+
+		private ScriptCacheCollector _collector = null;
+		private Hashtable _cache = new Hashtable();
+		// attention: Hashtable.Synchronized(new Hashtable()); does not provide read sync
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -49,17 +61,7 @@ namespace JSTools.Context.Cache
 		/// </summary>
 		public IScriptContainer this[string cacheId]
 		{
-			get
-			{
-				try
-				{
-					return GetBucketById(cacheId);
-				}
-				catch (Exception e)
-				{
-					throw new CacheException(cacheId, "Error while reading the cache item data.", e);
-				}
-			}
+			get { return GetBucketById(cacheId); }
 		}
 
 		/// <summary>
@@ -83,9 +85,14 @@ namespace JSTools.Context.Cache
 			}
 		}
 
-		private Hashtable Cache
+		/// <summary>
+		/// Gets an object which can be used to synchronize the
+		/// access to the cache. You should lock this property if you
+		/// d'like to iterate throught the cache.
+		/// </summary>
+		public object SyncRoot
 		{
-			get { return _cache; }
+			get { return this; }
 		}
 
 		//--------------------------------------------------------------------
@@ -95,13 +102,9 @@ namespace JSTools.Context.Cache
 		/// <summary>
 		/// Creates a new JSScriptCache instance.
 		/// </summary>
-		/// <param name="scriptVersion">
-		/// JavaScript version of the script files, used for crunching the script files.
-		/// The given float should have a format like 1.5 or 1.2 .
-		/// </param>
-		internal ScriptCache(float scriptVersion)
+		protected ScriptCache()
 		{
-			_version = scriptVersion;
+			_collector = new ScriptCacheCollector(SyncRoot, _cache);
 		}
 
 		//--------------------------------------------------------------------
@@ -117,42 +120,27 @@ namespace JSTools.Context.Cache
 		/// </summary>
 		public void Clear()
 		{
-			Cache.Clear();
-		}
-
-		/// <summary>
-		/// Checks whether the specified id is stored in the cache.
-		/// </summary>
-		/// <param name="cacheId">Cache id to check.</param>
-		/// <returns>Returns true if an item with the given id is stored in the cache.</returns>
-		public bool HasKey(string cacheId)
-		{
-			return (GetBucketById(cacheId) != null);
+			lock (SyncRoot)
+			{
+				_cache.Clear();
+			}
 		}
 
 		/// <summary>
 		/// Removes the cached item with the given cache id. The method call is
 		/// ignored if the given cache id cannot be found.
 		/// </summary>
+		/// <remarks>
+		/// Caution:<br/>
+		/// The item is not deleted immediately. It's removed after the collector
+		/// has cleaned up all expired cache items.</remarks>
 		/// <param name="cacheId">Id of the cached item to remove.</param>
 		public void Remove(string cacheId)
 		{
-			if (HasKey(cacheId))
-				Cache.Remove(cacheId);
-		}
+			IScriptContainer specifiedItem = GetBucketById(cacheId);
 
-		/// <summary>
-		/// Adds a new bucket to this cache object. This type of cache
-		/// initializes the given data by the script argument. The data
-		/// are never mutated and stored until the user will deleted them.
-		/// </summary>
-		/// <param name="cacheId">Id of the bucket to add.</param>
-		/// <param name="script">Script code to cache.</param>
-		/// <param name="checkSyntax">True to check the syntax of the read script data.</param>
-		/// <param name="crunch">True to crunch the read script data. This will implicit check the script data syntax.</param>
-		public virtual IScriptContainer AddScriptToChache(string cacheId, string script, bool checkSyntax, bool crunch)
-		{
-			return AddScriptToChache(cacheId, -1, script, checkSyntax, crunch, _version);
+			if (specifiedItem != null)
+				specifiedItem.IsExpired = true;
 		}
 
 		/// <summary>
@@ -169,20 +157,6 @@ namespace JSTools.Context.Cache
 		public virtual IScriptContainer AddScriptToChache(string cacheId, int cacheExpiration, string script, bool checkSyntax, bool crunch, float scriptVersion)
 		{
 			return AddBucketToCache(cacheId, new ScriptDataLoader(script, scriptVersion), cacheExpiration, checkSyntax, crunch);
-		}
-
-		/// <summary>
-		/// Adds a new bucket to this cache object. This type of cache reads
-		/// the data of a script files and watches for the modification time
-		/// of a the corresponding file.
-		/// </summary>
-		/// <param name="cacheId">Id of the bucket to add.</param>
-		/// <param name="scriptFilePath">Path of the script file to cache.</param>
-		/// <param name="checkSyntax">True to check the syntax of the read script data.</param>
-		/// <param name="crunch">True to crunch the read script data. This will implicit check the script data syntax.</param>
-		public virtual IScriptContainer AddFileToCache(string cacheId, string scriptFilePath, bool checkSyntax, bool crunch)
-		{
-			return AddFileToCache(cacheId, -1, scriptFilePath, checkSyntax, crunch, _version);
 		}
 
 		/// <summary>
@@ -221,48 +195,63 @@ namespace JSTools.Context.Cache
 			ScriptCacheItem item = new ScriptCacheItem(dataLoader, cacheId, cacheExpiration, checkSyntax, crunch);
 
 			if (cacheExpiration != 0)
-				Cache[cacheId] = item;
+				SetValue(cacheId, item);
 
 			return item;
 		}
 
 		private ScriptCacheItem GetBucketById(string cacheId)
 		{
-			if (cacheId == null)
-				throw new ArgumentNullException("cacheId");
-
-			if (Cache.ContainsKey(cacheId))
+			if (cacheId != null)
 			{
-				ScriptCacheItem cachedItem = (ScriptCacheItem)Cache[cacheId];
+				ScriptCacheItem foundItem = GetValue(cacheId);
 
-				if (!cachedItem.IsExpired)
-					return cachedItem;
-				else
-					Cache.Remove(cacheId);
+				if (foundItem != null && !foundItem.IsExpired)
+					return foundItem;
 			}
 			return null;
+		}
+
+		private void SetValue(string key, ScriptCacheItem value)
+		{
+			lock (SyncRoot)
+			{
+				_cache[key] = value;
+			}
+		}
+
+		private ScriptCacheItem GetValue(string key)
+		{
+			lock (SyncRoot)
+			{
+				return (_cache[key] as ScriptCacheItem);
+			}
 		}
 
 		#region ICollection Member
 
 		bool ICollection.IsSynchronized
 		{
-			get { return Cache.IsSynchronized; }
+			get { return true; }
 		}
 
 		int ICollection.Count
 		{
-			get { return Cache.Count; }
+			get 
+			{
+				lock (SyncRoot)
+				{
+					return _cache.Count;
+				}
+			}
 		}
 
 		void ICollection.CopyTo(Array array, int index)
 		{
-			Cache.CopyTo(array, index);
-		}
-
-		object ICollection.SyncRoot
-		{
-			get { return Cache.SyncRoot; }
+			lock (SyncRoot)
+			{
+				_cache.CopyTo(array, index);
+			}
 		}
 
 		#endregion
@@ -271,7 +260,10 @@ namespace JSTools.Context.Cache
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return Cache.GetEnumerator();
+			lock (SyncRoot)
+			{
+				return _cache.GetEnumerator();
+			}
 		}
 
 		#endregion

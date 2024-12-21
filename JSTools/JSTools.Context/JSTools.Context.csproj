@@ -149,6 +149,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "JSTools\Context\Cache\ScriptCacheCollector.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JSTools\Context\Cache\ScriptCacheItem.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

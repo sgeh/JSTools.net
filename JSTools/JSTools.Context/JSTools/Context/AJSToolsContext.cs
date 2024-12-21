@@ -1,4 +1,7 @@
 /*
+ * JSTools.Context.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -41,13 +47,14 @@ namespace JSTools.Context
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private const int CACHE_EXPIRATION_MINUTES = 20;
+		private readonly ReaderWriterLock LOCK = new ReaderWriterLock();
 
-		private readonly IContextConfigHandler _configHandler = null;
-		private readonly EventHandler _configEventHandler = null;
+		private IContextConfigHandler _configHandler = null;
+		private EventHandler _configEventHandler = null;
+		private bool _watchConfig = false;
 
-		private ReaderWriterLock _lock = new ReaderWriterLock();
 		private IJSToolsConfiguration _configuration = null;
+		private ConvertUtilities _util = null;
 		private ScriptCache _cache = null;
 		private IScriptCruncher _cruncher = null;
 		private IScriptGenerator _scriptGenerator = null;
@@ -65,10 +72,24 @@ namespace JSTools.Context
 		{
 			get
 			{
-				_lock.AcquireReaderLock(Timeout.Infinite);
+				LOCK.AcquireReaderLock(Timeout.Infinite);
 
 				try { return _configuration; }
-				finally { _lock.ReleaseReaderLock(); }
+				finally { LOCK.ReleaseReaderLock(); }
+			}
+		}
+
+		/// <summary>
+		/// Gets string utililities for client side data encryption/decryption.
+		/// </summary>
+		public ConvertUtilities Util
+		{
+			get
+			{
+				LOCK.AcquireReaderLock(Timeout.Infinite);
+
+				try { return _util; }
+				finally { LOCK.ReleaseReaderLock(); }			
 			}
 		}
 
@@ -80,10 +101,10 @@ namespace JSTools.Context
 		{
 			get
 			{
-				_lock.AcquireReaderLock(Timeout.Infinite);
+				LOCK.AcquireReaderLock(Timeout.Infinite);
 
 				try { return _cruncher; }
-				finally { _lock.ReleaseReaderLock(); }
+				finally { LOCK.ReleaseReaderLock(); }
 			}		
 		}
 
@@ -95,10 +116,10 @@ namespace JSTools.Context
 		{
 			get
 			{
-				_lock.AcquireReaderLock(Timeout.Infinite);
+				LOCK.AcquireReaderLock(Timeout.Infinite);
 
 				try { return _cache; }
-				finally { _lock.ReleaseReaderLock(); }
+				finally { LOCK.ReleaseReaderLock(); }
 			}		
 		}
 
@@ -110,11 +131,11 @@ namespace JSTools.Context
 		{
 			get
 			{
-				_lock.AcquireReaderLock(Timeout.Infinite);
+				LOCK.AcquireReaderLock(Timeout.Infinite);
 
 				try { return _scriptGenerator; }
-				finally { _lock.ReleaseReaderLock(); }
-			}		
+				finally { LOCK.ReleaseReaderLock(); }
+			}
 		}
 
 		/// <summary>
@@ -126,31 +147,58 @@ namespace JSTools.Context
 			get;
 		}
 
+		private IContextConfigHandler ConfigHandler
+		{
+			get
+			{
+				if (_configHandler == null)
+				{
+					try
+					{
+						_configHandler = CreateContextConfigHandler();
+
+						if (_watchConfig)
+						{
+							_configEventHandler = new EventHandler(OnConfigHandlerRefresh);
+							_configHandler.Refresh += _configEventHandler;
+						}
+					}
+					catch (Exception e)
+					{
+						throw new JSToolsContextException("Error while creating the configuration handler.", e);
+					}
+				}
+				return _configHandler;
+			}
+		}
+
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		/// Creates a new JSToolsWebContext instance.
+		/// Creates a new JSToolsWebContext instance. This constructor
+		/// initializes the configuration and watches for configuration
+		/// changes.
 		/// </summary>
 		/// <exception cref="JSToolsContextException">Error while creating the configuration handler.</exception>
-		protected AJSToolsContext()
+		protected AJSToolsContext() : this(true)
 		{
-			try
-			{
-				_configHandler = CreateContextConfigHandler();
-				_configEventHandler = new EventHandler(OnConfigHandlerRefresh);
-				_configHandler.Refresh += _configEventHandler;
-			}
-			catch (Exception e)
-			{
-				throw new JSToolsContextException("Error while creating the configuration handler.", e);
-			}
+		}
 
-			if (_configHandler == null)
-				throw new JSToolsContextException("Error while creating the configuration handler, IContextConfigHandler.CreateContextConfigHandler() has returned a null reference.");
+		/// <summary>
+		/// Creates a new JSToolsWebContext instance. If you'd like to
+		/// (re)initialize the configuration and watch for changes, you
+		/// should pass 'true' to initConfig argument.
+		/// </summary>
+		/// <param name="initConfig">True to (re)initialize the configuration and watch for configuration changes.</param>
+		/// <exception cref="JSToolsContextException">Error while creating the configuration handler.</exception>
+		protected AJSToolsContext(bool initConfig)
+		{
+			_watchConfig = initConfig;
 
-			LockAndReinitContext();
+			if (_watchConfig)
+				LockAndReinitContext();
 		}
 
 		/// <summary>
@@ -158,7 +206,7 @@ namespace JSTools.Context
 		/// </summary>
 		~AJSToolsContext()
 		{
-			if (_configHandler != null)
+			if (_configHandler != null && _configEventHandler != null)
 				_configHandler.Refresh -= _configEventHandler;
 		}
 
@@ -174,47 +222,6 @@ namespace JSTools.Context
 		//--------------------------------------------------------------------
 		// Methods
 		//--------------------------------------------------------------------
-
-		#region ICloneable Member
-
-		/// <summary>
-		/// Creates a new immutable clone of this instance.
-		/// </summary>
-		/// <returns>Returns the cloned instance.</returns>
-		public AJSToolsContext Clone()
-		{
-			AJSToolsContext clonedInstance = CloneInstance();
-
-			_lock.AcquireReaderLock(Timeout.Infinite);
-
-			try
-			{
-				clonedInstance._configuration = _configuration;
-				clonedInstance._cache = _cache;
-				clonedInstance._scriptGenerator = _scriptGenerator;
-				clonedInstance._cruncher = _cruncher;
-			}
-			finally { _lock.ReleaseReaderLock(); }
-
-			return clonedInstance;
-		}
-
-		/// <summary>
-		/// Creates a new clone of the current instance.
-		/// </summary>
-		/// <returns>Returns the cloned instance.</returns>
-		protected abstract AJSToolsContext CloneInstance();
-
-		/// <summary>
-		/// Creates a new immutable clone of this instance.
-		/// </summary>
-		/// <returns>Returns the cloned instance.</returns>
-		object ICloneable.Clone()
-		{
-			return Clone();
-		}
-
-		#endregion
 
 		/// <summary>
 		/// Refreshes the current context and reinitializes the associated
@@ -235,9 +242,11 @@ namespace JSTools.Context
 		/// is cutted off at the start of the string in order to find the
 		/// right cache item.
 		/// 
+		/// <para>
 		/// If a configuration section is requested (e.g. path JSTools/Enum)
 		/// and it is not cached yet, the script for the requested section is
 		/// lazzily generated and the generated cache item is returned.
+		/// </para>
 		/// </summary>
 		/// <param name="path">Path which should be searched.</param>
 		/// <returns>Returns a null reference or the found cache item.</returns>
@@ -253,8 +262,8 @@ namespace JSTools.Context
 				{
 					return GetCachedItem(
 						path.Substring(
-						(path.StartsWith("/") ? 1 : 0),
-						path.Length - Configuration.ScriptFileHandler.ScriptExtension.Length - 1) );
+							(path.StartsWith("/") ? 1 : 0),
+							path.Length - Configuration.ScriptFileHandler.ScriptExtension.Length - 1) );
 				}
 			}
 			return null;
@@ -263,33 +272,33 @@ namespace JSTools.Context
 		/// <summary>
 		/// Gets the cached item associated with the specified chache key.
 		/// 
+		/// <para>
 		/// If a configuration section is requested (e.g. path JSTools/Enum)
 		/// and it is not cached yet, the script for the requested section is
 		/// lazzily generated and the generated cache item is returned. Modules
 		/// are not cached because the associated files may change.
+		/// </para>
 		/// </summary>
 		/// <param name="cacheKey">Key of the cache item to get.</param>
 		/// <returns>Returns a null reference or the found cache item.</returns>
 		/// <exception cref="JSToolsContextException">Error while getting/creating the cache item.</exception>
 		public IScriptContainer GetCachedItem(string cacheKey)
 		{
+			IScriptContainer cachedItem = null;
+
 			try
 			{
-				if (cacheKey != null)
-				{
-					if (Cache.HasKey(cacheKey))
-					{
-						return Cache[cacheKey];
-					}
-					else
-					{
-						AJSToolsScriptFileSection section = Configuration.ScriptFileHandler.GetSection(cacheKey);
+				// get item from cache
+				cachedItem = Cache[cacheKey];
 
-						if (section != null)
-							return GetSectionFromCache(section);
-					}
+				// if item is not stored in the cache
+				if (cachedItem == null)
+				{
+					AJSToolsScriptFileSection section = Configuration.ScriptFileHandler.GetSection(cacheKey);
+
+					if (section != null)
+						cachedItem = GetSectionFromCache(section);
 				}
-				return null;
 			}
 			catch (Exception e)
 			{
@@ -297,6 +306,7 @@ namespace JSTools.Context
 					string.Format("Error while getting/creating the cache item '{0}'.", cacheKey),
 					e );
 			}
+			return cachedItem;
 		}
 
 		/// <summary>
@@ -307,12 +317,11 @@ namespace JSTools.Context
 		protected virtual IScriptContainer GetFileScriptContainer(JSScript section)
 		{
 			bool doCrunch = (section.OwnerConfiguration.ScriptFileHandler.DebugMode == DebugMode.None);
-			int cacheExpiration = (doCrunch ? CACHE_EXPIRATION_MINUTES : 0);
 
 			// add requested script to cache
 			return Cache.AddFileToCache(
 				section.Path,
-				cacheExpiration,
+				(doCrunch ? Configuration.ScriptFileHandler.CacheExpiration : 0),
 				section.PhysicalPath,
 				false,
 				doCrunch,
@@ -346,66 +355,6 @@ namespace JSTools.Context
 				throw new InvalidOperationException("Invalid section requested.");
 		}
 
-		#region Proxy Methods
-
-		/// <summary>
-		///  <see cref="ConvertUtilities" />
-		/// </summary>
-		/// <param name="toEscape">
-		///  <see cref="ConvertUtilities" />
-		/// </param>
-		/// <returns>
-		///  <see cref="ConvertUtilities" />
-		/// </returns>
-		public string ScriptEscape(string toEscape)
-		{
-			return ConvertUtilities.ScriptEscape(toEscape);
-		}
-
-		/// <summary>
-		///  <see cref="ConvertUtilities" />
-		/// </summary>
-		/// <param name="toUnescape">
-		///  <see cref="ConvertUtilities" />
-		/// </param>
-		/// <returns>
-		///  <see cref="ConvertUtilities" />
-		/// </returns>
-		public string ScriptUnescape(string toUnescape)
-		{
-			return ConvertUtilities.ScriptUnescape(toUnescape);
-		}
-
-		/// <summary>
-		///  <see cref="ConvertUtilities" />
-		/// </summary>
-		/// <param name="toParse">
-		///  <see cref="ConvertUtilities" />
-		/// </param>
-		/// <returns>
-		///  <see cref="ConvertUtilities" />
-		/// </returns>
-		public int Hex2Dec(string toParse)
-		{
-			return ConvertUtilities.Hex2Dec(toParse);
-		}
-
-		/// <summary>
-		///  <see cref="ConvertUtilities" />
-		/// </summary>
-		/// <param name="toConvert">
-		///  <see cref="ConvertUtilities" />
-		/// </param>
-		/// <returns>
-		///  <see cref="ConvertUtilities" />
-		/// </returns>
-		public string Dec2Hex(int toConvert)
-		{
-			return ConvertUtilities.Dec2Hex(toConvert);
-		}
-		
-		#endregion
-
 		#region Context Initialization
 
 		/// <summary>
@@ -422,20 +371,18 @@ namespace JSTools.Context
 		protected virtual void ReinitContext()
 		{
 			_configuration = InitConfiguration();
-			_cache = new ScriptCache(Configuration.ScriptFileHandler.ScriptVersion);
+			_util = ConvertUtilities.Instance;
+			_cache = ScriptCache.Instance;
 			_scriptGenerator = new JSScriptGenerator();
 			_cruncher = ScriptCruncher.Instance;
 		}
 
 		private void LockAndReinitContext()
 		{
-			if (_configHandler == null)
-				throw new InvalidOperationException("Could not refresh the context because the current context does not provide a configuration handler instance.");
-
-			_lock.AcquireWriterLock(Timeout.Infinite);
+			LOCK.AcquireWriterLock(Timeout.Infinite);
 
 			try { ReinitContext(); }
-			finally { _lock.ReleaseWriterLock(); }
+			finally { LOCK.ReleaseWriterLock(); }
 		}
 
 		private IJSToolsConfiguration InitConfiguration()
@@ -444,7 +391,7 @@ namespace JSTools.Context
 
 			try
 			{
-				configuration = _configHandler.Configuration;
+				configuration = ConfigHandler.Configuration;
 			}
 			catch (Exception e)
 			{
@@ -456,6 +403,47 @@ namespace JSTools.Context
 
 			return new JSToolsConfiguration(configuration);
 		}
+		#endregion
+
+		#region ICloneable Member
+
+		/// <summary>
+		/// Creates a new immutable clone of this instance.
+		/// </summary>
+		/// <returns>Returns the cloned instance.</returns>
+		public AJSToolsContext Clone()
+		{
+			AJSToolsContext clonedInstance = CloneInstance();
+			LOCK.AcquireReaderLock(Timeout.Infinite);
+
+			try
+			{
+				clonedInstance._configuration = _configuration;
+				clonedInstance._util = _util;
+				clonedInstance._cache = _cache;
+				clonedInstance._scriptGenerator = _scriptGenerator;
+				clonedInstance._cruncher = _cruncher;
+			}
+			finally { LOCK.ReleaseReaderLock(); }
+
+			return clonedInstance;
+		}
+
+		/// <summary>
+		/// Creates a new clone of the current instance.
+		/// </summary>
+		/// <returns>Returns the cloned instance.</returns>
+		protected abstract AJSToolsContext CloneInstance();
+
+		/// <summary>
+		/// Creates a new immutable clone of this instance.
+		/// </summary>
+		/// <returns>Returns the cloned instance.</returns>
+		object ICloneable.Clone()
+		{
+			return Clone();
+		}
+
 		#endregion
 	}
 }

@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.Cruncher.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Norris Boyd
+ *  Roger Lawrence
+ *  Silvan Gehrig
  */
 
 using System;
@@ -25,14 +33,20 @@ namespace JSTools.Parser.Cruncher.Nodes
 	/// statement (i.e., not nested inside some other statement) in either a
 	/// script or a function.
 	/// 
+	/// <para>
 	/// The second is a function expression, which is a function appearing in
 	/// an expression except for the third type, which is...
+	/// </para>
 	/// 
+	/// <para>
 	/// The third type is a function expression where the expression is the
 	/// top-level expression in an expression statement.
+	/// </para>
 	/// 
+	/// <para>
 	/// The three types of functions have different treatment and must be
 	/// distinquished.
+	/// </para>
 	/// </summary>
 	public enum FunctionType
 	{

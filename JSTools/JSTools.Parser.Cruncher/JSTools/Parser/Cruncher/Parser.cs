@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.Cruncher.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Mike Ang
+ *  Mike McCabe
+ *  Silvan Gehrig
  */
 
 using System;
@@ -22,10 +30,11 @@ namespace JSTools.Parser.Cruncher
 {
 	/// <summary>
 	/// This class implements the JavaScript parser.
-	/// 
+	/// </summary>
+	/// <remarks>
 	/// It is based on the C source files jsparse.c and jsparse.h
 	/// in the jsref package.
-	/// </summary>
+	/// </remarks>
 	internal class Parser 
 	{
 		private int _lastExprEndLine; // Hack to handle function expr termination.
@@ -345,7 +354,7 @@ namespace JSTools.Parser.Cruncher
 			return label;
 		}
 
-		/**
+		/*
 		 * Whether the "catch (e: e instanceof Exception) { ... }" syntax
 		 * is implemented.
 		 */
@@ -1426,7 +1435,7 @@ namespace JSTools.Parser.Cruncher
 			return null;    // should never reach here
 		}
 
-		/**
+		/*
 		 * The following methods save decompilation information about the source.
 		 * Source information is returned from the parser as a string
 		 * associated with function nodes and with the toplevel script.  When

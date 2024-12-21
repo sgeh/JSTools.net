@@ -1,4 +1,7 @@
 /*
+ * JSTools.Test.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -98,6 +104,14 @@ namespace JSTools.Test.Resources
 		public string CrunchSavePath
 		{
 			get { return Path.GetFullPath(GetString("CrunchSavePath")); }
+		}
+
+		/// <summary>
+		/// Returns the path of the DocGenerator test file.
+		/// </summary>
+		public string DocGeneratorFilePath
+		{
+			get { return Path.GetFullPath(GetString("DocGeneratorFilePath")); }
 		}
 	}
 }

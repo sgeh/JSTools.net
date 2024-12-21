@@ -1,4 +1,7 @@
 /*
+ * JSTools.Context.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -29,16 +35,17 @@ namespace JSTools.Context.Cache
 		// Declarations
 		//--------------------------------------------------------------------
 
-		private readonly ReaderWriterLock CACHE_LOCK = new ReaderWriterLock();
-		private readonly string _key = null;
+		private readonly string KEY = null;
+		private readonly ReaderWriterLock LOCK = new ReaderWriterLock();
 
 		private ICacheDataLoader _dataLoader = null;
-
-		private DateTime _expirationTime = DateTime.MinValue;
+		private TimeSpan _expirationTime = TimeSpan.MinValue;
+		private DateTime _lastAccessTime = DateTime.Now;
 		private DateTime _lastUpdate = DateTime.Now;
 
 		private string _scriptCode = null;
 		private string _crunchedScriptCode = null;
+		private bool _isExpired = false;
 		private bool _crunch = false;
 		private bool _checkSyntax = false;
 
@@ -47,29 +54,37 @@ namespace JSTools.Context.Cache
 		//--------------------------------------------------------------------
 
 		/// <summary>
+		/// Gets the date time of the last access to this script container.
+		/// </summary>
+		public DateTime LastAccess
+		{
+			get
+			{
+				LOCK.AcquireReaderLock(Timeout.Infinite);
+
+				try { return _lastAccessTime; }
+				finally { LOCK.ReleaseReaderLock(); }
+			}
+		}
+
+		/// <summary>
 		/// Gets the date of the last update.
 		/// </summary>
 		public DateTime LastUpdate
 		{
 			get
 			{
-				CACHE_LOCK.AcquireReaderLock(Timeout.Infinite);
+				LOCK.AcquireReaderLock(Timeout.Infinite);
 
-				try
-				{
-					return _lastUpdate;
-				}
-				finally
-				{
-					CACHE_LOCK.ReleaseReaderLock();
-				}
+				try { return _lastUpdate; }
+				finally { LOCK.ReleaseReaderLock(); }
 			}
 		}
 
 		/// <summary>
 		/// Gets the expiration date time.
 		/// </summary>
-		public DateTime ExpirationTime
+		public TimeSpan ExpirationTime
 		{
 			get { return _expirationTime; }
 		}
@@ -79,7 +94,20 @@ namespace JSTools.Context.Cache
 		/// </summary>
 		public bool IsExpired
 		{
-			get { return (_expirationTime < DateTime.Now); }
+			get
+			{
+				LOCK.AcquireReaderLock(Timeout.Infinite);
+
+				try { return (_isExpired || DateTime.Now - _lastAccessTime > _expirationTime); }
+				finally { LOCK.ReleaseReaderLock(); }
+			}
+			set
+			{
+				LOCK.AcquireWriterLock(Timeout.Infinite);
+
+				try { _isExpired = value; }
+				finally { LOCK.ReleaseWriterLock(); }
+			}
 		}
 
 		/// <summary>
@@ -90,10 +118,12 @@ namespace JSTools.Context.Cache
 		{
 			get
 			{
-				CACHE_LOCK.AcquireWriterLock(Timeout.Infinite);
+				LOCK.AcquireWriterLock(Timeout.Infinite);
 
 				try
 				{
+					_lastAccessTime = DateTime.Now;
+
 					if (_scriptCode == null || _dataLoader.RefreshCache)
 					{
 						_scriptCode = _dataLoader.LoadScript(_checkSyntax);
@@ -104,13 +134,13 @@ namespace JSTools.Context.Cache
 				catch (Exception e)
 				{
 					throw new CacheException(
-						_key,
-						string.Format("Could not read out the script code of the cache item '{0}'.", _key),
+						KEY,
+						string.Format("Could not read out the script code of the cache item '{0}'.", KEY),
 						e );
 				}
 				finally
 				{
-					CACHE_LOCK.ReleaseWriterLock();
+					LOCK.ReleaseWriterLock();
 				}
 			}
 		}
@@ -123,10 +153,11 @@ namespace JSTools.Context.Cache
 		{
 			get
 			{
-				CACHE_LOCK.AcquireWriterLock(Timeout.Infinite);
+				LOCK.AcquireWriterLock(Timeout.Infinite);
 
 				try
 				{
+					_lastAccessTime = DateTime.Now;
 
 					if (_crunchedScriptCode == null || _dataLoader.RefreshCache)
 					{
@@ -138,13 +169,13 @@ namespace JSTools.Context.Cache
 				catch (Exception e)
 				{
 					throw new CacheException(
-						_key,
-						string.Format("Could not crunch the script code of the cache item '{0}'.", _key),
+						KEY,
+						string.Format("Could not crunch the script code of the cache item '{0}'.", KEY),
 						e );
 				}
 				finally
 				{
-					CACHE_LOCK.ReleaseWriterLock();
+					LOCK.ReleaseWriterLock();
 				}
 			}
 		}
@@ -162,12 +193,12 @@ namespace JSTools.Context.Cache
 				throw new ArgumentNullException("dataLoader", "The given data loader contains a null reference.");
 
 			if (expirationMinutes > 0)
-				_expirationTime = DateTime.Now.AddMinutes(expirationMinutes);
+				_expirationTime = new TimeSpan(0, expirationMinutes, 0);
 
 			_dataLoader = dataLoader;
 			_checkSyntax = checkSyntax;
 			_crunch = crunchCode;
-			_key = key;
+			KEY = key;
 		}
 
 		//--------------------------------------------------------------------

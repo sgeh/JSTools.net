@@ -1,3 +1,25 @@
+/*
+ * JSTools.JavaScript / JSTools.net - A JavaScript/C# framework.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
+ */
+
 /// <method>
 /// Checks, if this string ends with the given string to check.
 /// </method>
@@ -231,7 +253,33 @@ String.prototype.UpperCaseAt = function(intIndex)
 }
 
 
-/// <property type="String">/// Returns an empty string ("")./// </property>String.Empty = "";/// <method>/// Replaces the specified {x} patterns in the pattern string with the specified/// arguments. The first argument after the pattern string will be replaced with/// the {0} mark, the second one with the {1}, and so on./// </method>/// <param name="strPattern">String which contains the place holders (pattern).</param>/// <param name="params">Values which should be inserted at the corresponding pattern index.</param>/// <returns type="String">Returns the resulting string.</returns>String.Format = function(strPattern){	var stringToFormat = String(strPattern);	for (var i = 1; i < arguments.length; ++i)	{		if (typeof(arguments[i]) == 'undefined')			continue;		stringToFormat = stringToFormat.replace(new RegExp("\\{" + (i - 1) + "\\}", "gi"), String(arguments[i]));	}	return stringToFormat;}
+/// <property type="String">
+/// Returns an empty string ("").
+/// </property>
+String.Empty = "";
+
+
+/// <method>
+/// Replaces the specified {x} patterns in the pattern string with the specified
+/// arguments. The first argument after the pattern string will be replaced with
+/// the {0} mark, the second one with the {1}, and so on.
+/// </method>
+/// <param name="strPattern">String which contains the place holders (pattern).</param>
+/// <param name="params">Values which should be inserted at the corresponding pattern index.</param>
+/// <returns type="String">Returns the resulting string.</returns>
+String.Format = function(strPattern)
+{
+	var stringToFormat = String(strPattern);
+
+	for (var i = 1; i < arguments.length; ++i)
+	{
+		if (typeof(arguments[i]) == 'undefined')
+			continue;
+
+		stringToFormat = stringToFormat.replace(new RegExp("\\{" + (i - 1) + "\\}", "gi"), String(arguments[i]));
+	}
+	return stringToFormat;
+}
 
 
 /// <method>

@@ -69,6 +69,16 @@
                     AssemblyName = "System"
                     HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll"
                 />
+                <Reference
+                    Name = "System.Data"
+                    AssemblyName = "System.Data"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Data.dll"
+                />
+                <Reference
+                    Name = "System.XML"
+                    AssemblyName = "System.Xml"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
+                />
             </References>
         </Build>
         <Files>
@@ -79,7 +89,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JSTools\Parser\GlobalNode.cs"
+                    RelPath = "JSTools\Parser\AlternativeScopeParser.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\AScopeParser.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\DefaultNode.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -94,19 +114,73 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "JSTools\Parser\IParserContextItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\IScopeParser.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JSTools\Parser\ParseItemException.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JSTools\Parser\Scope.cs"
+                    RelPath = "JSTools\Parser\ParserContext.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "JSTools\Parser\TokenParser.cs"
+                    RelPath = "JSTools\Parser\StrictScopeParser.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\ParseItems\AParseItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\ParseItems\BoundaryItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\ParseItems\CharTokenItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\ParseItems\DefaultParseItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\ParseItems\ExcludeItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\ParseItems\KeywordTokenItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\ParseItems\ScopeParserItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "JSTools\Parser\ParseItems\WhiteSpaceParseItem.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "vpproject\JSTools.Parser.vpp"
+                    BuildAction = "None"
                 />
             </Include>
         </Files>

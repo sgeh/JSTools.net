@@ -1,4 +1,7 @@
 /*
+ * JSTools.ScriptTypes.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -27,7 +33,7 @@ namespace JSTools.Util
 	/// ScriptEscape and ScriptUnescape are equal to the client side escape()
 	/// and unescape() functions.
 	/// </summary>
-	public sealed class ConvertUtilities
+	public class ConvertUtilities
 	{
 		//--------------------------------------------------------------------
 		// Declarations
@@ -35,6 +41,11 @@ namespace JSTools.Util
 
 		private static readonly Regex ESCAPED_STRING_PATTERN = new Regex("%([a-f0-9]{2,2})", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 		private static readonly Regex UNESCAPED_STRING_PATTERN = new Regex(@"([^\w*@\-+./])", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+		/// <summary>
+		/// Gets the one and only instance.
+		/// </summary>
+		public static readonly ConvertUtilities Instance = new ConvertUtilities();
 
 		//--------------------------------------------------------------------
 		// Properties
@@ -47,7 +58,7 @@ namespace JSTools.Util
 		/// <summary>
 		/// This class cannot be instantiated and provides global functionalities.
 		/// </summary>
-		private ConvertUtilities()
+		protected ConvertUtilities()
 		{
 		}
 
@@ -66,7 +77,7 @@ namespace JSTools.Util
 		/// <param name="toParse">Hexadecimal value to parse.</param>
 		/// <returns>Returns the specified value or -1 if the value could not
 		/// be parsed.</returns>
-		public static int Hex2Dec(string toParse)
+		public int Hex2Dec(string toParse)
 		{
 			try
 			{
@@ -83,7 +94,7 @@ namespace JSTools.Util
 		/// </summary>
 		/// <returns>Returns the converted or an empty string if the value
 		/// is smaller than 0.</returns>
-		public static string Dec2Hex(int toConvert)
+		public string Dec2Hex(int toConvert)
 		{
 			if (toConvert < 0)
 				return string.Empty;
@@ -99,7 +110,7 @@ namespace JSTools.Util
 		/// <param name="toEscape">String to escape.</param>
 		/// <returns>The ScriptEscape function encodes characters in the specified string
 		/// and returns a new string. </returns>
-		public static string ScriptEscape(string toEscape)
+		public string ScriptEscape(string toEscape)
 		{
 			if (toEscape == null)
 				return string.Empty;
@@ -115,12 +126,12 @@ namespace JSTools.Util
 		/// </summary>
 		/// <param name="toUnescape">String to unescape.</param>
 		/// <returns>Returns the ASCII string for the specified hexadecimal encoding value.</returns>
-		public static string ScriptUnescape(string toUnescape)
+		public string ScriptUnescape(string toUnescape)
 		{
 			return ESCAPED_STRING_PATTERN.Replace(toUnescape, new MatchEvaluator(OnEscapedCharMatch));
 		}
 
-		private static string OnEscapedCharMatch(Match matchedChar)
+		private string OnEscapedCharMatch(Match matchedChar)
 		{
 			int convertedValue = Hex2Dec(matchedChar.Groups[1].Value);
 
@@ -130,7 +141,7 @@ namespace JSTools.Util
 				return matchedChar.Groups[0].Value;
 		}
 
-		private static string OnUnescapedCharMatch(Match matchedChar)
+		private string OnUnescapedCharMatch(Match matchedChar)
 		{
 			if (matchedChar.Groups[0].Value.Length != 0)
 			{

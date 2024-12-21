@@ -1,4 +1,7 @@
 /*
+ * JSTools.Web.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -28,14 +34,14 @@ using JSTools.Web.UI;
 namespace JSTools.Web.UI.Controls
 {
 	/// <summary>
-	/// Contains configuration and other JSTools script capabilities. If a page uses some
-	/// features of the JSTools framework, you have to derive from this class.
+	/// Contains configuration and other JSTools script capabilities. If a
+	/// page uses some features of the JSTools framework, you have to derive
+	/// from this class.
 	/// </summary>
 	/// <remarks>
-	/// Each JSToolsPage must contain a header control.
-	/// 
-	/// If there are errors when opening the page designer, you have to add all JSTools
-	/// library references to your web project.
+	/// Each JSToolsPage must contain a header control. If there are errors
+	/// when opening the page designer, you have to add all JSTools library
+	/// references to your web project.
 	/// </remarks>
 	public class JSToolsPage : Page
 	{
@@ -63,8 +69,10 @@ namespace JSTools.Web.UI.Controls
 		/// Returns the current JSToolsWebContext, which contains a parser, a cache
 		/// and a configuration instance.
 		/// 
+		/// <para>
 		/// You can override this property to implement your own context
 		/// functionalities or to override something.
+		/// </para>
 		/// </summary>
 		/// <remarks>The attributes are neccessary for the designer. Otherwise, it crashes.</remarks>
 		[property: Browsable(false)]
@@ -74,7 +82,7 @@ namespace JSTools.Web.UI.Controls
 			get
 			{
 				if (_context == null)
-					_context = (JSToolsWebContext)JSToolsWebContext.Instance.Clone();
+					_context = JSToolsWebContext.Instance;
 
 				return _context;
 			}

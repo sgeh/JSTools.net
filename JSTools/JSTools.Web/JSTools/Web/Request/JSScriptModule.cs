@@ -1,4 +1,7 @@
 /*
+ * JSTools.Web.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -48,14 +54,6 @@ namespace JSTools.Web.Request
 		// Properties
 		//--------------------------------------------------------------------
 
-		/// <summary>
-		/// Gets the global web context instance.
-		/// </summary>
-		protected virtual JSToolsWebContext WebContext
-		{
-			get { return (JSToolsWebContext)JSToolsWebContext.Instance.Clone(); }
-		}
-
 		//--------------------------------------------------------------------
 		// Constructors / Destructor
 		//--------------------------------------------------------------------
@@ -86,7 +84,7 @@ namespace JSTools.Web.Request
 		/// <param name="args"></param>
 		private void OnBeginRequest(object sender, EventArgs args)
 		{
-			JSToolsWebContext context = WebContext;
+			JSToolsWebContext context = JSToolsWebContext.Instance;
 			HttpApplication currentApp = (HttpApplication)sender;
 
 			try
@@ -179,12 +177,14 @@ namespace JSTools.Web.Request
 		{
 			#region Enable client side cache.
 
-			if (toRespond.ExpirationTime != DateTime.MinValue)
+			if (toRespond.ExpirationTime != TimeSpan.MinValue)
 			{
 				// init cache headers
 				currentApp.Response.Cache.SetLastModified(toRespond.LastUpdate);
 				currentApp.Response.Cache.SetCacheability(HttpCacheability.Public);
-				currentApp.Response.Cache.SetExpires(DateTime.MinValue);
+
+				if (toRespond.ExpirationTime != TimeSpan.MaxValue)
+					currentApp.Response.Cache.SetExpires(toRespond.LastAccess + toRespond.ExpirationTime);
 			}
 
 			#endregion

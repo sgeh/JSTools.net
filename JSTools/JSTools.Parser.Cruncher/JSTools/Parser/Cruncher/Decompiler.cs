@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.Cruncher.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Patrick Beard
+ *  Norris Boyd
+ *  Igor Bukanov
+ *  Brendan Eich
+ *  Roger Lawrence
+ *  Mike McCabe
+ *  Ian D. Stewart
+ *  Andi Vajda
+ *  Andrew Wason
+ *  Kemal Bayram
+ *  Silvan Gehrig
  */
 
 using System;
@@ -116,7 +132,7 @@ namespace JSTools.Parser.Cruncher
 		}
 
 
-		/**
+		/*
 		 * Decompile the source information associated with this js
 		 * function/script back into a string.  For the most part, this
 		 * just means translating tokens back to their string
@@ -290,7 +306,7 @@ namespace JSTools.Parser.Cruncher
 
 					case (char)TokenType.String:
 					{
-						/**
+						/*
 						 * It's just a small script optimization. Remove all
 						 * unnecessary string concate-notations.
 						 */

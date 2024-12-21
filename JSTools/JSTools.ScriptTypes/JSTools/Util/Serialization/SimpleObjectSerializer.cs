@@ -1,4 +1,7 @@
 /*
+ * JSTools.ScriptTypes.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -27,12 +33,15 @@ namespace JSTools.Util.Serialization
 	/// Represents an object serializer which serializes/deserialized the
 	/// property values and the corresponding property names.
 	/// 
+	/// <para>
 	/// The serialized string contains a javascript object, which can
-	/// be send to the client browser. To serialize an object hirarchy
+	/// be send to the client browser. To serialize an object hierarchy
 	/// you should call the Serialize(...) method. All types which are
 	/// derived from IList will be serialized as javascript arrays. All
 	/// other complex types will be serialized as javascript objects.
+	/// </para>
 	/// 
+	/// <para>
 	/// To deserialize an object string, you should call the Deserialize(...)
 	/// method. All javascript arrays are deserialized into types, which
 	/// are derived from IList. If the corresponding type is not derived
@@ -40,20 +49,32 @@ namespace JSTools.Util.Serialization
 	/// of complex types are serialized into the public properties (requires
 	/// a property SETTER). There are two ways to deserialize a javascript
 	/// object string:
+	/// </para>
 	/// 
-	/// - Deserialize(string, object, bool) method.
-	/// You can deserialize the javascript string into an object hirachy.
-	/// This is usefull if you have the same object hirachy during
-	/// serialization and deserialization. All complex types must be
-	/// instantiated in the object hirarchy in order to deserialize all values.
-	/// Otherwise some values may be lost. Instances of classes which are
-	/// derived from IList and the ReadOnly flag is set to "true" will not be
-	/// deserialized.
-	/// 
-	/// - Deserialize(string, bool) method.
-	/// You can deserialize the javascript string into an new object hirachy.
-	/// Well, you will obtain JSScriptArray/JSScriptObject objects. This
-	/// classes correspond to the javascript array/object types. 
+	/// <para>
+	/// <list type="bullet">
+	///  <item>
+	///   <description>
+	///   Deserialize(string, object, bool) method.
+	///   You can deserialize the javascript string into an object hirachy.
+	///   This is usefull if you have the same object hirachy during
+	///   serialization and deserialization. All complex types must be
+	///   instantiated in the object hierarchy in order to deserialize all values.
+	///   Otherwise some values may be lost. Instances of classes which are
+	///   derived from IList and the ReadOnly flag is set to "true" will not be
+	///   deserialized.
+	///   </description>
+	///  </item>
+	///  <item>
+	///   <description>
+	///   Deserialize(string, bool) method.
+	///   You can deserialize the javascript string into an new object hirachy.
+	///   Well, you will obtain JSScriptArray/JSScriptObject objects. This
+	///   classes correspond to the javascript array/object types. 
+	///   </description>
+	///  </item>
+	/// </list>
+	/// </para>
 	/// </summary>
 	/// <remarks>
 	/// Properties which contain a recursion will not be serialized.
@@ -162,7 +183,7 @@ namespace JSTools.Util.Serialization
 		/// Serializes the given object.
 		/// </summary>
 		/// <param name="toSerialize">Object which should be serialized.</param>
-		/// <param name="decodeValues">True if the values contain characters (e.g. %) which should be encoded.</param>
+		/// <param name="encodeValues">True if the values contain characters (e.g. %) which should be encoded.</param>
 		/// <returns>Returns the corresponding javascript object string.</returns>
 		/// <exception cref="ArgumentNullException">The given object contains a null reference.</exception>
 		public string Serialize(object toSerialize, bool encodeValues)

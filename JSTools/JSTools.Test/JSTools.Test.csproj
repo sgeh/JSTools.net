@@ -17,7 +17,7 @@
                 DelaySign = "false"
                 OutputType = "Library"
                 PreBuildEvent = ""
-                PostBuildEvent = 'REM Copy Debug Resources&#xd;&#xa;xcopy "$(ProjectDir)resources\*" "$(TargetDir)resources\" /F /Y'
+                PostBuildEvent = 'ECHO Copy Debug Resources&#xd;&#xa;xcopy "$(ProjectDir)resources\*" "$(TargetDir)resources\" /F /Y'
                 RootNamespace = "JSTools.Test"
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = ""
@@ -105,6 +105,11 @@
                     Project = "{06E2D003-00C7-4F4B-8C8B-A74C6F3854C8}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
+                <Reference
+                    Name = "JSTools.Parser.DocGenerator"
+                    Project = "{9128A4E3-A226-4420-98EC-FB855890516E}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
             </References>
         </Build>
         <Files>
@@ -124,6 +129,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "JSTools\Test\Parser\DocGenerator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "JSTools\Test\Parser\ScriptCruncher.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -132,6 +142,10 @@
                     RelPath = "JSTools\Test\Util\Serialization.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Resources\DocTest.js"
+                    BuildAction = "Content"
                 />
                 <File
                     RelPath = "Resources\JSTools.config"

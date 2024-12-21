@@ -1,3 +1,25 @@
+/*
+ * JSTools.JavaScript / JSTools.net - A JavaScript/C# framework.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
+ */
+
 // Undefined variable, required for generation 4 browsers.
 var undefined;
 
@@ -8,7 +30,22 @@ var undefined;
 /// otherwise script execution will result in an error.
 /// </property>
 Object.prototype.__type = null;
-/// <method>/// Initializes the type object. This is required for reflection and inheritance/// mechanism./// </method>/// <remarks>Do not use this function inside classes, which are designed to use/// with prototype inheritance mechanism.</remarks>/// <param name="objArgument" type="String">Object, which contains the callee of this object.</param>/// <param name="strTypeName" type="String">Name of the type to initialize.</param>/// <param name="blnSealed" type="Boolean">A boolean indicating whether the class is sealead and/// cannot be inherited.</param>Object.prototype.InitType = function(objArgument, strTypeName, blnSealed){	if (typeof(objArgument) == 'object' && typeof(objArgument.callee) == 'function')	{
+
+
+/// <method>
+/// Initializes the type object. This is required for reflection and inheritance
+/// mechanism.
+/// </method>
+/// <remarks>Do not use this function inside classes, which are designed to use
+/// with prototype inheritance mechanism.</remarks>
+/// <param name="objArgument" type="String">Object, which contains the callee of this object.</param>
+/// <param name="strTypeName" type="String">Name of the type to initialize.</param>
+/// <param name="blnSealed" type="Boolean">A boolean indicating whether the class is sealead and
+/// cannot be inherited.</param>
+Object.prototype.InitType = function(objArgument, strTypeName, blnSealed)
+{
+	if (typeof(objArgument) == 'object' && typeof(objArgument.callee) == 'function')
+	{
 		if (!this.__type || typeof(this.__type) != 'object' || !this.__type.IsTypeInstance)
 		{
 			this.__type = new JSTools.Reflection.Type(this, objArgument.callee, strTypeName, blnSealed);
@@ -18,7 +55,39 @@ Object.prototype.__type = null;
 			this.__type.AddBaseType(new JSTools.Reflection.Type(this, objArgument.callee, strTypeName, blnSealed));
 		}
 	}
-}/// <method>/// Returns the type of this object. It reflects the members and other values./// </method>/// <returns type="JSTools.Reflection.Type">Returns the Type instance this value contains a null/// reference, if the type was not initialized by the the "InitType" method.</returns>Object.prototype.GetType = function(){	return this.__type;}/// <method>/// Returns true, if the given function is equal to the type or a base type of this object. To use/// this method, you have to initialize the current type. Otherwise you will always obtain false./// </method>/// <param name="objFunctionType" type="Function">Function to check.</param>/// <returns type="Boolean">Returns true, if the given function is equal to the type or a base type/// of this object.</returns>Object.prototype.IsTypeOf = function(objFunctionType){	if (typeof(objFunctionType) != 'function')		return false;	return (this.GetType		&& this.GetType() != null		&& this.GetType().IsTypeOf(objFunctionType));}/// <method>
+}
+
+
+/// <method>
+/// Returns the type of this object. It reflects the members and other values.
+/// </method>
+/// <returns type="JSTools.Reflection.Type">Returns the Type instance this value contains a null
+/// reference, if the type was not initialized by the the "InitType" method.</returns>
+Object.prototype.GetType = function()
+{
+	return this.__type;
+}
+
+
+/// <method>
+/// Returns true, if the given function is equal to the type or a base type of this object. To use
+/// this method, you have to initialize the current type. Otherwise you will always obtain false.
+/// </method>
+/// <param name="objFunctionType" type="Function">Function to check.</param>
+/// <returns type="Boolean">Returns true, if the given function is equal to the type or a base type
+/// of this object.</returns>
+Object.prototype.IsTypeOf = function(objFunctionType)
+{
+	if (typeof(objFunctionType) != 'function')
+		return false;
+
+	return (this.GetType
+		&& this.GetType() != null
+		&& this.GetType().IsTypeOf(objFunctionType));
+}
+
+
+/// <method>
 /// Inherits from the given function object. The given params after the first argument
 /// will be passed to the function constructor. You should not use arguments, it is a
 /// performance hit.
@@ -30,7 +99,9 @@ Object.prototype.__type = null;
 /// <remarks>
 /// This runtime inheritance mechanism is a performance hit (about 40 ms / object). You should
 /// use it with caution if you have performance restrictions.
-/// Prototype inheritance is not directly supported. Do not combine the prototype inheritance/// mechanism and this runtime inheritance mechanism./// </remarks>
+/// Prototype inheritance is not directly supported. Do not combine the prototype inheritance
+/// mechanism and this runtime inheritance mechanism.
+/// </remarks>
 /// <param name="objFunction" type="Function">Function (class) to inherit. Default
 /// function (class) is Object.</param>
 /// <param name="params">Values which should be passed to the base constructor.</param>

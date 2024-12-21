@@ -359,7 +359,6 @@
                     RelPath = "JSTools\Web\Window\Event\IEventArgument.js"
                     BuildAction = "Content"
                 />
-                <Folder RelPath = "JSTools\Xml\" />
             </Include>
         </Files>
     </CSHARP>

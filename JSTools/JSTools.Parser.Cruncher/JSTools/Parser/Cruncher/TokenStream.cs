@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.Cruncher.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,12 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Roger Lawrence
+ *  Mike McCabe
+ *  Silvan Gehrig
  */
 
 using System;
 using System.IO;
 using System.Text;
-
 
 namespace JSTools.Parser.Cruncher
 {
@@ -161,7 +168,7 @@ namespace JSTools.Parser.Cruncher
 		Finally     = 126, // finally keyword
 		Reserved    = 127, // reserved keywords
 
-		/** Added by Mike - these are JSOPs in the jsref, but I
+		/* Added by Mike - these are JSOPs in the jsref, but I
 		 * don't have them yet in the java implementation...
 		 * so they go here.  Also whatever I needed.
 
@@ -173,7 +180,7 @@ namespace JSTools.Parser.Cruncher
 		Pre         = 130, // for Inc, Dec nodes.
 		Post        = 131,
 
-		/**
+		/*
 		 * For JSOPs associated with keywords...
 		 * eg. op = This; token = Primary
 		 */
@@ -244,10 +251,11 @@ namespace JSTools.Parser.Cruncher
 
 	/// <summary>
 	/// This class implements the JavaScript scanner.
-	/// 
+	/// </summary>
+	/// <remarks>
 	/// It is based on the C source files jsscan.c and jsscan.h
 	/// in the jsref package.
-	/// </summary>
+	/// </remarks>
 	internal class TokenStream 
 	{
 		/// <summary>

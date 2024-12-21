@@ -1,4 +1,7 @@
 /*
+ * JSTools.Parser.Cruncher.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Norris Boyd
+ *  Silvan Gehrig
  */
 
 using System;
@@ -47,7 +54,7 @@ namespace JSTools.Parser.Cruncher
 			_ts = ts;
 		}
 
-		/**
+		/*
 		 * Script (for associating file/url names with toplevel scripts.)
 		 */
 		internal Node CreateScript(Node body, string sourceName,
@@ -65,7 +72,7 @@ namespace JSTools.Parser.Cruncher
 			return result;
 		}
 
-		/**
+		/*
 		 * Leaf
 		 */
 		internal Node CreateLeaf(TokenType nodeType) 
@@ -83,7 +90,7 @@ namespace JSTools.Parser.Cruncher
 			return leaf.Type;
 		}
 
-		/**
+		/*
 		 * Statement leaf nodes.
 		 */
 
@@ -102,7 +109,7 @@ namespace JSTools.Parser.Cruncher
 			return new Node(TokenType.ExprStmt, expr, lineno);
 		}
 
-		/**
+		/*
 		 * Name
 		 */
 		internal Node CreateName(string name) 
@@ -110,7 +117,7 @@ namespace JSTools.Parser.Cruncher
 			return new StringNode(TokenType.Name, name);
 		}
 
-		/**
+		/*
 		 * string (for literals)
 		 */
 		internal Node CreateString(string stringToCreate) 
@@ -118,7 +125,7 @@ namespace JSTools.Parser.Cruncher
 			return new StringNode(stringToCreate);
 		}
 
-		/**
+		/*
 		 * Number (for literals)
 		 */
 		internal Node CreateNumber(string number) 
@@ -126,7 +133,7 @@ namespace JSTools.Parser.Cruncher
 			return new NumberNode(number);
 		}
 
-		/**
+		/*
 		 * Catch clause of try/catch/finally
 		 * @param varName the name of the variable to bind to the exception
 		 * @param catchCond the condition under which to catch the exception.
@@ -145,7 +152,7 @@ namespace JSTools.Parser.Cruncher
 				catchCond, stmts, lineno);
 		}
 
-		/**
+		/*
 		 * Throw
 		 */
 		internal Node CreateThrow(Node expr, int lineno) 
@@ -153,7 +160,7 @@ namespace JSTools.Parser.Cruncher
 			return new Node(TokenType.Throw, expr, lineno);
 		}
 
-		/**
+		/*
 		 * Return
 		 */
 		internal Node CreateReturn(Node expr, int lineno) 
@@ -163,7 +170,7 @@ namespace JSTools.Parser.Cruncher
 				: new Node(TokenType.Return, expr, lineno);
 		}
 
-		/**
+		/*
 		 * Label
 		 */
 		internal Node CreateLabel(string label, int lineno) 
@@ -174,7 +181,7 @@ namespace JSTools.Parser.Cruncher
 			return result;
 		}
 
-		/**
+		/*
 		 * Break (possibly labeled)
 		 */
 		internal Node CreateBreak(string label, int lineno) 
@@ -192,7 +199,7 @@ namespace JSTools.Parser.Cruncher
 			}
 		}
 
-		/**
+		/*
 		 * Continue (possibly labeled)
 		 */
 		internal Node CreateContinue(string label, int lineno) 
@@ -210,7 +217,7 @@ namespace JSTools.Parser.Cruncher
 			}
 		}
 
-		/**
+		/*
 		 * Statement block
 		 * Creates the empty statement block
 		 * Must make subsequent calls to add statements to the node
@@ -252,7 +259,7 @@ namespace JSTools.Parser.Cruncher
 			f.FunctionType = FunctionType.FunctionExpressionStatement;
 		}
 
-		/**
+		/*
 		 * Add a child to the back of the given node.  This function
 		 * breaks the Factory abstraction, but it removes a requirement
 		 * from implementors of Node.
@@ -262,7 +269,7 @@ namespace JSTools.Parser.Cruncher
 			parent.AddChildToBack(child);
 		}
 
-		/**
+		/*
 		 * While
 		 */
 		internal Node CreateWhile(Node cond, Node body, int lineno) 
@@ -271,7 +278,7 @@ namespace JSTools.Parser.Cruncher
 				lineno);
 		}
 
-		/**
+		/*
 		 * DoWhile
 		 */
 		internal Node CreateDoWhile(Node body, Node cond, int lineno) 
@@ -280,7 +287,7 @@ namespace JSTools.Parser.Cruncher
 				lineno);
 		}
 
-		/**
+		/*
 		 * For
 		 */
 		internal Node CreateFor(Node init, Node test, Node incr,
@@ -346,7 +353,7 @@ namespace JSTools.Parser.Cruncher
 			return result;
 		}
 
-		/**
+		/*
 		 * For .. In
 		 *
 		 */
@@ -407,7 +414,7 @@ namespace JSTools.Parser.Cruncher
 			return result;
 		}
 
-		/**
+		/*
 		 * Try/Catch/Finally
 		 *
 		 * The IRFactory tries to express as much as possible in the tree;
@@ -587,11 +594,11 @@ namespace JSTools.Parser.Cruncher
 			return pn;
 		}
 
-		/**
+		/*
 		 * Throw, Return, Label, Break and Continue are defined in ASTFactory.
 		 */
 
-		/**
+		/*
 		 * With
 		 */
 		internal Node CreateWith(Node obj, Node body, int lineno) 
@@ -604,7 +611,7 @@ namespace JSTools.Parser.Cruncher
 			return result;
 		}
 
-		/**
+		/*
 		 * Array Literal
 		 * <BR>createArrayLiteral rewrites its argument as array creation
 		 * plus a series of array element entries, so later compiler
@@ -672,7 +679,7 @@ namespace JSTools.Parser.Cruncher
 			return comma;
 		}
 
-		/**
+		/*
 		 * object Literals
 		 * <BR> createObjectLiteral rewrites its argument as object
 		 * creation plus object property entries, so later compiler
@@ -701,7 +708,7 @@ namespace JSTools.Parser.Cruncher
 			return comma;
 		}
 
-		/**
+		/*
 		 * Regular expressions
 		 */
 		internal Node CreateRegExp(string regExpString, string flags) 
@@ -712,7 +719,7 @@ namespace JSTools.Parser.Cruncher
 				return new Node(TokenType.RegExp, new StringNode(regExpString), new StringNode(flags));
 		}
 
-		/**
+		/*
 		 * If statement
 		 */
 		internal Node CreateIf(Node cond, Node ifTrue, Node ifFalse,
@@ -749,7 +756,7 @@ namespace JSTools.Parser.Cruncher
 			return CreateIf(cond, ifTrue, ifFalse, -1);
 		}
 
-		/**
+		/*
 		 * Unary
 		 */
 		internal Node CreateUnary(TokenType nodeType, Node childNode) 
@@ -831,7 +838,7 @@ namespace JSTools.Parser.Cruncher
 			return result;
 		}
 
-		/**
+		/*
 		 * Binary
 		 */
 		internal Node CreateBinary(TokenType nodeType, Node left, Node right) 

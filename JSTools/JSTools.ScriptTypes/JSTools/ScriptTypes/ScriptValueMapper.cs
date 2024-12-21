@@ -1,4 +1,7 @@
 /*
+ * JSTools.ScriptTypes.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,6 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
@@ -23,8 +29,10 @@ namespace JSTools.ScriptTypes
 	/// Represents a mapper which can be used to map types with script
 	/// types and map script strings with managed types.
 	/// 
+	/// <para>
 	/// The mapped type can be used to decode values form the client
 	/// or the encode data to render them to the client.
+	/// </para>
 	/// </summary>
 	/// <example>
 	///  <code>

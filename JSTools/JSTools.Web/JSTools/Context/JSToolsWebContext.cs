@@ -1,4 +1,7 @@
 /*
+ * JSTools.Web.dll / JSTools.net - A framework for JavaScript/ASP.NET applications.
+ * Copyright (C) 2005  Silvan Gehrig
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -12,11 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author:
+ *  Silvan Gehrig
  */
 
 using System;
 using System.Configuration;
 using System.IO;
+using System.Threading;
 using System.Web;
 
 namespace JSTools.Context
@@ -31,36 +38,34 @@ namespace JSTools.Context
 		// Declarations
 		//--------------------------------------------------------------------
 
-		/// <summary>
-		/// Gets the one and only JSToolsWebContext instance.
-		/// </summary>
-		/// <remarks>
-		/// You should not work with the global context instance because the values
-		/// of the properties may change during a request. You should create an
-		/// immutalbe clone and use it to perform mutliple operations on the context.
-		///  <code>
-		///   JSToolsWebContext webContext = JSToolsWebContext.Instance;
-		///   JSToolsWebContext immutableWebContext = (JSToolsWebContext)_webContext.Clone();
-		///   
-		///   // do some operations with "immutableWebContext"
-		///  </code>
-		/// </remarks>
-		public static readonly JSToolsWebContext Instance = new JSToolsWebContext();
-
+		private static readonly JSToolsWebContext GLOBAL_INSTANCE = new JSToolsWebContext();
+		
 		private const string JSTOOLS_SETTINGS_SECTION = "JSTools.net";
-		private readonly string _applicationPath = null;
+		private const string JSTOOLS_DATA_SLOT = "JSTools.net DataSlot";
+
+		private string _appPath = null;	
 
 		//--------------------------------------------------------------------
 		// Properties
 		//--------------------------------------------------------------------
 
 		/// <summary>
-		/// Gets the path of the current application. Its dependent on the
+		/// Gets the global JSToolsWebContext instance. You will always
+		/// obtain a clone of the global context because the properties
+		/// of the global context instance may change.
+		/// </summary>
+		public static JSToolsWebContext Instance
+		{
+			get { return (JSToolsWebContext)GLOBAL_INSTANCE.Clone(); }
+		}
+
+		/// <summary>
+		/// Gets the path of the current application. It's dependent on the
 		/// asp.net environment.
 		/// </summary>
 		public override string ApplicationPath
 		{
-			get { return _applicationPath; }
+			get { return _appPath; }
 		}
 
 		//--------------------------------------------------------------------
@@ -76,7 +81,15 @@ namespace JSTools.Context
 			if (HttpContext.Current == null)
 				throw new InvalidOperationException("Please use JSToolsWebContext in an asp.net environment only.");
 
-			_applicationPath = HttpContext.Current.Request.ApplicationPath;
+			_appPath = HttpContext.Current.Request.ApplicationPath;
+		}
+
+		/// <summary>
+		/// Creates the one and only JSToolsWebContext instance. This part of
+		/// code is similar to the singleton pattern.
+		/// </summary>
+		private JSToolsWebContext(bool initConfig) : base(initConfig)
+		{
 		}
 
 		//--------------------------------------------------------------------
@@ -93,7 +106,9 @@ namespace JSTools.Context
 		/// <returns>Returns the cloned instance.</returns>
 		protected override AJSToolsContext CloneInstance()
 		{
-			return new JSToolsWebContext();
+			JSToolsWebContext context = new JSToolsWebContext(false);
+			context._appPath = _appPath;
+			return context;
 		}
 
 		/// <summary>
