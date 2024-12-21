@@ -1,0 +1,387 @@
+<VisualStudioProject>
+    <CSHARP
+        ProjectType = "Web"
+        ProductVersion = "7.10.3077"
+        SchemaVersion = "2.0"
+        ProjectGuid = "{3C85A319-CED7-47EA-BA11-6143458A0566}"
+    >
+        <Build>
+            <Settings
+                ApplicationIcon = ""
+                AssemblyKeyContainerName = ""
+                AssemblyName = "JSTools.JavaScript"
+                AssemblyOriginatorKeyFile = ""
+                DefaultClientScript = "JScript"
+                DefaultHTMLPageLayout = "Grid"
+                DefaultTargetSchema = "IE50"
+                DelaySign = "false"
+                OutputType = "Library"
+                PreBuildEvent = ""
+                PostBuildEvent = ""
+                RootNamespace = "JSTools.JavaScript"
+                RunPostBuildEvent = "OnBuildSuccess"
+                StartupObject = ""
+            >
+                <Config
+                    Name = "Debug"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "285212672"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "DEBUG;TRACE"
+                    DocumentationFile = ""
+                    DebugSymbols = "true"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "true"
+                    NoStdLib = "false"
+                    NoWarn = ""
+                    Optimize = "false"
+                    OutputPath = "bin\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+                <Config
+                    Name = "Release"
+                    AllowUnsafeBlocks = "false"
+                    BaseAddress = "285212672"
+                    CheckForOverflowUnderflow = "false"
+                    ConfigurationOverrideFile = ""
+                    DefineConstants = "TRACE"
+                    DocumentationFile = ""
+                    DebugSymbols = "false"
+                    FileAlignment = "4096"
+                    IncrementalBuild = "false"
+                    NoStdLib = "false"
+                    NoWarn = ""
+                    Optimize = "true"
+                    OutputPath = "bin\"
+                    RegisterForComInterop = "false"
+                    RemoveIntegerChecks = "false"
+                    TreatWarningsAsErrors = "false"
+                    WarningLevel = "4"
+                />
+            </Settings>
+            <References>
+                <Reference
+                    Name = "System"
+                    AssemblyName = "System"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.dll"
+                />
+                <Reference
+                    Name = "System.Web"
+                    AssemblyName = "System.Web"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Web.dll"
+                />
+                <Reference
+                    Name = "System.Drawing"
+                    AssemblyName = "System.Drawing"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Drawing.dll"
+                />
+                <Reference
+                    Name = "System.Data"
+                    AssemblyName = "System.Data"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.0.3705\System.Data.dll"
+                />
+            </References>
+        </Build>
+        <Files>
+            <Include>
+                <File
+                    RelPath = "JSTools\Array.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Core.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Function.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\NameSpace.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Object.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\String.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Enum\FlagsEnum.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Enum\StringEnum.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Event\FunctionObserver.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Event\IObserver.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Event\MethodInfoObserver.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Event\Subject.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Event\SubjectList.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\ExceptionHandling\Exception.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\ExceptionHandling\Handler.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\ExceptionHandling\StackTrace.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Reflection\FieldInfo.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Reflection\IMemberInfo.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Reflection\MemberProtector.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Reflection\MethodInfo.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Reflection\Type.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Reflection\TypeParser.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Timers\Timeout.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Timers\Timer.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Util\Guid.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Util\Hashtable.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Util\StringConverter.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Element.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\ImageContainer.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\QueryStringParser.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\ScriptLoaderEngine.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Browser\BrowserCapabilities.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Browser\BrowserType.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Browser\DefaultBrowserType.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Cookie\CookieCollection.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Cookie\CookieData.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Diagnostics\ConsoleErrorMessage.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Diagnostics\ConsoleMessage.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Diagnostics\ConsoleStyle.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Diagnostics\ConsoleWriter.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Diagnostics\Exception.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Diagnostics\TypeVisualizer.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Form\FormValidator.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\BaseLayerConstructor.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\BaseLayerGetter.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\BaseLayerSetter.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\BaseModelFactory.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\ILayerValueContainer.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerCheckerClass.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerClass.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerClip.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerContainer.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerEnumeratorClass.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerEventHandlerClass.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerEvents.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerFactoryDescription.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerHandler.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\LayerOriginalValues.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\specified\DomLayerConstructor.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\specified\DomLayerGetter.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\specified\DomLayerSetter.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\specified\DomModelFactory.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\specified\IeLayerConstructor.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\specified\IeLayerGetter.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Layer\specified\IeModelFactory.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Window\WindowErrorArgument.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Window\WindowEvent.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Window\WindowOpener.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Window\WindowOptions.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Window\Event\BaseEventContainer.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Window\Event\ElementEvent.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Window\Event\EventArgument.js"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "JSTools\Web\Window\Event\IEventArgument.js"
+                    BuildAction = "Content"
+                />
+            </Include>
+        </Files>
+    </CSHARP>
+</VisualStudioProject>
+
